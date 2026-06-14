@@ -47,7 +47,7 @@ export default async function BrowsePage({
 
   return (
     <div className="min-h-screen">
-      <SiteHeader authed={!!user} />
+      <SiteHeader email={user?.email ?? null} />
 
       <main className="mx-auto max-w-6xl px-6 py-10 sm:py-14">
         <header className="max-w-2xl">

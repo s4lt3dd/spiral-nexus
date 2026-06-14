@@ -96,7 +96,7 @@ export default async function ListingDetailPage({
 
   return (
     <div className="min-h-screen">
-      <SiteHeader authed={!!user} />
+      <SiteHeader email={user?.email ?? null} />
 
       <main className="mx-auto max-w-5xl px-6 py-10 sm:py-14">
         <Link
