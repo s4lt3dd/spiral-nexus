@@ -5,10 +5,8 @@ import { useRouter, usePathname, useSearchParams } from "next/navigation";
 import { Search, X } from "lucide-react";
 
 import {
-  NICE_CLASSES,
   JURISDICTIONS,
   SORT_OPTIONS,
-  niceClassLabel,
   type DiscoveryParams,
 } from "@/lib/discovery";
 import { DEAL_TYPES } from "@/lib/listings";
@@ -16,6 +14,7 @@ import { DEAL_TYPES } from "@/lib/listings";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
+import { NiceClassCombobox } from "@/components/listings/nice-class-combobox";
 import {
   Select,
   SelectContent,
@@ -31,9 +30,6 @@ export function SearchFilters({ current }: { current: DiscoveryParams }) {
   const [, startTransition] = useTransition();
 
   const [q, setQ] = useState(current.q ?? "");
-  const [niceText, setNiceText] = useState(
-    current.nice_class ? (niceClassLabel(current.nice_class) ?? "") : "",
-  );
   const debounce = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
 
   function push(mut: (p: URLSearchParams) => void) {
@@ -53,20 +49,12 @@ export function SearchFilters({ current }: { current: DiscoveryParams }) {
     debounce.current = setTimeout(() => setParam("q", v.trim()), 350);
   }
 
-  function onNice(v: string) {
-    setNiceText(v);
-    const n = parseInt(v, 10);
-    if (!v.trim()) setParam("nice_class", "");
-    else if (n >= 1 && n <= 45) setParam("nice_class", String(n));
-  }
-
   const hasFilters = Boolean(
     current.q || current.nice_class || current.jurisdiction || current.deal_type,
   );
 
   function clearAll() {
     setQ("");
-    setNiceText("");
     startTransition(() => router.push(pathname));
   }
 
@@ -94,19 +82,11 @@ export function SearchFilters({ current }: { current: DiscoveryParams }) {
       <div className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <div className="space-y-1.5">
           <Label htmlFor="nice_class">Nice class</Label>
-          <Input
+          <NiceClassCombobox
             id="nice_class"
-            list="nice-classes"
-            value={niceText}
-            onChange={(e) => onNice(e.target.value)}
-            placeholder="Any class"
-            autoComplete="off"
+            value={current.nice_class ?? null}
+            onChange={(n) => setParam("nice_class", n ? String(n) : null)}
           />
-          <datalist id="nice-classes">
-            {NICE_CLASSES.map((c) => (
-              <option key={c.value} value={`${c.value} — ${c.label}`} />
-            ))}
-          </datalist>
         </div>
 
         <div className="space-y-1.5">

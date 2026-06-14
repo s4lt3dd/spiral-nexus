@@ -42,7 +42,11 @@ export default async function BrowsePage({
     data: { user },
   } = await supabase.auth.getUser();
 
-  const { rows, count, pageCount } = await searchListings(supabase, params);
+  const { rows, count, pageCount } = await searchListings(
+    supabase,
+    params,
+    user?.id ?? null,
+  );
   const listings = rows as IpAsset[];
 
   return (

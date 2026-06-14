@@ -120,9 +120,12 @@ export type ListingsResult = {
 
 // Query published listings with filters, name-centric search, and pagination.
 // Keyword search needs migration 20260614204057 (search column + pg_trgm).
+// `excludeOwnerId` hides the viewer's own listings (they manage those on the
+// dashboard, not via public browse).
 export async function searchListings(
   supabase: SupabaseClient,
   params: DiscoveryParams,
+  excludeOwnerId?: string | null,
 ): Promise<ListingsResult> {
   const from = (params.page - 1) * PAGE_SIZE;
   const to = from + PAGE_SIZE - 1;
@@ -134,6 +137,8 @@ export async function searchListings(
       { count: "exact" },
     )
     .eq("is_published", true);
+
+  if (excludeOwnerId) query = query.neq("owner_id", excludeOwnerId);
 
   if (params.nice_class) query = query.eq("nice_class", params.nice_class);
   if (params.jurisdiction) query = query.eq("jurisdiction", params.jurisdiction);
