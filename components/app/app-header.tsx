@@ -15,6 +15,12 @@ export function AppHeader({ email }: { email?: string }) {
         </Link>
 
         <div className="flex items-center gap-4">
+          <Link
+            href="/listings"
+            className="text-sm font-medium text-slate-600 transition-colors hover:text-foreground"
+          >
+            Browse
+          </Link>
           {email && (
             <span className="hidden text-sm text-slate-500 sm:inline">
               {email}
