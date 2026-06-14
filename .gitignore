@@ -50,3 +50,7 @@ app/page.boilerplate.txt
 # stray debug logs
 err.log
 esbuild.err
+
+# python bytecode (skill tooling)
+__pycache__/
+*.pyc

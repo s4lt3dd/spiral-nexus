@@ -31,6 +31,22 @@ export function dealTypeLabel(value: string): string {
   return DEAL_TYPES.find((d) => d.value === value)?.label ?? value;
 }
 
+// Status -> badge variant (see MASTER.md status-pill mapping).
+export type StatusVariant = "brand" | "warning" | "slate" | "destructive";
+export function statusPillVariant(value: string | null): StatusVariant {
+  switch (value) {
+    case "registered":
+      return "brand";
+    case "pending":
+      return "warning";
+    case "opposed":
+      return "destructive";
+    case "expired":
+    default:
+      return "slate";
+  }
+}
+
 // Bounded allowance granted to every signed-in user while payments are off.
 export const MVP_LISTING_ALLOWANCE = 10;
 

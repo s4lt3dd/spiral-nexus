@@ -3,6 +3,7 @@ import { notFound, redirect } from "next/navigation";
 import { ArrowLeft } from "lucide-react";
 
 import { createClient } from "@/lib/supabase/server";
+import { AppHeader } from "@/components/app/app-header";
 import { ListingForm } from "@/components/listings/listing-form";
 import type { IpAsset } from "@/lib/types";
 
@@ -32,23 +33,29 @@ export default async function EditListingPage({
   if (!listing) notFound();
 
   return (
-    <main className="mx-auto max-w-2xl px-6 py-12">
-      <Link
-        href="/dashboard"
-        className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground"
-      >
-        <ArrowLeft className="size-4" aria-hidden />
-        Back to dashboard
-      </Link>
+    <div className="min-h-screen">
+      <AppHeader email={user.email} />
 
-      <header className="mt-6 mb-8">
-        <h1 className="text-2xl font-semibold tracking-tight">Edit listing</h1>
-        <p className="mt-1 text-sm text-muted-foreground">
-          Update the details, then save as a draft or publish your changes.
-        </p>
-      </header>
+      <main className="mx-auto max-w-2xl px-6 py-10 sm:py-14">
+        <Link
+          href="/dashboard"
+          className="inline-flex items-center gap-1.5 text-sm text-slate-500 transition-colors hover:text-foreground"
+        >
+          <ArrowLeft className="size-4" aria-hidden />
+          Back to dashboard
+        </Link>
 
-      <ListingForm listing={listing as IpAsset} />
-    </main>
+        <header className="mt-6 mb-8">
+          <h1 className="text-3xl font-semibold tracking-tight text-ink">
+            Edit listing
+          </h1>
+          <p className="mt-2 text-base text-slate-600">
+            Update the details, then save as a draft or publish your changes.
+          </p>
+        </header>
+
+        <ListingForm listing={listing as IpAsset} />
+      </main>
+    </div>
   );
 }

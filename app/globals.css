@@ -6,119 +6,178 @@
 
 @custom-variant dark (&:is(.dark *));
 
+/* =========================================================================
+   Spiral Nexus design system — tokens from design-system/spiral-nexus/MASTER.md
+   Premium & authoritative: neutral slate backbone, single purple accent with
+   gradients, gold reserved for verified/premium. Serif display + grotesque body.
+   ========================================================================= */
+:root {
+  /* ---- Colour (raw brand tokens) ---- */
+  /* Brand = purple, matching the Softr mockup identity (overrides the original
+     emerald direction; see design-system/spiral-nexus/MASTER.md). */
+  --ink: #0b1220;
+  --brand: #6d28d9; /* violet-700 */
+  --brand-hover: #5b21b6; /* violet-800 */
+  --brand-tint: #ede9fe; /* violet-100 */
+  --gold: #9a7b22;
+  --gold-tint: #f7f1df;
+
+  /* Purple gradients (the mockup's signature). */
+  --gradient-brand: linear-gradient(135deg, #7c3aed 0%, #6d28d9 50%, #4f46e5 100%);
+  --gradient-hero: linear-gradient(165deg, #1b1140 0%, #2c1a57 45%, #5b3f86 100%);
+  --bg: #fbfcfd;
+  --surface: #ffffff;
+  --slate-50: #f8fafc;
+  --slate-100: #f1f5f9;
+  --slate-200: #e2e8f0;
+  --slate-300: #cbd5e1;
+  --slate-400: #94a3b8;
+  --slate-500: #64748b;
+  --slate-600: #475569;
+  --slate-700: #334155;
+  --slate-800: #1e293b;
+  --slate-900: #0f172a;
+  --success: #15803d;
+  --warning: #b45309;
+  --danger: #b91c1c;
+  --info: #2563eb;
+
+  /* ---- Spacing (4px base) ---- */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 24px;
+  --space-6: 32px;
+  --space-7: 48px;
+  --space-8: 64px;
+  --space-9: 96px;
+
+  /* ---- Radius ---- */
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 14px;
+  --radius-xl: 20px;
+  --radius-full: 9999px;
+  /* shadcn base radius (its primitives derive sm/md/lg from this) */
+  --radius: 10px;
+
+  /* ---- Elevation (soft, layered — the premium tell) ---- */
+  --shadow-xs: 0 1px 2px rgba(11, 18, 32, 0.06);
+  --shadow-sm: 0 1px 3px rgba(11, 18, 32, 0.08), 0 1px 2px rgba(11, 18, 32, 0.04);
+  --shadow-md: 0 4px 12px -2px rgba(11, 18, 32, 0.1),
+    0 2px 6px -2px rgba(11, 18, 32, 0.06);
+  --shadow-lg: 0 12px 28px -8px rgba(11, 18, 32, 0.16);
+  --focus-ring: 0 0 0 3px rgba(109, 40, 217, 0.25);
+
+  /* ---- Motion ---- */
+  --ease-out: cubic-bezier(0.2, 0.8, 0.2, 1);
+  --dur-fast: 150ms;
+  --dur: 200ms;
+  --dur-enter: 300ms;
+
+  /* ---- shadcn semantic mapping (one source of truth) ---- */
+  --background: var(--bg);
+  --foreground: var(--slate-900);
+  --card: var(--surface);
+  --card-foreground: var(--slate-900);
+  --popover: var(--surface);
+  --popover-foreground: var(--slate-900);
+  --primary: var(--brand);
+  --primary-foreground: #ffffff;
+  --secondary: var(--surface);
+  --secondary-foreground: var(--slate-800);
+  --muted: var(--slate-100);
+  --muted-foreground: var(--slate-600);
+  --accent: var(--brand-tint);
+  --accent-foreground: var(--brand);
+  --destructive: var(--danger);
+  --border: var(--slate-200);
+  --input: var(--slate-300);
+  --ring: var(--brand);
+  --chart-1: var(--brand);
+  --chart-2: #0891b2;
+  --chart-3: var(--ink);
+  --chart-4: var(--slate-600);
+  --chart-5: var(--gold);
+  --sidebar: var(--surface);
+  --sidebar-foreground: var(--slate-900);
+  --sidebar-primary: var(--brand);
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: var(--brand-tint);
+  --sidebar-accent-foreground: var(--brand);
+  --sidebar-border: var(--slate-200);
+  --sidebar-ring: var(--brand);
+}
+
+/* Expose tokens to Tailwind v4 utilities + shadcn components (shared source).
+   `inline` so dark-mode/instance overrides of the :root vars flow through. */
 @theme inline {
+  /* Fonts (next/font sets the *-family vars on <html>) */
+  --font-display: var(--font-fraunces);
+  --font-sans: var(--font-inter);
+  --font-heading: var(--font-fraunces);
+
+  /* Brand colour utilities (bg-brand, text-ink, bg-brand-tint, …) */
+  --color-ink: var(--ink);
+  --color-brand: var(--brand);
+  --color-brand-hover: var(--brand-hover);
+  --color-brand-tint: var(--brand-tint);
+  --color-gold: var(--gold);
+  --color-gold-tint: var(--gold-tint);
+  --color-surface: var(--surface);
+  --color-success: var(--success);
+  --color-warning: var(--warning);
+  --color-danger: var(--danger);
+  --color-info: var(--info);
+
+  /* shadcn semantic colours */
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-sans);
-  --font-mono: var(--font-geist-mono);
-  --font-heading: var(--font-sans);
-  --color-sidebar-ring: var(--sidebar-ring);
-  --color-sidebar-border: var(--sidebar-border);
-  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
-  --color-sidebar-accent: var(--sidebar-accent);
-  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
-  --color-sidebar-primary: var(--sidebar-primary);
-  --color-sidebar-foreground: var(--sidebar-foreground);
-  --color-sidebar: var(--sidebar);
-  --color-chart-5: var(--chart-5);
-  --color-chart-4: var(--chart-4);
-  --color-chart-3: var(--chart-3);
-  --color-chart-2: var(--chart-2);
-  --color-chart-1: var(--chart-1);
-  --color-ring: var(--ring);
-  --color-input: var(--input);
-  --color-border: var(--border);
-  --color-destructive: var(--destructive);
-  --color-accent-foreground: var(--accent-foreground);
-  --color-accent: var(--accent);
-  --color-muted-foreground: var(--muted-foreground);
-  --color-muted: var(--muted);
-  --color-secondary-foreground: var(--secondary-foreground);
-  --color-secondary: var(--secondary);
-  --color-primary-foreground: var(--primary-foreground);
-  --color-primary: var(--primary);
-  --color-popover-foreground: var(--popover-foreground);
-  --color-popover: var(--popover);
-  --color-card-foreground: var(--card-foreground);
   --color-card: var(--card);
-  --radius-sm: calc(var(--radius) * 0.6);
-  --radius-md: calc(var(--radius) * 0.8);
-  --radius-lg: var(--radius);
-  --radius-xl: calc(var(--radius) * 1.4);
-  --radius-2xl: calc(var(--radius) * 1.8);
-  --radius-3xl: calc(var(--radius) * 2.2);
-  --radius-4xl: calc(var(--radius) * 2.6);
-}
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
 
-/* Spiral Nexus palette: professional navy/slate with a single blue CTA.
-   Restrained and trustworthy for a B2B IP marketplace (no purple gradients). */
-:root {
-  --background: #f8fafc; /* slate-50 */
-  --foreground: #020617; /* slate-950 */
-  --card: #ffffff;
-  --card-foreground: #020617;
-  --popover: #ffffff;
-  --popover-foreground: #020617;
-  --primary: #0369a1; /* sky-700 - the blue CTA */
-  --primary-foreground: #f8fafc;
-  --secondary: #f1f5f9; /* slate-100 */
-  --secondary-foreground: #0f172a; /* slate-900 */
-  --muted: #f1f5f9;
-  --muted-foreground: #475569; /* slate-600 - 4.5:1 on white */
-  --accent: #e0f2fe; /* sky-100 */
-  --accent-foreground: #0c4a6e; /* sky-900 */
-  --destructive: #dc2626; /* red-600 */
-  --border: #e2e8f0; /* slate-200 */
-  --input: #e2e8f0;
-  --ring: #0369a1;
-  --chart-1: #0369a1;
-  --chart-2: #0891b2;
-  --chart-3: #0f172a;
-  --chart-4: #475569;
-  --chart-5: #94a3b8;
-  --radius: 0.625rem;
-  --sidebar: #f8fafc;
-  --sidebar-foreground: #020617;
-  --sidebar-primary: #0369a1;
-  --sidebar-primary-foreground: #f8fafc;
-  --sidebar-accent: #e0f2fe;
-  --sidebar-accent-foreground: #0c4a6e;
-  --sidebar-border: #e2e8f0;
-  --sidebar-ring: #0369a1;
-}
+  /* Radius scale */
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 14px;
+  --radius-xl: 20px;
 
-.dark {
-  --background: oklch(0.145 0 0);
-  --foreground: oklch(0.985 0 0);
-  --card: oklch(0.205 0 0);
-  --card-foreground: oklch(0.985 0 0);
-  --popover: oklch(0.205 0 0);
-  --popover-foreground: oklch(0.985 0 0);
-  --primary: oklch(0.922 0 0);
-  --primary-foreground: oklch(0.205 0 0);
-  --secondary: oklch(0.269 0 0);
-  --secondary-foreground: oklch(0.985 0 0);
-  --muted: oklch(0.269 0 0);
-  --muted-foreground: oklch(0.708 0 0);
-  --accent: oklch(0.269 0 0);
-  --accent-foreground: oklch(0.985 0 0);
-  --destructive: oklch(0.704 0.191 22.216);
-  --border: oklch(1 0 0 / 10%);
-  --input: oklch(1 0 0 / 15%);
-  --ring: oklch(0.556 0 0);
-  --chart-1: oklch(0.87 0 0);
-  --chart-2: oklch(0.556 0 0);
-  --chart-3: oklch(0.439 0 0);
-  --chart-4: oklch(0.371 0 0);
-  --chart-5: oklch(0.269 0 0);
-  --sidebar: oklch(0.205 0 0);
-  --sidebar-foreground: oklch(0.985 0 0);
-  --sidebar-primary: oklch(0.488 0.243 264.376);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.269 0 0);
-  --sidebar-accent-foreground: oklch(0.985 0 0);
-  --sidebar-border: oklch(1 0 0 / 10%);
-  --sidebar-ring: oklch(0.556 0 0);
+  /* Elevation (overrides Tailwind's default shadow utilities) */
+  --shadow-xs: var(--shadow-xs);
+  --shadow-sm: var(--shadow-sm);
+  --shadow-md: var(--shadow-md);
+  --shadow-lg: var(--shadow-lg);
+
+  /* Confident ease-out for transition/animate utilities */
+  --ease-out: var(--ease-out);
 }
 
 @layer base {
@@ -126,9 +185,124 @@
     @apply border-border outline-ring/50;
   }
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground antialiased;
+    font-feature-settings: "cv05" 1, "ss01" 1;
   }
   html {
     @apply font-sans;
+  }
+  /* Headings adopt the serif display face by default. */
+  h1,
+  h2,
+  h3 {
+    @apply font-display;
+    letter-spacing: -0.02em;
+  }
+}
+
+@layer utilities {
+  /* First-paint fade-and-rise; disabled under reduced-motion. */
+  .animate-rise {
+    animation: rise var(--dur-enter) var(--ease-out) both;
+  }
+  @keyframes rise {
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .animate-rise {
+      animation: none;
+    }
+    *,
+    *::before,
+    *::after {
+      transition-duration: 0.01ms !important;
+      animation-duration: 0.01ms !important;
+    }
+  }
+}
+
+@layer utilities {
+  /* ---- Landing motion primitives (home + about) ---- */
+
+  /* Scroll-reveal: prefer CSS scroll-driven animation, fall back to an
+     IntersectionObserver-toggled class (.in-view) where view() is unsupported. */
+  @supports (animation-timeline: view()) {
+    .reveal {
+      animation: reveal-rise linear both;
+      animation-timeline: view();
+      animation-range: entry 5% cover 22%;
+    }
+  }
+  @supports not (animation-timeline: view()) {
+    .reveal {
+      opacity: 0;
+      transform: translateY(18px);
+      transition:
+        opacity 0.6s var(--ease-out),
+        transform 0.6s var(--ease-out);
+      transition-delay: calc(var(--i, 0) * 80ms);
+    }
+    .reveal.in-view {
+      opacity: 1;
+      transform: none;
+    }
+  }
+  @keyframes reveal-rise {
+    from {
+      opacity: 0;
+      transform: translateY(18px);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+
+  /* Hero aurora glow layers (transform-only drift). */
+  .aurora-a {
+    animation: aurora-a 22s var(--ease-out) infinite;
+  }
+  .aurora-b {
+    animation: aurora-b 28s var(--ease-out) infinite;
+  }
+  @keyframes aurora-a {
+    0%,
+    100% {
+      transform: translate3d(-6%, -4%, 0) scale(1);
+    }
+    50% {
+      transform: translate3d(6%, 4%, 0) scale(1.18);
+    }
+  }
+  @keyframes aurora-b {
+    0%,
+    100% {
+      transform: translate3d(8%, 6%, 0) scale(1.12);
+    }
+    50% {
+      transform: translate3d(-6%, -2%, 0) scale(0.95);
+    }
+  }
+
+  /* Reduced motion: force final/static state (wins over the global duration
+     clamp, which could otherwise strand a view()-timeline element hidden). */
+  @media (prefers-reduced-motion: reduce) {
+    .reveal {
+      animation: none !important;
+      opacity: 1 !important;
+      transform: none !important;
+      transition: none !important;
+    }
+    .aurora-a,
+    .aurora-b {
+      animation: none !important;
+    }
   }
 }

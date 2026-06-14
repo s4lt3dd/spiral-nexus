@@ -88,8 +88,11 @@ export function ListingForm({ listing }: { listing?: IpAsset }) {
   }
 
   return (
-    <form className="space-y-8">
-      <fieldset className="space-y-5" disabled={submitting}>
+    <form className="space-y-6">
+      <fieldset
+        className="space-y-5 rounded-lg border border-border bg-surface p-6 shadow-sm sm:p-8"
+        disabled={submitting}
+      >
         <div className="space-y-2">
           <Label htmlFor="title">Trademark name</Label>
           <Input
@@ -224,7 +227,7 @@ export function ListingForm({ listing }: { listing?: IpAsset }) {
         </div>
       </fieldset>
 
-      <div className="flex flex-wrap items-center gap-3 border-t pt-6">
+      <div className="flex flex-wrap items-center gap-3">
         <Button type="button" onClick={onSubmit(true)} disabled={submitting}>
           {isEdit ? "Save & publish" : "Publish listing"}
         </Button>

@@ -12,8 +12,30 @@ contacts the owner.
   tiers, RLS/security rules. The source of truth. Consult before writing code.
 - `.claude/skills/vertical-slice` - how to build a feature end-to-end
   (schema -> RLS -> types -> API -> UI -> seed -> test). Use for every feature.
+- `.claude/skills/ui-ux-pro-max` - design intelligence (styles, palettes,
+  font pairings, UX/accessibility rules, shadcn/Next.js stack data). Use for
+  ALL UI/UX work: new components, pages, styling, and design reviews.
 
 Full product spec: `docs/MVP-SPEC.md`.
+
+## Design / UI quality (non-negotiable)
+This product is sold to businesses; the UI must look **premium and
+authoritative** (Stripe/Linear-grade) - polished AND distinctive, never bare,
+sterile, or generic "AI-slop". Restraint alone reads as boring; aim for
+*intentional richness*: a real brand identity, deliberate depth (layered
+shadows, elevation), confident large display type, signature components, and
+motion.
+
+**Source of truth: `design-system/spiral-nexus/MASTER.md`** - read it before
+ANY UI work and build to its tokens (palette, type, spacing, shadows, motion,
+component specs). Page-specific overrides live in
+`design-system/spiral-nexus/pages/[page].md`. Use `.claude/skills/ui-ux-pro-max`
+for deeper UX/accessibility guidance, but the MASTER file wins on visual
+identity. Build on shadcn/ui primitives, but theme them via the tokens - never
+ship the default shadcn look. The brand is **purple with gradients** (matches
+the Softr mockup); emerald is retired. Avoid the anti-patterns listed in
+MASTER.md (flat shadowless cards, timid type, emoji headings, flat/cheap
+gradients, lifeless empty states).
 
 ## Stack
 Next.js (App Router) + TypeScript + Tailwind + shadcn/ui · Supabase
@@ -46,4 +68,4 @@ listed in `lib/supabase/middleware.ts`.
 
 ## Database
 Migrations in `supabase/migrations/`. After creating a Supabase project,
-generate types: `npx supabase gen types typescript --project-id <id> > lib/database.types.ts`.
+generate types: `npx supabase gen types typescr

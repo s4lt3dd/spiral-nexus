@@ -1,25 +1,35 @@
 import type { Metadata } from "next";
 import "./globals.css";
-import { Plus_Jakarta_Sans } from "next/font/google";
+import { Fraunces, Inter } from "next/font/google";
 import { cn } from "@/lib/utils";
 import { Toaster } from "@/components/ui/sonner";
 
-const jakarta = Plus_Jakarta_Sans({
+// Serif display (editorial authority) + grotesque body.
+const fraunces = Fraunces({
   subsets: ["latin"],
-  variable: "--font-sans",
+  variable: "--font-fraunces",
+  display: "swap",
+});
+const inter = Inter({
+  subsets: ["latin"],
+  variable: "--font-inter",
+  display: "swap",
 });
 
 export const metadata: Metadata = {
   title: "Spiral Nexus",
   description:
-    "The AI-powered marketplace to discover, list, and commercialise intellectual property assets.",
+    "The marketplace to discover, list, and commercialise intellectual property assets.",
 };
 
 export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en" className={cn("font-sans", jakarta.variable)}>
+    <html
+      lang="en"
+      className={cn("font-sans", inter.variable, fraunces.variable)}
+    >
       <body className="min-h-screen bg-background text-foreground antialiased">
         {children}
         <Toaster richColors position="top-center" />
