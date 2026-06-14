@@ -12,11 +12,12 @@ import { cn } from "@/lib/utils";
 import type { IpAsset, Profile } from "@/lib/types";
 import { statusLabel, dealTypeLabel, statusPillVariant } from "@/lib/listings";
 import { niceClassLabel } from "@/lib/discovery";
-import { Button, buttonVariants } from "@/components/ui/button";
+import { buttonVariants } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { NexusMark } from "@/components/brand/nexus-mark";
 import { VerifiedAvatar } from "@/components/marketing/verified-avatar";
 import { SiteHeader } from "@/components/marketing/site-header";
+import { ContactOwnerDialog } from "@/components/messages/contact-owner-dialog";
 
 const gbp = new Intl.NumberFormat("en-GB", {
   style: "currency",
@@ -210,7 +211,7 @@ export default async function ListingDetailPage({
                 </div>
               </div>
 
-              {/* Contact CTA — messaging itself arrives in Slice 3 */}
+              {/* Contact CTA */}
               <div className="mt-6">
                 {isOwner ? (
                   <Link
@@ -219,22 +220,11 @@ export default async function ListingDetailPage({
                   >
                     Edit your listing
                   </Link>
-                ) : user ? (
-                  <>
-                    <Button className="w-full" disabled>
-                      Contact owner
-                    </Button>
-                    <p className="mt-2 text-center text-xs text-slate-500">
-                      Direct messaging arrives in the next update.
-                    </p>
-                  </>
                 ) : (
-                  <Link
-                    href="/login"
-                    className={cn(buttonVariants(), "w-full")}
-                  >
-                    Sign in to contact
-                  </Link>
+                  <ContactOwnerDialog
+                    listingId={listing.id}
+                    ownerName={ownerName}
+                  />
                 )}
               </div>
             </div>

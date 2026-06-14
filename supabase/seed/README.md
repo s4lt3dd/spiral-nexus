@@ -10,18 +10,21 @@ only by these local scripts and is never shipped to the browser.
 
 ## `seed.mjs`
 
-Creates two test owners and inserts 8 trademark listings across them (6
-published, 2 draft) with varied jurisdictions, Nice classes, statuses, and deal
-types — enough to make the dashboard and the upcoming browse/search demo well.
-Idempotent: re-running clears the seed listings for those owners and reinserts.
+Creates the test owners and inserts trademark listings across them (most
+published, a few drafts) with branded SVG mark medallions, varied jurisdictions,
+Nice classes, statuses, and deal types. It then seeds a couple of **demo
+conversations** — including one addressed to the **first real (non-seed) user**
+as the buyer, so you can test messaging in a single window. Idempotent.
 
 ```bash
 node supabase/seed/seed.mjs
 ```
 
+The messaging part is skipped with a notice until the messaging migration is
+applied (`npm run db:push`); re-run the seed afterwards to get the demo threads.
+
 Test owners (password `SpiralNexus!Test123`):
-- `owner-a@spiralnexus.test`
-- `owner-b@spiralnexus.test`
+- `owner-a@spiralnexus.test`, `owner-b@spiralnexus.test`, `owner-c@spiralnexus.test`
 
 ## `verify-rls.mjs`
 
@@ -39,3 +42,15 @@ node supabase/seed/verify-rls.mjs
 ```
 
 Exits non-zero if any check fails.
+
+## `verify-messaging.mjs`
+
+Exercises the `conversations` / `messages` RLS using real user sessions,
+asserting that a buyer can start a thread and post, the owner can read and
+reply, and an outsider **cannot** read/post, that **sender spoofing** and
+**buyer spoofing** are blocked, and that **self-contact** is rejected. Requires
+the messaging migration applied (`npm run db:push`) and a prior seed run.
+
+```bash
+node supabase/seed/verify-messaging.mjs
+```

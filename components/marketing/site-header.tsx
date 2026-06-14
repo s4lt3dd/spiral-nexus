@@ -3,7 +3,13 @@
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { ChevronDown, LayoutDashboard, LogOut, Search } from "lucide-react";
+import {
+  ChevronDown,
+  LayoutDashboard,
+  LogOut,
+  MessagesSquare,
+  Search,
+} from "lucide-react";
 
 import { createClient } from "@/lib/supabase/client";
 import { cn } from "@/lib/utils";
@@ -70,6 +76,7 @@ export function SiteHeader({ email: initialEmail }: { email?: string | null }) {
     ? [
         { href: "/dashboard", label: "Dashboard" },
         { href: "/listings", label: "Browse" },
+        { href: "/messages", label: "Messages" },
       ]
     : [
         { href: "/", label: "Home" },
@@ -149,6 +156,15 @@ export function SiteHeader({ email: initialEmail }: { email?: string | null }) {
                 >
                   <Search aria-hidden />
                   Browse
+                </Link>
+                <Link
+                  role="menuitem"
+                  href="/messages"
+                  onClick={() => setOpen(false)}
+                  className={itemClass}
+                >
+                  <MessagesSquare aria-hidden />
+                  Messages
                 </Link>
                 <div className="my-1 h-px bg-border" />
                 <button
