@@ -1,7 +1,8 @@
-// PUBLIC route — /listings is the buyer-facing browse grid and is intentionally
-// accessible to anonymous visitors (RLS exposes only published rows). Do NOT add
-// "/listings" to the protected prefixes in lib/supabase/middleware.ts.
+// AUTH-GATED route — /listings (browse grid) is sign-in-only: trademarks are
+// visible only to signed-in users. Enforced by middleware (protectedPrefixes in
+// lib/supabase/middleware.ts) and re-checked here as defence in depth.
 
+import { redirect } from "next/navigation";
 import { Search } from "lucide-react";
 
 import { createClient } from "@/lib/supabase/server";
@@ -41,6 +42,7 @@ export default async function BrowsePage({
   const {
     data: { user },
   } = await supabase.auth.getUser();
+  if (!user) redirect("/login");
 
   const { rows, count, pageCount } = await searchListings(
     supabase,

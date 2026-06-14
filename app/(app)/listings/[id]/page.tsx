@@ -1,11 +1,10 @@
-// PUBLIC route — /listings/[id] is the buyer-facing detail page, intentionally
-// accessible to anonymous visitors. RLS returns a row only if it's published OR
-// the viewer is its owner, so drafts 404 for everyone else. Do NOT add
-// "/listings" to the protected prefixes in lib/supabase/middleware.ts.
+// AUTH-GATED route — /listings/[id] is sign-in-only (see middleware). RLS still
+// returns a row only if it's published OR the viewer is its owner, so drafts
+// 404 for other signed-in users.
 
 import Link from "next/link";
 import Image from "next/image";
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import { ArrowLeft, Pencil } from "lucide-react";
 
 import { createClient } from "@/lib/supabase/server";
@@ -62,9 +61,10 @@ export default async function ListingDetailPage({
   const {
     data: { user },
   } = await supabase.auth.getUser();
+  if (!user) redirect("/login");
 
-  // RLS: published rows are world-readable; an owner can also read their own
-  // draft. Anything else returns null -> 404 (drafts don't leak).
+  // RLS: published rows are readable by any signed-in user; an owner can also
+  // read their own draft. Anything else returns null -> 404 (drafts don't leak).
   const { data: listingRow } = await supabase
     .from("ip_assets")
     .select("*")
