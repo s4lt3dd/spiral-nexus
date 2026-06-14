@@ -24,8 +24,6 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
-const ALL = "__all";
-
 export function SearchFilters({ current }: { current: DiscoveryParams }) {
   const router = useRouter();
   const pathname = usePathname();
@@ -114,14 +112,15 @@ export function SearchFilters({ current }: { current: DiscoveryParams }) {
         <div className="space-y-1.5">
           <Label htmlFor="jurisdiction">Jurisdiction</Label>
           <Select
-            value={current.jurisdiction ?? ALL}
-            onValueChange={(v) => setParam("jurisdiction", v === ALL ? "" : v)}
+            items={JURISDICTIONS.map((j) => ({ value: j, label: j }))}
+            value={current.jurisdiction ?? null}
+            onValueChange={(v) => setParam("jurisdiction", v)}
           >
             <SelectTrigger id="jurisdiction" className="w-full">
-              <SelectValue />
+              <SelectValue placeholder="Any jurisdiction" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value={ALL}>Any jurisdiction</SelectItem>
+              <SelectItem value={null}>Any jurisdiction</SelectItem>
               {JURISDICTIONS.map((j) => (
                 <SelectItem key={j} value={j}>
                   {j}
@@ -134,14 +133,15 @@ export function SearchFilters({ current }: { current: DiscoveryParams }) {
         <div className="space-y-1.5">
           <Label htmlFor="deal_type">Deal type</Label>
           <Select
-            value={current.deal_type ?? ALL}
-            onValueChange={(v) => setParam("deal_type", v === ALL ? "" : v)}
+            items={DEAL_TYPES.map((d) => ({ value: d.value, label: d.label }))}
+            value={current.deal_type ?? null}
+            onValueChange={(v) => setParam("deal_type", v)}
           >
             <SelectTrigger id="deal_type" className="w-full">
-              <SelectValue />
+              <SelectValue placeholder="Any deal type" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value={ALL}>Any deal type</SelectItem>
+              <SelectItem value={null}>Any deal type</SelectItem>
               {DEAL_TYPES.map((d) => (
                 <SelectItem key={d.value} value={d.value}>
                   {d.label}
@@ -154,6 +154,7 @@ export function SearchFilters({ current }: { current: DiscoveryParams }) {
         <div className="space-y-1.5">
           <Label htmlFor="sort">Sort by</Label>
           <Select
+            items={SORT_OPTIONS.map((s) => ({ value: s.value, label: s.label }))}
             value={current.sort}
             onValueChange={(v) => setParam("sort", v)}
           >
