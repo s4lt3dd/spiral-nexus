@@ -3,7 +3,7 @@ import { notFound, redirect } from "next/navigation";
 import { ArrowLeft } from "lucide-react";
 
 import { createClient } from "@/lib/supabase/server";
-import { AppHeader } from "@/components/app/app-header";
+import { SiteHeader } from "@/components/marketing/site-header";
 import { ListingForm } from "@/components/listings/listing-form";
 import type { IpAsset } from "@/lib/types";
 
@@ -34,7 +34,7 @@ export default async function EditListingPage({
 
   return (
     <div className="min-h-screen">
-      <AppHeader email={user.email} />
+      <SiteHeader email={user.email} />
 
       <main className="mx-auto max-w-2xl px-6 py-10 sm:py-14">
         <Link

@@ -17,6 +17,7 @@ import type { IpAsset } from "@/lib/types";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { NiceClassCombobox } from "@/components/listings/nice-class-combobox";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import {
@@ -163,14 +164,23 @@ export function ListingForm({ listing }: { listing?: IpAsset }) {
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="nice_class">Nice class (1–45)</Label>
-            <Input
-              id="nice_class"
-              type="number"
-              min={1}
-              max={45}
-              placeholder="e.g. 25"
-              {...register("nice_class")}
+            <Label htmlFor="nice_class">Nice class</Label>
+            <Controller
+              control={control}
+              name="nice_class"
+              render={({ field }) => (
+                <NiceClassCombobox
+                  id="nice_class"
+                  placeholder="Search class…"
+                  value={
+                    field.value === "" || field.value == null
+                      ? null
+                      : Number(field.value)
+                  }
+                  onChange={field.onChange}
+                  ariaInvalid={!!errors.nice_class}
+                />
+              )}
             />
             <FieldError message={errors.nice_class?.message} />
           </div>

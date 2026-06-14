@@ -63,8 +63,10 @@ ingestion, social feed, analytics, verification automation.
 
 ## Auth
 Passwordless magic-link (Supabase OTP). Login at `/login`, code exchanged at
-`/auth/callback`, sign out via POST `/auth/signout`. Protected prefixes are
-listed in `lib/supabase/middleware.ts`.
+`/auth/callback`. Sign out is client-side from the account menu in the shared
+`components/marketing/site-header.tsx` (browser client `auth.signOut()`), which
+is the single auth-aware nav used across marketing and app surfaces. Protected
+prefixes are listed in `lib/supabase/middleware.ts`.
 
 ## Database
 Migrations in `supabase/migrations/`. After creating a Supabase project,
