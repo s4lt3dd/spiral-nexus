@@ -41,6 +41,59 @@ export const OWNERS = [
   { email: "owner-c@spiralnexus.test", display_name: "Cara Owner", org_name: "Castellan IP", verified: true },
 ];
 
+// Branded mark images for the seed. Each listing gets a distinct gradient
+// "medallion" wordmark rendered as an inline SVG data URI — no external host,
+// deterministic, and on-brand (purple/indigo family per design-system MASTER).
+// This is what fills the mark block on the browse card and detail page so the
+// demo reads as a real marketplace instead of a wall of grey placeholders.
+const MARK_GRADIENTS = [
+  ["#7C3AED", "#4F46E5"], // brand violet -> indigo
+  ["#6D28D9", "#4338CA"], // purple -> deep indigo
+  ["#5B21B6", "#312E81"], // plum -> midnight indigo
+  ["#7E22CE", "#4F46E5"], // fuchsia-purple -> indigo
+  ["#2C1A57", "#5B3F86"], // hero dark -> muted violet
+  ["#6D28D9", "#9333EA"], // purple -> violet
+];
+
+function xmlEscape(s) {
+  return s.replace(/[&<>"']/g, (c) =>
+    ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&apos;" })[c],
+  );
+}
+
+// Build a gradient wordmark medallion (16:10) for a listing title.
+function markDataUri(title, idx) {
+  const [c1, c2] = MARK_GRADIENTS[idx % MARK_GRADIENTS.length];
+  const initial = (title.match(/[A-Za-z0-9]/)?.[0] ?? "•").toUpperCase();
+  const word = xmlEscape(title);
+  // Compress only long wordmarks so nothing overflows the padded tile.
+  const est = title.length * 22;
+  const fit = est > 320 ? ` textLength="320" lengthAdjust="spacingAndGlyphs"` : "";
+  const gid = `g${idx}`;
+  const svg =
+    `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 250">` +
+    `<defs><linearGradient id="${gid}" x1="0" y1="0" x2="1" y2="1">` +
+    `<stop offset="0" stop-color="${c1}"/><stop offset="1" stop-color="${c2}"/>` +
+    `</linearGradient></defs>` +
+    `<rect width="400" height="250" rx="24" fill="url(#${gid})"/>` +
+    // Faint concentric "Nexus" rings, bottom-right, for depth.
+    `<g fill="none" stroke="#ffffff" stroke-opacity="0.12">` +
+    `<circle cx="372" cy="226" r="26"/><circle cx="372" cy="226" r="46"/>` +
+    `<circle cx="372" cy="226" r="66"/></g>` +
+    // Monogram chip.
+    `<rect x="168" y="44" width="64" height="64" rx="16" fill="#ffffff" fill-opacity="0.16"/>` +
+    `<text x="200" y="88" text-anchor="middle" fill="#ffffff" ` +
+    `font-family="Georgia, 'Times New Roman', serif" font-size="30" font-weight="700">${initial}</text>` +
+    // Wordmark.
+    `<text x="200" y="172" text-anchor="middle" fill="#ffffff"${fit} ` +
+    `font-family="Georgia, 'Times New Roman', serif" font-size="32" font-weight="600" letter-spacing="1.5">${word}</text>` +
+    // Quiet domain label.
+    `<text x="200" y="200" text-anchor="middle" fill="#ffffff" fill-opacity="0.6" ` +
+    `font-family="Arial, Helvetica, sans-serif" font-size="11" font-weight="600" letter-spacing="3">TRADEMARK</text>` +
+    `</svg>`;
+  return `data:image/svg+xml,${encodeURIComponent(svg)}`;
+}
+
 // owner index -> trademark listings (Slice 2: enough variety for browse,
 // search, filters, and pagination — 18 listings, mostly published).
 const LISTINGS = [
@@ -118,7 +171,7 @@ async function main() {
   }
 
   console.log("Inserting demo trademarks…");
-  const rows = LISTINGS.map((l) => ({
+  const rows = LISTINGS.map((l, i) => ({
     owner_id: users[l.o].id,
     type: "trademark",
     source: "user_submitted",
@@ -130,6 +183,7 @@ async function main() {
     nice_class: l.nice_class,
     deal_type: l.deal_type,
     asking_price: l.asking_price,
+    mark_image_url: markDataUri(l.title, i),
     is_published: l.is_published,
   }));
   const { error } = await admin.from("ip_assets").insert(rows);
@@ -139,7 +193,84 @@ async function main() {
   console.log(
     `Done. ${rows.length} listings (${published} published, ${rows.length - published} draft) across ${users.length} owners.`,
   );
+
+  await seedMessages(users);
+
   console.log(`Sign in as ${OWNERS[0].email} / ${TEST_PASSWORD} to demo.`);
+}
+
+// Seed a few conversations so the inbox demos. One thread is addressed to the
+// first REAL (non-seed) user as the buyer, so you can test messaging in a
+// single window without a second account. Tolerant of the messaging migration
+// not being applied yet.
+async function seedMessages(users) {
+  const probe = await admin.from("conversations").select("id").limit(1);
+  if (probe.error) {
+    console.log(
+      "Skipping messaging seed — messaging tables not found. Run `npm run db:push`, then re-run this seed.",
+    );
+    return;
+  }
+
+  const seedIds = users.map((u) => u.id);
+  // Clear prior seed conversations (messages cascade) for a clean reseed.
+  await admin.from("conversations").delete().in("owner_id", seedIds);
+  await admin.from("conversations").delete().in("buyer_id", seedIds);
+
+  // Anchor threads on owner-a's published listings.
+  const { data: aListings } = await admin
+    .from("ip_assets")
+    .select("id, title")
+    .eq("owner_id", users[0].id)
+    .eq("is_published", true)
+    .limit(2);
+  if (!aListings || aListings.length === 0) return;
+
+  // First real (non-seed) user plays the buyer in a demo thread.
+  const { data: list } = await admin.auth.admin.listUsers({ perPage: 200 });
+  const realBuyer = list.users.find(
+    (u) => u.email && !u.email.endsWith("@spiralnexus.test"),
+  );
+
+  async function thread(listing, buyerId, ownerId, lines) {
+    const { data: convo, error } = await admin
+      .from("conversations")
+      .insert({ listing_id: listing.id, buyer_id: buyerId, owner_id: ownerId })
+      .select("id")
+      .single();
+    if (error) throw error;
+    for (const [senderId, body] of lines) {
+      const { error: me } = await admin
+        .from("messages")
+        .insert({ conversation_id: convo.id, sender_id: senderId, body });
+      if (me) throw me;
+    }
+  }
+
+  let count = 0;
+  if (realBuyer && realBuyer.id !== users[0].id) {
+    const l = aListings[0];
+    await thread(l, realBuyer.id, users[0].id, [
+      [realBuyer.id, `Hi — is ${l.title} still available to license? We're exploring it for a new product line.`],
+      [users[0].id, `Hi! Yes, ${l.title} is available. Happy to talk terms — what did you have in mind?`],
+    ]);
+    count++;
+  }
+  if (users[1] && aListings[1]) {
+    const l = aListings[1];
+    await thread(l, users[1].id, users[0].id, [
+      [users[1].id, `Interested in ${l.title} for the EU market — is a full sale on the table?`],
+      [users[0].id, `Potentially — it's registered and clean. Let's discuss numbers.`],
+    ]);
+    count++;
+  }
+
+  console.log(
+    `Seeded ${count} conversation(s).` +
+      (realBuyer
+        ? ` One is addressed to ${realBuyer.email} — sign in as that account and open /messages.`
+        : " (No real user found yet — sign in once, then re-run to get a demo thread in your inbox.)"),
+  );
 }
 
 // Only run when invoked directly (not when imported for OWNERS/TEST_PASSWORD).
