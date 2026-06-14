@@ -2,9 +2,9 @@ import Link from "next/link";
 import { NexusMark } from "@/components/brand/nexus-mark";
 import { SiteHeader } from "@/components/marketing/site-header";
 
+// Browse is sign-in-only, so it's intentionally absent from the public footer.
 const navLinks = [
   { href: "/", label: "Home" },
-  { href: "/listings", label: "Browse" },
   { href: "/about", label: "About" },
   { href: "/subscriptions", label: "Plans" },
 ];

@@ -64,13 +64,16 @@ export function SiteHeader({ email: initialEmail }: { email?: string | null }) {
     router.refresh();
   }
 
+  // Browse is sign-in-only, so it appears only when authed. Signed-out visitors
+  // get the marketing links instead.
   const links = authed
     ? [
         { href: "/dashboard", label: "Dashboard" },
         { href: "/listings", label: "Browse" },
       ]
     : [
-        { href: "/listings", label: "Browse" },
+        { href: "/", label: "Home" },
+        { href: "/about", label: "About" },
         { href: "/subscriptions", label: "Plans" },
       ];
 

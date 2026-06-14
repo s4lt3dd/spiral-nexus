@@ -31,7 +31,9 @@ export async function updateSession(request: NextRequest) {
   } = await supabase.auth.getUser();
 
   // Protect authenticated surfaces. Add prefixes here as the app grows.
-  const protectedPrefixes = ["/dashboard", "/messages"];
+  // /listings (browse + detail) is sign-in-only: trademarks are visible only to
+  // signed-in users (founder decision — discovery is not public).
+  const protectedPrefixes = ["/dashboard", "/messages", "/listings"];
   const needsAuth = protectedPrefixes.some((p) =>
     request.nextUrl.pathname.startsWith(p),
   );
