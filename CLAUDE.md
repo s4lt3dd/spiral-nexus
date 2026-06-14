@@ -22,7 +22,7 @@ adding dependencies outside this set.
 
 ## Conventions
 - Server Supabase client: `lib/supabase/server.ts`. Browser: `lib/supabase/client.ts`.
-- Session refresh + route guards: `middleware.ts` + `lib/supabase/middleware.ts`.
+- Session refresh + route guards: `proxy.ts` + `lib/supabase/middleware.ts`.
 - Tier capabilities: `lib/tiers.ts` - read from here, never hardcode tier names.
 - Every new table gets RLS policies in the SAME migration. No exceptions.
 - Enforce tier limits server-side; the UI is never the security boundary.
