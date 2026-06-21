@@ -1,9 +1,8 @@
-import Link from "next/link";
 import { redirect } from "next/navigation";
-import { MessagesSquare } from "lucide-react";
 
 import { createClient } from "@/lib/supabase/server";
 import { SiteHeader } from "@/components/marketing/site-header";
+import { InboxList, type InboxRowVM } from "@/components/messages/inbox-list";
 
 export const metadata = { title: "Messages · Spiral Nexus" };
 
@@ -21,17 +20,6 @@ type InboxRow = {
 const partyName = (p: Party) =>
   p?.display_name || p?.org_name || "Spiral Nexus user";
 
-function timeAgo(iso: string) {
-  const diff = Date.now() - new Date(iso).getTime();
-  const m = Math.round(diff / 60000);
-  if (m < 1) return "just now";
-  if (m < 60) return `${m}m ago`;
-  const h = Math.round(m / 60);
-  if (h < 24) return `${h}h ago`;
-  const d = Math.round(h / 24);
-  return `${d}d ago`;
-}
-
 export default async function MessagesPage() {
   const supabase = await createClient();
   const {
@@ -48,23 +36,51 @@ export default async function MessagesPage() {
     .order("last_message_at", { ascending: false });
   const conversations = (data ?? []) as unknown as InboxRow[];
 
-  // Latest message per conversation for the snippet.
+  // The latest message per conversation (snippet) + how many are unread for this
+  // user. Both are derived from one pass over the messages; unread = messages
+  // after our last_read_at marker that we didn't send.
   const snippets: Record<string, { body: string; sender_id: string }> = {};
+  const unread: Record<string, number> = {};
   if (conversations.length) {
-    const { data: msgs } = await supabase
-      .from("messages")
-      .select("conversation_id, body, sender_id, created_at")
-      .in(
-        "conversation_id",
-        conversations.map((c) => c.id),
-      )
-      .order("created_at", { ascending: false });
+    const ids = conversations.map((c) => c.id);
+    const [{ data: msgs }, { data: reads }] = await Promise.all([
+      supabase
+        .from("messages")
+        .select("conversation_id, body, sender_id, created_at")
+        .in("conversation_id", ids)
+        .order("created_at", { ascending: false }),
+      supabase
+        .from("conversation_reads")
+        .select("conversation_id, last_read_at")
+        .in("conversation_id", ids),
+    ]);
+    const lastRead: Record<string, string> = {};
+    for (const r of reads ?? []) lastRead[r.conversation_id] = r.last_read_at;
     for (const m of msgs ?? []) {
       if (!snippets[m.conversation_id]) {
         snippets[m.conversation_id] = { body: m.body, sender_id: m.sender_id };
       }
+      const seenAt = lastRead[m.conversation_id];
+      if (m.sender_id !== user.id && (!seenAt || m.created_at > seenAt)) {
+        unread[m.conversation_id] = (unread[m.conversation_id] ?? 0) + 1;
+      }
     }
   }
+
+  const rows: InboxRowVM[] = conversations.map((c) => {
+    const other = user.id === c.buyer_id ? c.owner : c.buyer;
+    const name = partyName(other);
+    const snip = snippets[c.id];
+    return {
+      id: c.id,
+      otherName: name,
+      otherInitial: name.charAt(0).toUpperCase(),
+      listingTitle: c.listing?.title ?? "Listing removed",
+      lastMessageAt: c.last_message_at,
+      snippet: snip ? { body: snip.body, senderId: snip.sender_id } : null,
+      unread: unread[c.id] ?? 0,
+    };
+  });
 
   return (
     <div className="min-h-screen">
@@ -79,63 +95,7 @@ export default async function MessagesPage() {
           about.
         </p>
 
-        {conversations.length === 0 ? (
-          <div className="mt-10 rounded-xl border border-dashed border-border bg-surface px-8 py-16 text-center">
-            <span className="mx-auto flex size-12 items-center justify-center rounded-full bg-brand-tint text-brand">
-              <MessagesSquare className="size-6" aria-hidden />
-            </span>
-            <h2 className="mt-5 text-lg font-medium text-ink">No messages yet</h2>
-            <p className="mx-auto mt-1 max-w-sm text-sm text-slate-600">
-              When you contact an owner from a listing, the conversation shows up
-              here.
-            </p>
-            <Link
-              href="/listings"
-              className="mt-5 inline-block text-sm font-medium text-brand hover:underline"
-            >
-              Browse trademarks →
-            </Link>
-          </div>
-        ) : (
-          <ul className="mt-8 divide-y divide-border overflow-hidden rounded-xl border border-border bg-surface shadow-sm">
-            {conversations.map((c) => {
-              const other = user.id === c.buyer_id ? c.owner : c.buyer;
-              const snip = snippets[c.id];
-              const prefix = snip?.sender_id === user.id ? "You: " : "";
-              return (
-                <li key={c.id}>
-                  <Link
-                    href={`/messages/${c.id}`}
-                    className="flex items-start gap-3 px-5 py-4 transition-colors hover:bg-slate-50"
-                  >
-                    <span className="mt-0.5 flex size-9 shrink-0 items-center justify-center rounded-full bg-brand-tint font-display text-sm font-medium text-brand">
-                      {partyName(other).charAt(0).toUpperCase()}
-                    </span>
-                    <div className="min-w-0 flex-1">
-                      <div className="flex items-center justify-between gap-3">
-                        <p className="truncate font-medium text-ink">
-                          {partyName(other)}
-                        </p>
-                        <span className="shrink-0 text-xs text-slate-400">
-                          {timeAgo(c.last_message_at)}
-                        </span>
-                      </div>
-                      <p className="truncate text-sm text-slate-500">
-                        {c.listing?.title ?? "Listing removed"}
-                      </p>
-                      {snip && (
-                        <p className="mt-0.5 truncate text-sm text-slate-600">
-                          {prefix}
-                          {snip.body}
-                        </p>
-                      )}
-                    </div>
-                  </Link>
-                </li>
-              );
-            })}
-          </ul>
-        )}
+        <InboxList currentUserId={user.id} initialRows={rows} />
       </main>
     </div>
   );

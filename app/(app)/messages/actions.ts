@@ -1,6 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { z } from "zod";
 import type { SupabaseClient } from "@supabase/supabase-js";
 
 import { createClient } from "@/lib/supabase/server";
@@ -12,10 +13,16 @@ import {
 } from "@/lib/validation/message";
 import { DAILY_NEW_CONVERSATION_CAP, weeklyDmLimit } from "@/lib/messaging";
 import type { Tier } from "@/lib/tiers";
+import type { Message } from "@/lib/types";
 
+// `message` is the row Postgres actually inserted — the client reconciles its
+// optimistic bubble against this (real id + server timestamp) and dedupes it
+// against the realtime echo of the same INSERT.
 export type MessageResult =
-  | { ok: true; conversationId: string }
+  | { ok: true; conversationId: string; message: Message }
   | { ok: false; error: string };
+
+const MESSAGE_COLUMNS = "id, conversation_id, sender_id, body, created_at";
 
 // Returns an error string if the user is over their weekly DM limit, else null.
 // Open (null limit) while payments are off.
@@ -114,14 +121,18 @@ export async function startConversation(
   const limitError = await dmLimitError(supabase, user.id);
   if (limitError) return { ok: false, error: limitError };
 
-  const { error: msgError } = await supabase
+  const { data: message, error: msgError } = await supabase
     .from("messages")
-    .insert({ conversation_id: conversationId, sender_id: user.id, body });
-  if (msgError) return { ok: false, error: msgError.message };
+    .insert({ conversation_id: conversationId, sender_id: user.id, body })
+    .select(MESSAGE_COLUMNS)
+    .single();
+  if (msgError || !message) {
+    return { ok: false, error: msgError?.message ?? "Could not send message." };
+  }
 
   revalidatePath("/messages");
   revalidatePath(`/messages/${conversationId}`);
-  return { ok: true, conversationId };
+  return { ok: true, conversationId, message: message as Message };
 }
 
 export async function sendMessage(input: MessageInput): Promise<MessageResult> {
@@ -150,12 +161,47 @@ export async function sendMessage(input: MessageInput): Promise<MessageResult> {
   const limitError = await dmLimitError(supabase, user.id);
   if (limitError) return { ok: false, error: limitError };
 
-  const { error } = await supabase
+  const { data: message, error } = await supabase
     .from("messages")
-    .insert({ conversation_id: conversationId, sender_id: user.id, body });
-  if (error) return { ok: false, error: error.message };
+    .insert({ conversation_id: conversationId, sender_id: user.id, body })
+    .select(MESSAGE_COLUMNS)
+    .single();
+  if (error || !message) {
+    return { ok: false, error: error?.message ?? "Could not send message." };
+  }
 
   revalidatePath(`/messages/${conversationId}`);
   revalidatePath("/messages");
-  return { ok: true, conversationId };
+  return { ok: true, conversationId, message: message as Message };
+}
+
+// Mark a conversation read up to "now" for the current user — drives the inbox
+// unread badges. Upsert so the first open creates the marker and later opens
+// advance it. RLS guarantees the user can only write their own marker, and only
+// for a conversation they participate in, so we never trust the client beyond it.
+export async function markConversationRead(
+  conversationId: string,
+): Promise<{ ok: boolean }> {
+  const parsed = z.string().uuid().safeParse(conversationId);
+  if (!parsed.success) return { ok: false };
+
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) return { ok: false };
+
+  const { error } = await supabase
+    .from("conversation_reads")
+    .upsert(
+      {
+        conversation_id: parsed.data,
+        user_id: user.id,
+        last_read_at: new Date().toISOString(),
+      },
+      { onConflict: "conversation_id,user_id" },
+    );
+  // Refresh the inbox's cached unread counts so navigating back shows them cleared.
+  revalidatePath("/messages");
+  return { ok: !error };
 }

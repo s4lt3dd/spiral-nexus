@@ -85,3 +85,9 @@ export interface Message {
   body: string;
   created_at: string;
 }
+
+export interface ConversationRead {
+  conversation_id: string;
+  user_id: string;
+  last_read_at: string;
+}
