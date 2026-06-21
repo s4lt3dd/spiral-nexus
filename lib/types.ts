@@ -35,9 +35,27 @@ export interface Profile {
   role_flags: string[];
   subscription_tier: string;
   verified: boolean;
+  // Slice 4 — public-facing identity + interests.
+  headline: string | null;
+  bio: string | null;
+  avatar_url: string | null;
+  website: string | null;
+  linkedin_url: string | null;
+  location: string | null;
+  sectors: string[];
+  nice_class_interests: number[];
+  jurisdictions: string[];
+  onboarded_at: string | null;
+  // Billing — never exposed to the browser via the public column grant.
   stripe_customer_id: string | null;
   created_at: string;
 }
+
+// The columns a non-owner may read (mirrors the column-level GRANT in
+// 20260621120000_profiles_extend.sql — stripe_customer_id is intentionally
+// excluded). Use this for public-profile reads so we never select a private
+// column by accident.
+export type PublicProfile = Omit<Profile, "stripe_customer_id">;
 
 export interface Conversation {
   id: string;

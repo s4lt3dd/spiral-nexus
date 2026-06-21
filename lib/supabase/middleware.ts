@@ -31,9 +31,17 @@ export async function updateSession(request: NextRequest) {
   } = await supabase.auth.getUser();
 
   // Protect authenticated surfaces. Add prefixes here as the app grows.
-  // /listings (browse + detail) is sign-in-only: trademarks are visible only to
-  // signed-in users (founder decision — discovery is not public).
-  const protectedPrefixes = ["/dashboard", "/messages", "/listings"];
+  // /listings (browse + detail) and /u (public profiles) are sign-in-only:
+  // trademarks and member profiles are visible only to signed-in users
+  // (founder decision — invite-only pre-launch). Reopen to anon for SEO at
+  // Launch. /onboarding is the first-sign-in flow, so it requires auth too.
+  const protectedPrefixes = [
+    "/dashboard",
+    "/messages",
+    "/listings",
+    "/u",
+    "/onboarding",
+  ];
   const needsAuth = protectedPrefixes.some((p) =>
     request.nextUrl.pathname.startsWith(p),
   );
