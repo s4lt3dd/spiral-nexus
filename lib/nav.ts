@@ -7,6 +7,7 @@ import {
   MessagesSquare,
   Search,
   User,
+  Users,
   type LucideIcon,
 } from "lucide-react";
 
@@ -24,6 +25,7 @@ export interface NavLink {
 export const appNav: NavLink[] = [
   { href: "/dashboard/listings", label: "My listings" },
   { href: "/listings", label: "Browse" },
+  { href: "/network", label: "Connect" },
   { href: "/messages", label: "Messages" },
 ];
 
@@ -40,6 +42,7 @@ export const accountMenu: NavLink[] = [
   { href: "/dashboard", label: "Your profile", icon: User },
   { href: "/dashboard/listings", label: "My listings", icon: List },
   { href: "/listings", label: "Browse", icon: Search },
+  { href: "/network", label: "Connect", icon: Users },
   { href: "/messages", label: "Messages", icon: MessagesSquare },
 ];
 

@@ -39,6 +39,7 @@ export async function updateSession(request: NextRequest) {
     "/dashboard",
     "/messages",
     "/listings",
+    "/network",
     "/u",
     "/onboarding",
   ];
