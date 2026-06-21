@@ -3,16 +3,11 @@
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import {
-  ChevronDown,
-  LayoutDashboard,
-  LogOut,
-  MessagesSquare,
-  Search,
-} from "lucide-react";
+import { ChevronDown, LogOut } from "lucide-react";
 
 import { createClient } from "@/lib/supabase/client";
 import { cn } from "@/lib/utils";
+import { appNav, marketingNav, accountMenu } from "@/lib/nav";
 import { buttonVariants } from "@/components/ui/button";
 import { NexusMark } from "@/components/brand/nexus-mark";
 
@@ -70,19 +65,9 @@ export function SiteHeader({ email: initialEmail }: { email?: string | null }) {
     router.refresh();
   }
 
-  // Browse is sign-in-only, so it appears only when authed. Signed-out visitors
-  // get the marketing links instead.
-  const links = authed
-    ? [
-        { href: "/dashboard", label: "Dashboard" },
-        { href: "/listings", label: "Browse" },
-        { href: "/messages", label: "Messages" },
-      ]
-    : [
-        { href: "/", label: "Home" },
-        { href: "/about", label: "About" },
-        { href: "/subscriptions", label: "Plans" },
-      ];
+  // Browse is sign-in-only, so the authed nav appears only when signed in.
+  // Signed-out visitors get the marketing links instead. Both come from config.
+  const links = authed ? appNav : marketingNav;
 
   const itemClass =
     "flex w-full items-center gap-2 rounded-md px-2 py-1.5 text-sm text-slate-700 outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:bg-accent focus-visible:text-accent-foreground [&_svg]:size-4 [&_svg]:text-slate-500";
@@ -139,33 +124,18 @@ export function SiteHeader({ email: initialEmail }: { email?: string | null }) {
                   {email}
                 </p>
                 <div className="my-1 h-px bg-border" />
-                <Link
-                  role="menuitem"
-                  href="/dashboard"
-                  onClick={() => setOpen(false)}
-                  className={itemClass}
-                >
-                  <LayoutDashboard aria-hidden />
-                  Dashboard
-                </Link>
-                <Link
-                  role="menuitem"
-                  href="/listings"
-                  onClick={() => setOpen(false)}
-                  className={itemClass}
-                >
-                  <Search aria-hidden />
-                  Browse
-                </Link>
-                <Link
-                  role="menuitem"
-                  href="/messages"
-                  onClick={() => setOpen(false)}
-                  className={itemClass}
-                >
-                  <MessagesSquare aria-hidden />
-                  Messages
-                </Link>
+                {accountMenu.map((item) => (
+                  <Link
+                    key={item.href}
+                    role="menuitem"
+                    href={item.href}
+                    onClick={() => setOpen(false)}
+                    className={itemClass}
+                  >
+                    {item.icon && <item.icon aria-hidden />}
+                    {item.label}
+                  </Link>
+                ))}
                 <div className="my-1 h-px bg-border" />
                 <button
                   type="button"
