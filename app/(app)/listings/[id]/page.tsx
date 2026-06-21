@@ -197,12 +197,15 @@ export default async function ListingDetailPage({
                   </span>
                 )}
                 <div className="min-w-0">
-                  <p className="flex items-center gap-1.5 truncate text-sm font-medium text-ink">
+                  <Link
+                    href={`/u/${listing.owner_id}`}
+                    className="flex items-center gap-1.5 truncate text-sm font-medium text-ink hover:underline"
+                  >
                     {ownerName}
                     {owner?.verified && (
                       <span className="text-xs font-medium text-gold">Verified</span>
                     )}
-                  </p>
+                  </Link>
                   {owner?.org_name && owner?.display_name && (
                     <p className="truncate text-sm text-slate-500">
                       {owner.org_name}

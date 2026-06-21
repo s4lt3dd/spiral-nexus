@@ -35,10 +35,74 @@ const admin = createClient(url, serviceKey, {
 });
 
 export const TEST_PASSWORD = "SpiralNexus!Test123";
+
+// Avatar monogram (round gradient + initials) as an inline SVG data URI — same
+// approach as the listing marks, so the demo has real avatars with no host.
+function avatarDataUri(initials, c1, c2) {
+  const svg =
+    `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 96">` +
+    `<defs><linearGradient id="a" x1="0" y1="0" x2="1" y2="1">` +
+    `<stop offset="0" stop-color="${c1}"/><stop offset="1" stop-color="${c2}"/>` +
+    `</linearGradient></defs>` +
+    `<circle cx="48" cy="48" r="48" fill="url(#a)"/>` +
+    `<text x="48" y="62" text-anchor="middle" fill="#ffffff" ` +
+    `font-family="Georgia, 'Times New Roman', serif" font-size="38" font-weight="600">${initials}</text>` +
+    `</svg>`;
+  return `data:image/svg+xml,${encodeURIComponent(svg)}`;
+}
+
+// Richer profiles so the home, public profiles, and the future directory demo
+// well. onboarded_at is set so signing in as a seed user lands on the profile
+// home (no onboarding redirect). Owner B is intentionally left lighter (no bio,
+// no sectors, no avatar) to demo the completion nudge.
 export const OWNERS = [
-  { email: "owner-a@spiralnexus.test", display_name: "Ava Owner", org_name: "Northwind Brands", verified: true },
-  { email: "owner-b@spiralnexus.test", display_name: "Ben Owner", org_name: "Lumen Studio", verified: false },
-  { email: "owner-c@spiralnexus.test", display_name: "Cara Owner", org_name: "Castellan IP", verified: true },
+  {
+    email: "owner-a@spiralnexus.test",
+    display_name: "Ava Owner",
+    org_name: "Northwind Brands",
+    verified: true,
+    headline: "Trademark portfolio owner & licensor",
+    bio: "I build and license consumer brands across the UK and EU. Northwind holds a registered portfolio in tech, beauty, and apparel — open to licensing deals and select sales.",
+    location: "London, UK",
+    website: "https://northwind.example.com",
+    linkedin_url: "https://linkedin.com/in/ava-owner",
+    avatar_url: avatarDataUri("AO", "#7C3AED", "#4F46E5"),
+    role_flags: ["owner", "licensee"],
+    sectors: ["Technology & Software", "Beauty & Cosmetics", "Fashion & Apparel"],
+    nice_class_interests: [3, 9, 25],
+    jurisdictions: ["United Kingdom", "European Union"],
+  },
+  {
+    email: "owner-b@spiralnexus.test",
+    display_name: "Ben Owner",
+    org_name: "Lumen Studio",
+    verified: false,
+    headline: "Design studio with marks to license",
+    location: "Manchester, UK",
+    website: "https://lumen.example.com",
+    linkedin_url: null,
+    avatar_url: null,
+    role_flags: ["owner"],
+    sectors: [],
+    nice_class_interests: [11, 20],
+    jurisdictions: ["United Kingdom"],
+  },
+  {
+    email: "owner-c@spiralnexus.test",
+    display_name: "Cara Owner",
+    org_name: "Castellan IP",
+    verified: true,
+    headline: "IP counsel — buying & licensing brands",
+    bio: "Castellan advises on trademark acquisition and licensing for clients in food & beverage, hospitality, and professional services. Always looking for clean, registered marks.",
+    location: "Edinburgh, UK",
+    website: "https://castellan.example.com",
+    linkedin_url: "https://linkedin.com/in/cara-owner",
+    avatar_url: avatarDataUri("CO", "#5B21B6", "#312E81"),
+    role_flags: ["buyer", "licensee", "investor"],
+    sectors: ["Food & Beverage", "Hospitality & Travel", "Professional Services"],
+    nice_class_interests: [33, 43, 45],
+    jurisdictions: ["United Kingdom", "European Union", "United States"],
+  },
 ];
 
 // Branded mark images for the seed. Each listing gets a distinct gradient
@@ -142,13 +206,26 @@ async function ensureOwner(owner) {
   } else {
     console.log(`  exists  ${owner.email}`);
   }
-  // Ensure profile reflects org/display name (trigger creates the row on signup).
+  // Ensure profile reflects the full demo identity (trigger creates the row on
+  // signup). Runs with the service role, which bypasses the column-level GRANT,
+  // so it can set `verified` — users themselves never can.
   const { error } = await admin
     .from("profiles")
     .update({
       display_name: owner.display_name,
       org_name: owner.org_name,
       verified: owner.verified ?? false,
+      headline: owner.headline ?? null,
+      bio: owner.bio ?? null,
+      location: owner.location ?? null,
+      website: owner.website ?? null,
+      linkedin_url: owner.linkedin_url ?? null,
+      avatar_url: owner.avatar_url ?? null,
+      role_flags: owner.role_flags ?? ["buyer"],
+      sectors: owner.sectors ?? [],
+      nice_class_interests: owner.nice_class_interests ?? [],
+      jurisdictions: owner.jurisdictions ?? [],
+      onboarded_at: "2026-06-01T00:00:00Z",
     })
     .eq("id", user.id);
   if (error) throw error;
