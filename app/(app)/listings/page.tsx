@@ -51,6 +51,13 @@ export default async function BrowsePage({
   );
   const listings = rows as IpAsset[];
 
+  // The viewer's saved set, to render the bookmark toggle in the right state.
+  const { data: savedRows } = await supabase
+    .from("saved_listings")
+    .select("listing_id")
+    .eq("user_id", user.id);
+  const savedIds = new Set((savedRows ?? []).map((r) => r.listing_id));
+
   return (
     <div className="min-h-screen">
       <SiteHeader email={user?.email ?? null} />
@@ -90,7 +97,11 @@ export default async function BrowsePage({
         ) : (
           <div className="mt-6 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {listings.map((listing) => (
-              <ListingBrowseCard key={listing.id} listing={listing} />
+              <ListingBrowseCard
+                key={listing.id}
+                listing={listing}
+                saved={savedIds.has(listing.id)}
+              />
             ))}
           </div>
         )}

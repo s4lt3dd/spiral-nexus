@@ -364,8 +364,38 @@ async function main() {
   console.log(`Done. ${MEMBERS.length} directory members.`);
 
   await seedMessages(users);
+  await seedSaved(users);
 
   console.log(`Sign in as ${OWNERS[0].email} / ${TEST_PASSWORD} to demo.`);
+}
+
+// Seed a few saved listings so /saved demos non-empty: owner C bookmarks a
+// couple of owner A's published marks. Idempotent; tolerant of the
+// saved_listings migration not being applied yet.
+async function seedSaved(users) {
+  const probe = await admin.from("saved_listings").select("user_id").limit(1);
+  if (probe.error) {
+    console.log(
+      "Skipping saved seed — saved_listings table not found. Run `npm run db:push`, then re-run this seed.",
+    );
+    return;
+  }
+
+  const saver = users[2]; // owner C
+  const { data: aListings } = await admin
+    .from("ip_assets")
+    .select("id")
+    .eq("owner_id", users[0].id)
+    .eq("is_published", true)
+    .limit(3);
+  if (!saver || !aListings || aListings.length === 0) return;
+
+  const rows = aListings.map((l) => ({ user_id: saver.id, listing_id: l.id }));
+  const { error } = await admin
+    .from("saved_listings")
+    .upsert(rows, { onConflict: "user_id,listing_id", ignoreDuplicates: true });
+  if (error) throw error;
+  console.log(`Seeded ${rows.length} saved listing(s) for ${OWNERS[2].email}.`);
 }
 
 // Seed a few conversations so the inbox demos. One thread is addressed to the

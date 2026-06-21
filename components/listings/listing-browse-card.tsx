@@ -6,6 +6,7 @@ import { statusLabel, dealTypeLabel, statusPillVariant } from "@/lib/listings";
 import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
 import { NexusMark } from "@/components/brand/nexus-mark";
+import { SaveButton } from "@/components/listings/save-button";
 
 const gbp = new Intl.NumberFormat("en-GB", {
   style: "currency",
@@ -16,8 +17,17 @@ const gbp = new Intl.NumberFormat("en-GB", {
 // Public, clickable listing card for the browse grid. Mirrors the dashboard
 // ListingCard's visual language (mark block, Fraunces title, meta, price) but
 // links to the detail page and carries no owner actions.
-export function ListingBrowseCard({ listing }: { listing: IpAsset }) {
-  return (
+// `saved` is optional: when provided (Browse + Saved pages) a bookmark toggle
+// is overlaid as a sibling of the Link (not nested — invalid HTML + would
+// swallow navigation). Omitted in showcase contexts (home, public profile).
+export function ListingBrowseCard({
+  listing,
+  saved,
+}: {
+  listing: IpAsset;
+  saved?: boolean;
+}) {
+  const card = (
     <Link
       href={`/listings/${listing.id}`}
       className="group rounded-lg outline-none focus-visible:ring-[3px] focus-visible:ring-brand/25"
@@ -78,5 +88,18 @@ export function ListingBrowseCard({ listing }: { listing: IpAsset }) {
         </div>
       </Card>
     </Link>
+  );
+
+  if (saved === undefined) return card;
+
+  return (
+    <div className="relative">
+      {card}
+      <SaveButton
+        listingId={listing.id}
+        initialSaved={saved}
+        className="absolute top-3 right-3 z-10"
+      />
+    </div>
   );
 }
