@@ -3,22 +3,15 @@ import { redirect, notFound } from "next/navigation";
 import { ArrowLeft } from "lucide-react";
 
 import { createClient } from "@/lib/supabase/server";
-import { cn } from "@/lib/utils";
+import type { Message } from "@/lib/types";
 import { SiteHeader } from "@/components/marketing/site-header";
-import { MessageComposer } from "@/components/messages/message-composer";
+import { MessageThread } from "@/components/messages/message-thread";
 
 export const metadata = { title: "Conversation · Spiral Nexus" };
 
 type Party = { display_name: string | null; org_name: string | null } | null;
 const partyName = (p: Party) =>
   p?.display_name || p?.org_name || "Spiral Nexus user";
-
-const timeFmt = new Intl.DateTimeFormat("en-GB", {
-  day: "numeric",
-  month: "short",
-  hour: "2-digit",
-  minute: "2-digit",
-});
 
 export default async function ThreadPage({
   params,
@@ -53,10 +46,10 @@ export default async function ThreadPage({
 
   const { data: msgs } = await supabase
     .from("messages")
-    .select("id, sender_id, body, created_at")
+    .select("id, conversation_id, sender_id, body, created_at")
     .eq("conversation_id", id)
     .order("created_at", { ascending: true });
-  const messages = msgs ?? [];
+  const messages = (msgs ?? []) as Message[];
 
   const isBuyer = user.id === c.buyer_id;
   const other = isBuyer ? c.owner : c.buyer;
@@ -97,35 +90,11 @@ export default async function ThreadPage({
           </div>
         </header>
 
-        <div className="flex-1 space-y-3 py-6">
-          {messages.map((m) => {
-            const mine = m.sender_id === user.id;
-            return (
-              <div
-                key={m.id}
-                className={cn("flex flex-col", mine ? "items-end" : "items-start")}
-              >
-                <div
-                  className={cn(
-                    "max-w-[80%] rounded-lg px-3 py-2 text-sm",
-                    mine
-                      ? "rounded-tr-sm bg-brand text-white"
-                      : "rounded-tl-sm bg-slate-100 text-slate-800",
-                  )}
-                >
-                  <p className="whitespace-pre-wrap break-words">{m.body}</p>
-                </div>
-                <span className="mt-1 px-1 text-xs text-slate-400">
-                  {timeFmt.format(new Date(m.created_at))}
-                </span>
-              </div>
-            );
-          })}
-        </div>
-
-        <div className="sticky bottom-0 border-t border-border bg-bg/85 py-4 backdrop-blur">
-          <MessageComposer conversationId={c.id} />
-        </div>
+        <MessageThread
+          conversationId={c.id}
+          currentUserId={user.id}
+          initialMessages={messages}
+        />
       </main>
     </div>
   );
