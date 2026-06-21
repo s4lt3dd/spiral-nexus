@@ -7,6 +7,7 @@ import {
   List,
   MessagesSquare,
   Search,
+  Settings,
   User,
   Users,
   type LucideIcon,
@@ -47,6 +48,7 @@ export const accountMenu: NavLink[] = [
   { href: "/saved", label: "Saved", icon: Bookmark },
   { href: "/network", label: "Connect", icon: Users },
   { href: "/messages", label: "Messages", icon: MessagesSquare },
+  { href: "/dashboard/account", label: "Account & data", icon: Settings },
 ];
 
 // Footer links. Slices add legal/marketing links by appending here.
