@@ -19,9 +19,11 @@ import { ProfileAvatar } from "@/components/profile/profile-avatar";
 export function ProfileIdentity({
   profile,
   actions,
+  stats,
 }: {
   profile: PublicProfile;
   actions?: React.ReactNode;
+  stats?: React.ReactNode;
 }) {
   const name = profile.display_name?.trim() || profile.org_name?.trim() || "Member";
   const hasFocus =
@@ -106,6 +108,12 @@ export function ProfileIdentity({
                   LinkedIn
                 </a>
               )}
+            </div>
+          )}
+
+          {stats && (
+            <div className="mt-4 flex flex-wrap items-center gap-x-5 gap-y-1.5 text-sm text-slate-600">
+              {stats}
             </div>
           )}
 

@@ -10,6 +10,7 @@ import { buttonVariants } from "@/components/ui/button";
 import { SiteHeader } from "@/components/marketing/site-header";
 import { NexusMark } from "@/components/brand/nexus-mark";
 import { ProfileIdentity } from "@/components/profile/profile-identity";
+import { FollowStats } from "@/components/profile/follow-stats";
 import { ProfileNudge } from "@/components/profile/profile-nudge";
 import { ListingBrowseCard } from "@/components/listings/listing-browse-card";
 
@@ -48,6 +49,18 @@ export default async function ProfileHomePage() {
     .order("created_at", { ascending: false });
   const listings = (published ?? []) as IpAsset[];
 
+  // Your own follower/following counts.
+  const [{ count: followers }, { count: following }] = await Promise.all([
+    supabase
+      .from("follows")
+      .select("*", { count: "exact", head: true })
+      .eq("following_id", user.id),
+    supabase
+      .from("follows")
+      .select("*", { count: "exact", head: true })
+      .eq("follower_id", user.id),
+  ]);
+
   return (
     <div className="min-h-screen">
       <SiteHeader email={user.email} />
@@ -59,6 +72,12 @@ export default async function ProfileHomePage() {
           <div className="mt-6">
             <ProfileIdentity
               profile={profile}
+              stats={
+                <FollowStats
+                  followers={followers ?? 0}
+                  following={following ?? 0}
+                />
+              }
               actions={
                 <>
                   <Link

@@ -360,13 +360,58 @@ async function main() {
   // Directory-only members (no listings). ensureOwner is profile-generic, so it
   // sets up each member's auth user + profile the same way.
   console.log("Seeding directory members…");
-  for (const m of MEMBERS) await ensureOwner(m);
+  const members = [];
+  for (const m of MEMBERS) members.push(await ensureOwner(m));
   console.log(`Done. ${MEMBERS.length} directory members.`);
 
   await seedMessages(users);
   await seedSaved(users);
+  await seedFollows(users, members);
 
   console.log(`Sign in as ${OWNERS[0].email} / ${TEST_PASSWORD} to demo.`);
+}
+
+// Seed a follow graph so follower/following counts demo non-empty. Members
+// follow the verified owners; owners follow each other; a couple of member↔
+// member edges. Idempotent; tolerant of the follows migration not being applied.
+async function seedFollows(owners, members) {
+  const probe = await admin.from("follows").select("follower_id").limit(1);
+  if (probe.error) {
+    console.log(
+      "Skipping follows seed — follows table not found. Run `npm run db:push`, then re-run this seed.",
+    );
+    return;
+  }
+
+  const all = [...owners, ...members];
+  const seedIds = all.map((u) => u.id);
+  // Clean reseed of edges touching any seed account.
+  await admin.from("follows").delete().in("follower_id", seedIds);
+
+  const edges = [];
+  // Every member follows owner A and owner C (the verified owners).
+  for (const m of members) {
+    edges.push({ follower_id: m.id, following_id: owners[0].id });
+    edges.push({ follower_id: m.id, following_id: owners[2].id });
+  }
+  // Owners follow each other in a ring: A→B, B→C, C→A.
+  edges.push({ follower_id: owners[0].id, following_id: owners[1].id });
+  edges.push({ follower_id: owners[1].id, following_id: owners[2].id });
+  edges.push({ follower_id: owners[2].id, following_id: owners[0].id });
+  // A couple of member↔member edges for variety.
+  if (members.length >= 3) {
+    edges.push({ follower_id: members[0].id, following_id: members[2].id });
+    edges.push({ follower_id: members[2].id, following_id: members[0].id });
+  }
+
+  const { error } = await admin
+    .from("follows")
+    .upsert(edges, {
+      onConflict: "follower_id,following_id",
+      ignoreDuplicates: true,
+    });
+  if (error) throw error;
+  console.log(`Seeded ${edges.length} follow edge(s).`);
 }
 
 // Seed a few saved listings so /saved demos non-empty: owner C bookmarks a
