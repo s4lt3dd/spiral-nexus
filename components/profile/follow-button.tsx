@@ -13,11 +13,13 @@ export function FollowButton({
   targetId,
   initialFollowing,
   size = "default",
+  iconOnly = false,
   className,
 }: {
   targetId: string;
   initialFollowing: boolean;
   size?: "default" | "sm";
+  iconOnly?: boolean;
   className?: string;
 }) {
   const [following, setFollowing] = useState(initialFollowing);
@@ -41,6 +43,29 @@ export function FollowButton({
     });
   }
 
+  const Icon = following ? UserCheck : UserPlus;
+  const base =
+    "inline-flex shrink-0 cursor-pointer items-center justify-center rounded-md border font-medium shadow-xs transition-colors outline-none focus-visible:ring-[3px] focus-visible:ring-brand/25 disabled:opacity-50";
+  const tone = following
+    ? "border-border bg-surface text-slate-700 hover:bg-slate-50"
+    : "border-transparent bg-primary text-primary-foreground hover:bg-brand-hover";
+
+  // Compact icon-only — used on dense directory cards so they don't crowd.
+  if (iconOnly) {
+    return (
+      <button
+        type="button"
+        onClick={toggle}
+        disabled={pending}
+        aria-pressed={following}
+        aria-label={following ? "Unfollow" : "Follow"}
+        className={cn(base, "size-9", tone, className)}
+      >
+        <Icon className="size-4" aria-hidden />
+      </button>
+    );
+  }
+
   return (
     <button
       type="button"
@@ -48,19 +73,14 @@ export function FollowButton({
       disabled={pending}
       aria-pressed={following}
       className={cn(
-        "inline-flex cursor-pointer items-center justify-center gap-1.5 rounded-md border font-medium shadow-xs transition-colors outline-none focus-visible:ring-[3px] focus-visible:ring-brand/25 disabled:opacity-50",
-        size === "sm" ? "h-9 px-3 text-sm" : "h-10 px-4 text-sm",
-        following
-          ? "border-border bg-surface text-slate-700 hover:bg-slate-50"
-          : "border-transparent bg-primary text-primary-foreground hover:bg-brand-hover",
+        base,
+        "gap-1.5 text-sm",
+        size === "sm" ? "h-9 px-3" : "h-10 px-4",
+        tone,
         className,
       )}
     >
-      {following ? (
-        <UserCheck className="size-4" aria-hidden />
-      ) : (
-        <UserPlus className="size-4" aria-hidden />
-      )}
+      <Icon className="size-4" aria-hidden />
       {following ? "Following" : "Follow"}
     </button>
   );
