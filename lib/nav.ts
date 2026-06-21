@@ -54,4 +54,6 @@ export const footerNav: NavLink[] = [
   { href: "/", label: "Home" },
   { href: "/about", label: "About" },
   { href: "/subscriptions", label: "Plans" },
+  { href: "/privacy", label: "Privacy" },
+  { href: "/terms", label: "Terms" },
 ];
