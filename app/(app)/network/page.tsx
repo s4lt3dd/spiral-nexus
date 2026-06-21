@@ -47,6 +47,19 @@ export default async function NetworkPage({
     excludeId: user.id,
   });
 
+  // Which of THIS page's members the viewer already follows (one query, scoped
+  // to the page — button-state only, no per-card counts).
+  const memberIds = rows.map((m) => m.id);
+  let followingIds = new Set<string>();
+  if (memberIds.length > 0) {
+    const { data: edges } = await supabase
+      .from("follows")
+      .select("following_id")
+      .eq("follower_id", user.id)
+      .in("following_id", memberIds);
+    followingIds = new Set((edges ?? []).map((e) => e.following_id));
+  }
+
   return (
     <div className="min-h-screen">
       <SiteHeader email={user.email} />
@@ -89,7 +102,11 @@ export default async function NetworkPage({
         ) : (
           <div className="mt-6 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {rows.map((member) => (
-              <MemberCard key={member.id} member={member} />
+              <MemberCard
+                key={member.id}
+                member={member}
+                following={followingIds.has(member.id)}
+              />
             ))}
           </div>
         )}
