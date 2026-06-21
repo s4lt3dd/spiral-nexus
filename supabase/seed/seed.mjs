@@ -105,6 +105,92 @@ export const OWNERS = [
   },
 ];
 
+// Directory-only members (Slice 5): signed-up people with NO listings, so the
+// Connect directory and its role/sector/jurisdiction filters demo with real
+// variety across all four intents (owner | buyer | licensee | investor).
+export const MEMBERS = [
+  {
+    email: "member-d@spiralnexus.test",
+    display_name: "Dana Reed",
+    org_name: "Reed Ventures",
+    verified: true,
+    headline: "Early-stage investor in brands & IP",
+    bio: "I back consumer and fintech brands and acquire dormant trademarks with upside. Happy to talk to owners and licensees.",
+    location: "London, UK",
+    website: "https://reedventures.example.com",
+    linkedin_url: "https://linkedin.com/in/dana-reed",
+    avatar_url: avatarDataUri("DR", "#7C3AED", "#4F46E5"),
+    role_flags: ["investor", "buyer"],
+    sectors: ["Technology & Software", "Financial Services"],
+    nice_class_interests: [9, 36],
+    jurisdictions: ["United Kingdom", "United States"],
+  },
+  {
+    email: "member-e@spiralnexus.test",
+    display_name: "Eli Marsh",
+    org_name: "Marsh & Loom",
+    verified: false,
+    headline: "Licensee — apparel & lifestyle brands",
+    bio: "Building a multi-brand apparel group; actively licensing registered marks for EU and UK retail.",
+    location: "Leeds, UK",
+    website: "https://marshloom.example.com",
+    linkedin_url: null,
+    avatar_url: null,
+    role_flags: ["licensee"],
+    sectors: ["Fashion & Apparel", "Consumer Goods"],
+    nice_class_interests: [25, 18],
+    jurisdictions: ["United Kingdom", "European Union"],
+  },
+  {
+    email: "member-f@spiralnexus.test",
+    display_name: "Farah Niu",
+    org_name: "Aster Capital",
+    verified: true,
+    headline: "Investor — beauty, wellness & DTC",
+    bio: "Aster invests in beauty and wellness brands across the EU. Interested in IP-rich, registered portfolios.",
+    location: "Paris, France",
+    website: "https://astercapital.example.com",
+    linkedin_url: "https://linkedin.com/in/farah-niu",
+    avatar_url: avatarDataUri("FN", "#7E22CE", "#4F46E5"),
+    role_flags: ["investor"],
+    sectors: ["Beauty & Cosmetics", "Health & Wellness"],
+    nice_class_interests: [3, 5],
+    jurisdictions: ["European Union"],
+  },
+  {
+    email: "member-g@spiralnexus.test",
+    display_name: "Greg Hollis",
+    org_name: null,
+    verified: false,
+    headline: "Buyer — food & hospitality brands",
+    bio: null,
+    location: "Bristol, UK",
+    website: null,
+    linkedin_url: null,
+    avatar_url: null,
+    role_flags: ["buyer"],
+    sectors: ["Food & Beverage", "Hospitality & Travel"],
+    nice_class_interests: [43, 33],
+    jurisdictions: ["United Kingdom"],
+  },
+  {
+    email: "member-h@spiralnexus.test",
+    display_name: "Hana Okoye",
+    org_name: "Okoye Media",
+    verified: true,
+    headline: "Licensing media & entertainment IP",
+    bio: "Producer licensing brands and characters for film, streaming, and games. Buyer for the right marks.",
+    location: "New York, USA",
+    website: "https://okoyemedia.example.com",
+    linkedin_url: "https://linkedin.com/in/hana-okoye",
+    avatar_url: avatarDataUri("HO", "#6D28D9", "#9333EA"),
+    role_flags: ["licensee", "buyer"],
+    sectors: ["Media & Entertainment", "Technology & Software"],
+    nice_class_interests: [41, 9],
+    jurisdictions: ["United States", "WIPO (International)"],
+  },
+];
+
 // Branded mark images for the seed. Each listing gets a distinct gradient
 // "medallion" wordmark rendered as an inline SVG data URI — no external host,
 // deterministic, and on-brand (purple/indigo family per design-system MASTER).
@@ -270,6 +356,12 @@ async function main() {
   console.log(
     `Done. ${rows.length} listings (${published} published, ${rows.length - published} draft) across ${users.length} owners.`,
   );
+
+  // Directory-only members (no listings). ensureOwner is profile-generic, so it
+  // sets up each member's auth user + profile the same way.
+  console.log("Seeding directory members…");
+  for (const m of MEMBERS) await ensureOwner(m);
+  console.log(`Done. ${MEMBERS.length} directory members.`);
 
   await seedMessages(users);
 
