@@ -163,6 +163,24 @@ export default function LoginPage() {
       <p className="mt-6 text-sm text-slate-500">
         New here? Signing in creates your account.
       </p>
+
+      <p className="mt-3 max-w-xs text-center text-xs text-slate-400">
+        By continuing you agree to our{" "}
+        <Link
+          href="/terms"
+          className="font-medium text-brand hover:underline"
+        >
+          Terms of Use
+        </Link>{" "}
+        and{" "}
+        <Link
+          href="/privacy"
+          className="font-medium text-brand hover:underline"
+        >
+          Privacy Policy
+        </Link>
+        .
+      </p>
     </main>
   );
 }

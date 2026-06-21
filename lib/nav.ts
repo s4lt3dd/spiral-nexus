@@ -4,10 +4,12 @@
 
 import {
   Bookmark,
+  FileText,
   List,
   MessagesSquare,
   Search,
   Settings,
+  Shield,
   User,
   Users,
   type LucideIcon,
@@ -50,6 +52,17 @@ export const accountMenu: NavLink[] = [
   { href: "/network", label: "Connect", icon: Users },
   { href: "/messages", label: "Messages", icon: MessagesSquare },
   { href: "/dashboard/account", label: "Account & data", icon: Settings },
+  { href: "/privacy", label: "Privacy", icon: Shield },
+  { href: "/terms", label: "Terms", icon: FileText },
+];
+
+// Slim footer for the signed-in product surface: just the legal + account
+// links that must stay reachable inside the app (the full marketing footer
+// would be noise here). Append legal links here, not the page JSX.
+export const appFooterNav: NavLink[] = [
+  { href: "/privacy", label: "Privacy" },
+  { href: "/terms", label: "Terms" },
+  { href: "/dashboard/account", label: "Account" },
 ];
 
 // Footer links. Slices add legal/marketing links by appending here.
