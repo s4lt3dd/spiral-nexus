@@ -28,6 +28,7 @@ export const appNav: NavLink[] = [
   { href: "/listings", label: "Browse" },
   { href: "/saved", label: "Saved" },
   { href: "/network", label: "Connect" },
+  { href: "/registries", label: "Registries" },
   { href: "/messages", label: "Messages" },
 ];
 
