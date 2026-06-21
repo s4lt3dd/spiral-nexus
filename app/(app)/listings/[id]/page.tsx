@@ -18,6 +18,7 @@ import { NexusMark } from "@/components/brand/nexus-mark";
 import { VerifiedAvatar } from "@/components/marketing/verified-avatar";
 import { SiteHeader } from "@/components/marketing/site-header";
 import { ContactOwnerDialog } from "@/components/messages/contact-owner-dialog";
+import { SaveButton } from "@/components/listings/save-button";
 
 const gbp = new Intl.NumberFormat("en-GB", {
   style: "currency",
@@ -86,6 +87,14 @@ export default async function ListingDetailPage({
 
   const isOwner = user?.id === listing.owner_id;
   const ownerName = owner?.display_name || owner?.org_name || "Listing owner";
+
+  const { data: savedRow } = await supabase
+    .from("saved_listings")
+    .select("listing_id")
+    .eq("user_id", user.id)
+    .eq("listing_id", id)
+    .maybeSingle();
+  const isSaved = !!savedRow;
 
   const facts: { label: string; value: string | null }[] = [
     { label: "Status", value: statusLabel(listing.status) },
@@ -229,6 +238,15 @@ export default async function ListingDetailPage({
                     ownerName={ownerName}
                   />
                 )}
+              </div>
+
+              <div className="mt-3">
+                <SaveButton
+                  listingId={listing.id}
+                  initialSaved={isSaved}
+                  showLabel
+                  className="w-full"
+                />
               </div>
             </div>
           </aside>

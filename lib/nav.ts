@@ -3,6 +3,7 @@
 // entry here — never by editing the shared JSX (kills the nav merge-conflict).
 
 import {
+  Bookmark,
   List,
   MessagesSquare,
   Search,
@@ -25,6 +26,7 @@ export interface NavLink {
 export const appNav: NavLink[] = [
   { href: "/dashboard/listings", label: "My listings" },
   { href: "/listings", label: "Browse" },
+  { href: "/saved", label: "Saved" },
   { href: "/network", label: "Connect" },
   { href: "/messages", label: "Messages" },
 ];
@@ -42,6 +44,7 @@ export const accountMenu: NavLink[] = [
   { href: "/dashboard", label: "Your profile", icon: User },
   { href: "/dashboard/listings", label: "My listings", icon: List },
   { href: "/listings", label: "Browse", icon: Search },
+  { href: "/saved", label: "Saved", icon: Bookmark },
   { href: "/network", label: "Connect", icon: Users },
   { href: "/messages", label: "Messages", icon: MessagesSquare },
 ];

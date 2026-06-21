@@ -57,6 +57,12 @@ export interface Profile {
 // column by accident.
 export type PublicProfile = Omit<Profile, "stripe_customer_id">;
 
+export interface SavedListing {
+  user_id: string;
+  listing_id: string;
+  created_at: string;
+}
+
 export interface Conversation {
   id: string;
   listing_id: string | null;
