@@ -90,17 +90,17 @@ export function SearchFilters({ current }: { current: DiscoveryParams }) {
         </div>
 
         <div className="space-y-1.5">
-          <Label htmlFor="jurisdiction">Jurisdiction</Label>
+          <Label htmlFor="jurisdiction">Registration office</Label>
           <Select
             items={JURISDICTIONS.map((j) => ({ value: j, label: j }))}
             value={current.jurisdiction ?? null}
             onValueChange={(v) => setParam("jurisdiction", v)}
           >
             <SelectTrigger id="jurisdiction" className="w-full">
-              <SelectValue placeholder="Any jurisdiction" />
+              <SelectValue placeholder="Any office" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value={null}>Any jurisdiction</SelectItem>
+              <SelectItem value={null}>Any office</SelectItem>
               {JURISDICTIONS.map((j) => (
                 <SelectItem key={j} value={j}>
                   {j}

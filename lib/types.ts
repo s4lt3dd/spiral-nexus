@@ -12,13 +12,25 @@ export interface IpAsset {
   type: IpType;
   title: string;
   description: string | null;
+  // Registration office (kept as `jurisdiction` in the DB; the UI says
+  // "Registration Office" per founder feedback).
   jurisdiction: string | null;
   registration_number: string | null;
   status: string | null;
   deal_type: DealType;
   asking_price: number | null;
+  currency: string;
   source: AssetSource;
-  nice_class: number | null;
+  // Slice B — full trademark data set.
+  nice_classes: number[];
+  office_url: string | null;
+  territory: string[];
+  filing_date: string | null;
+  license_duration: string | null;
+  license_renewable: boolean | null;
+  encumbrances: string | null;
+  quality_control: string | null;
+  certificate_path: string | null;
   mark_image_url: string | null;
   ipc_class: string | null;
   abstract: string | null;

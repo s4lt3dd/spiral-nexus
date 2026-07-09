@@ -19,12 +19,28 @@ function toRow(values: ReturnType<typeof listingSchema.parse>) {
     jurisdiction: values.jurisdiction ?? null,
     registration_number: values.registration_number ?? null,
     status: values.status ?? null,
-    nice_class: values.nice_class ?? null,
+    nice_classes: values.nice_classes,
     deal_type: values.deal_type,
     asking_price: values.asking_price ?? null,
+    currency: values.currency,
+    office_url: values.office_url ?? null,
+    territory: values.territory,
+    filing_date: values.filing_date ?? null,
+    license_duration: values.license_duration ?? null,
+    license_renewable: values.license_renewable,
+    encumbrances: values.encumbrances ?? null,
+    quality_control: values.quality_control ?? null,
+    certificate_path: values.certificate_path ?? null,
+    images: values.images,
     mark_image_url: values.mark_image_url ?? null,
     is_published: values.is_published,
   };
+}
+
+// A certificate path must live in the caller's own Storage folder — otherwise
+// a crafted payload could point a listing at someone else's document.
+function ownsUploadPath(path: string | undefined, userId: string): boolean {
+  return path === undefined || path.startsWith(`${userId}/`);
 }
 
 export async function createListing(input: ListingInput): Promise<ActionResult> {
@@ -38,6 +54,10 @@ export async function createListing(input: ListingInput): Promise<ActionResult> 
     data: { user },
   } = await supabase.auth.getUser();
   if (!user) return { ok: false, error: "You must be signed in." };
+
+  if (!ownsUploadPath(parsed.data.certificate_path, user.id)) {
+    return { ok: false, error: "Invalid certificate reference." };
+  }
 
   // Enforce the listing cap server-side. The UI is never the boundary.
   const { data: profile } = await supabase
@@ -91,6 +111,10 @@ export async function updateListing(
     data: { user },
   } = await supabase.auth.getUser();
   if (!user) return { ok: false, error: "You must be signed in." };
+
+  if (!ownsUploadPath(parsed.data.certificate_path, user.id)) {
+    return { ok: false, error: "Invalid certificate reference." };
+  }
 
   // Scope the update to this owner's row. RLS is the backstop; this fails fast.
   const { data, error } = await supabase

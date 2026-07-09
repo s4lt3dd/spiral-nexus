@@ -31,6 +31,43 @@ export function dealTypeLabel(value: string): string {
   return DEAL_TYPES.find((d) => d.value === value)?.label ?? value;
 }
 
+// Currencies an owner can price in (founder ask: "option to change currency").
+// ISO-4217 codes; kept small and business-relevant for the MVP.
+export const CURRENCIES = [
+  { value: "GBP", label: "GBP — British Pound" },
+  { value: "EUR", label: "EUR — Euro" },
+  { value: "USD", label: "USD — US Dollar" },
+  { value: "CHF", label: "CHF — Swiss Franc" },
+  { value: "AUD", label: "AUD — Australian Dollar" },
+  { value: "CAD", label: "CAD — Canadian Dollar" },
+  { value: "JPY", label: "JPY — Japanese Yen" },
+  { value: "CNY", label: "CNY — Chinese Yuan" },
+] as const;
+
+export const DEFAULT_CURRENCY = "GBP";
+
+// Price display for cards/detail. Falls back to a bare code prefix if Intl
+// doesn't know the currency (can't happen with the curated list above, but
+// the column is only CHECK-constrained to /^[A-Z]{3}$/).
+export function formatPrice(amount: number, currency: string | null): string {
+  const code = currency || DEFAULT_CURRENCY;
+  try {
+    return new Intl.NumberFormat("en-GB", {
+      style: "currency",
+      currency: code,
+      maximumFractionDigits: 0,
+    }).format(amount);
+  } catch {
+    return `${code} ${amount.toLocaleString("en-GB")}`;
+  }
+}
+
+// Renewal wording for the detail page ("Open to renewal" tri-state).
+export function renewalLabel(v: boolean | null): string | null {
+  if (v === null) return null;
+  return v ? "Open to renewal" : "Not open to renewal";
+}
+
 // Status -> badge variant (see MASTER.md status-pill mapping).
 export type StatusVariant = "brand" | "warning" | "slate" | "destructive";
 export function statusPillVariant(value: string | null): StatusVariant {

@@ -5,13 +5,19 @@
 import Link from "next/link";
 import Image from "next/image";
 import { notFound, redirect } from "next/navigation";
-import { ArrowLeft, Pencil } from "lucide-react";
+import { ArrowLeft, ExternalLink, FileText, Pencil } from "lucide-react";
 
 import { createClient } from "@/lib/supabase/server";
 import { cn } from "@/lib/utils";
 import type { IpAsset, Profile } from "@/lib/types";
-import { statusLabel, dealTypeLabel, statusPillVariant } from "@/lib/listings";
-import { niceClassLabel } from "@/lib/discovery";
+import {
+  statusLabel,
+  dealTypeLabel,
+  statusPillVariant,
+  formatPrice,
+  renewalLabel,
+} from "@/lib/listings";
+import { niceClassesLabel } from "@/lib/discovery";
 import { buttonVariants } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { NexusMark } from "@/components/brand/nexus-mark";
@@ -20,11 +26,14 @@ import { SiteHeader } from "@/components/marketing/site-header";
 import { ContactOwnerDialog } from "@/components/messages/contact-owner-dialog";
 import { SaveButton } from "@/components/listings/save-button";
 
-const gbp = new Intl.NumberFormat("en-GB", {
-  style: "currency",
-  currency: "GBP",
-  maximumFractionDigits: 0,
-});
+function formatDate(iso: string): string {
+  return new Date(`${iso}T00:00:00Z`).toLocaleDateString("en-GB", {
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+    timeZone: "UTC",
+  });
+}
 
 function initials(name: string) {
   return name
@@ -96,12 +105,43 @@ export default async function ListingDetailPage({
     .maybeSingle();
   const isSaved = !!savedRow;
 
+  // The certificate lives in the PRIVATE listing-docs bucket; mint a
+  // short-lived signed URL for this signed-in viewer.
+  let certificateUrl: string | null = null;
+  if (listing.certificate_path) {
+    const { data: signed } = await supabase.storage
+      .from("listing-docs")
+      .createSignedUrl(listing.certificate_path, 60 * 60);
+    certificateUrl = signed?.signedUrl ?? null;
+  }
+
+  // Primary image: legacy single mark image first, then uploaded images.
+  const gallery = [
+    ...(listing.mark_image_url ? [listing.mark_image_url] : []),
+    ...(listing.images ?? []),
+  ];
+  const [mainImage, ...moreImages] = gallery;
+
   const facts: { label: string; value: string | null }[] = [
     { label: "Status", value: statusLabel(listing.status) },
-    { label: "Jurisdiction", value: listing.jurisdiction },
+    { label: "Registration office", value: listing.jurisdiction },
     { label: "Registration no.", value: listing.registration_number },
-    { label: "Nice class", value: niceClassLabel(listing.nice_class) },
+    {
+      label: "Filing date",
+      value: listing.filing_date ? formatDate(listing.filing_date) : null,
+    },
+    { label: "Nice classes", value: niceClassesLabel(listing.nice_classes) },
+    {
+      label: "Territory",
+      value: listing.territory?.length ? listing.territory.join(", ") : null,
+    },
     { label: "Deal type", value: dealTypeLabel(listing.deal_type) },
+    ...(listing.deal_type !== "sale"
+      ? [
+          { label: "License duration", value: listing.license_duration },
+          { label: "Renewal", value: renewalLabel(listing.license_renewable) },
+        ]
+      : []),
   ];
 
   return (
@@ -138,9 +178,9 @@ export default async function ListingDetailPage({
           {/* Left: mark + description + facts */}
           <div className="lg:col-span-2">
             <div className="relative aspect-[16/9] w-full overflow-hidden rounded-xl border border-border bg-slate-100">
-              {listing.mark_image_url ? (
+              {mainImage ? (
                 <Image
-                  src={listing.mark_image_url}
+                  src={mainImage}
                   alt={`${listing.title} mark`}
                   fill
                   sizes="(max-width: 1024px) 100vw, 640px"
@@ -153,6 +193,26 @@ export default async function ListingDetailPage({
                 </div>
               )}
             </div>
+
+            {moreImages.length > 0 && (
+              <ul className="mt-3 grid grid-cols-4 gap-3 sm:grid-cols-5">
+                {moreImages.map((url) => (
+                  <li
+                    key={url}
+                    className="relative aspect-square overflow-hidden rounded-lg border border-border bg-slate-100"
+                  >
+                    <Image
+                      src={url}
+                      alt={`${listing.title} image`}
+                      fill
+                      sizes="120px"
+                      unoptimized
+                      className="object-contain p-2"
+                    />
+                  </li>
+                ))}
+              </ul>
+            )}
 
             <div className="mt-6 flex items-center gap-3">
               <h1 className="text-3xl font-semibold tracking-tight text-ink sm:text-4xl">
@@ -185,6 +245,59 @@ export default async function ListingDetailPage({
                   </div>
                 ))}
             </dl>
+
+            {(listing.office_url || certificateUrl) && (
+              <div className="mt-4 flex flex-wrap gap-3">
+                {listing.office_url && (
+                  <a
+                    href={listing.office_url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className={cn(
+                      buttonVariants({ variant: "outline", size: "sm" }),
+                    )}
+                  >
+                    <ExternalLink className="size-4" aria-hidden />
+                    View official record
+                  </a>
+                )}
+                {certificateUrl && (
+                  <a
+                    href={certificateUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className={cn(
+                      buttonVariants({ variant: "outline", size: "sm" }),
+                    )}
+                  >
+                    <FileText className="size-4" aria-hidden />
+                    Registration certificate
+                  </a>
+                )}
+              </div>
+            )}
+
+            {listing.encumbrances && (
+              <section className="mt-8">
+                <h2 className="text-xs font-medium tracking-wide text-slate-500 uppercase">
+                  Encumbrances or restrictions
+                </h2>
+                <p className="mt-2 text-sm leading-relaxed whitespace-pre-line text-slate-600">
+                  {listing.encumbrances}
+                </p>
+              </section>
+            )}
+
+            {listing.quality_control && (
+              <section className="mt-6">
+                <h2 className="text-xs font-medium tracking-wide text-slate-500 uppercase">
+                  Quality &amp; control
+                </h2>
+                <p className="mt-2 text-sm leading-relaxed whitespace-pre-line text-slate-600">
+                  {listing.quality_control}
+                </p>
+              </section>
+            )}
           </div>
 
           {/* Right: deal + owner + contact */}
@@ -193,7 +306,7 @@ export default async function ListingDetailPage({
               <p className="text-sm text-slate-500">{dealTypeLabel(listing.deal_type)}</p>
               <p className="mt-1 text-3xl font-semibold text-ink">
                 {listing.asking_price != null
-                  ? gbp.format(listing.asking_price)
+                  ? formatPrice(listing.asking_price, listing.currency)
                   : "Price on request"}
               </p>
 
