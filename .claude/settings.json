@@ -1,0 +1,24 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npx tsc --noEmit)",
+      "Bash(npm run lint)",
+      "Bash(npm run lint *)",
+      "Bash(gh search *)",
+      "Bash(npx supabase migration list)",
+      "Bash(aws sts get-caller-identity)",
+      "mcp__Claude_Preview__preview_screenshot",
+      "mcp__Claude_Preview__preview_console_logs",
+      "mcp__Claude_Preview__preview_list",
+      "mcp__Claude_Preview__preview_snapshot",
+      "mcp__ccd_session_mgmt__search_session_transcripts",
+      "mcp__Claude_in_Chrome__read_page",
+      "mcp__Claude_in_Chrome__list_connected_browsers",
+      "mcp__Claude_in_Chrome__find",
+      "mcp__claude-in-chrome__read_page",
+      "mcp__70d6bbf1-d174-4a37-9a30-d10ced5c29c1__getJiraIssue",
+      "mcp__70d6bbf1-d174-4a37-9a30-d10ced5c29c1__searchJiraIssuesUsingJql",
+      "mcp__70d6bbf1-d174-4a37-9a30-d10ced5c29c1__getAccessibleAtlassianResources"
+    ]
+  }
+}
