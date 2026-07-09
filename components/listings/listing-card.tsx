@@ -12,6 +12,7 @@ import {
   statusLabel,
   dealTypeLabel,
   statusPillVariant,
+  formatPrice,
 } from "@/lib/listings";
 import { setListingPublished, deleteListing } from "@/app/(app)/listings/actions";
 
@@ -32,13 +33,9 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 
-const gbp = new Intl.NumberFormat("en-GB", {
-  style: "currency",
-  currency: "GBP",
-  maximumFractionDigits: 0,
-});
-
 export function ListingCard({ listing }: { listing: IpAsset }) {
+  // Uploaded images win over the legacy single mark URL.
+  const cover = listing.images?.[0] ?? listing.mark_image_url ?? null;
   const router = useRouter();
   const [pending, startTransition] = useTransition();
   const [deleting, setDeleting] = useState(false);
@@ -74,9 +71,9 @@ export function ListingCard({ listing }: { listing: IpAsset }) {
       <div className="flex flex-1 flex-col gap-5 p-5 sm:flex-row sm:items-stretch">
         {/* Mark / image block */}
         <div className="relative aspect-[16/10] w-full shrink-0 overflow-hidden rounded-md bg-slate-100 ring-1 ring-slate-200/70 sm:w-40">
-          {listing.mark_image_url ? (
+          {cover ? (
             <Image
-              src={listing.mark_image_url}
+              src={cover}
               alt={`${listing.title} mark`}
               fill
               sizes="160px"
@@ -118,16 +115,16 @@ export function ListingCard({ listing }: { listing: IpAsset }) {
               </Badge>
             )}
             {listing.jurisdiction && <span>{listing.jurisdiction}</span>}
-            {listing.nice_class != null && (
+            {listing.nice_classes?.length > 0 && (
               <span className="inline-flex items-center rounded-sm border border-slate-200 bg-slate-50 px-1.5 py-0.5 text-[0.7rem] font-medium tracking-wide text-slate-600 uppercase">
-                Nice {listing.nice_class}
+                Nice {listing.nice_classes.join(", ")}
               </span>
             )}
             <span className="text-slate-400">·</span>
             <span>{dealTypeLabel(listing.deal_type)}</span>
             {listing.asking_price != null && (
               <span className="ml-auto text-sm font-semibold text-foreground">
-                {gbp.format(listing.asking_price)}
+                {formatPrice(listing.asking_price, listing.currency)}
               </span>
             )}
           </div>

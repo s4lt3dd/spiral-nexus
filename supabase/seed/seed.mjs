@@ -252,7 +252,7 @@ const LISTINGS = [
   { o: 0, title: "VERDANT", description: "Organic skincare line, full word + figurative mark.", jurisdiction: "United Kingdom", registration_number: "UK00003456702", status: "registered", nice_class: 3, deal_type: "both", asking_price: 38000, is_published: true },
   { o: 0, title: "IRONCLAD", description: "Cybersecurity services mark, application pending.", jurisdiction: "United States", registration_number: "US-90123456", status: "pending", nice_class: 45, deal_type: "sale", asking_price: 52000, is_published: true },
   { o: 0, title: "AETHER", description: "Sparkling beverage brand - draft, not yet listed.", jurisdiction: "European Union", registration_number: "EU018456789", status: "registered", nice_class: 32, deal_type: "license", asking_price: null, is_published: false },
-  { o: 0, title: "NIMBUSWEAR", description: "Athleisure clothing label, prefix-shares the Nimbus family name.", jurisdiction: "United Kingdom", registration_number: "UK00003456710", status: "registered", nice_class: 25, deal_type: "both", asking_price: 30000, is_published: true },
+  { o: 0, title: "NIMBUSWEAR", description: "Athleisure clothing label, prefix-shares the Nimbus family name.", jurisdiction: "United Kingdom", registration_number: "UK00003456710", status: "registered", nice_classes: [18, 25], deal_type: "both", asking_price: 30000, is_published: true },
   { o: 0, title: "SOLSTICE", description: "Premium coffee roaster word + device mark.", jurisdiction: "European Union", registration_number: "EU018456790", status: "registered", nice_class: 30, deal_type: "license", asking_price: 14000, is_published: true },
   // Owner B
   { o: 1, title: "LUMEN & CO", description: "Premium lighting design house word mark.", jurisdiction: "United Kingdom", registration_number: "UK00003456703", status: "registered", nice_class: 11, deal_type: "license", asking_price: 16000, is_published: true },
@@ -263,7 +263,7 @@ const LISTINGS = [
   { o: 1, title: "QUANTA", description: "Fintech analytics platform word mark.", jurisdiction: "United States", registration_number: "US-90778800", status: "registered", nice_class: 36, deal_type: "license", asking_price: 64000, is_published: true },
   { o: 1, title: "GROVEHOUSE", description: "Artisan bakery chain mark.", jurisdiction: "United Kingdom", registration_number: "UK00003456712", status: "pending", nice_class: 43, deal_type: "both", asking_price: 18000, is_published: true },
   // Owner C
-  { o: 2, title: "AURELIA", description: "Cosmetics and fragrance house, registered figurative mark.", jurisdiction: "European Union", registration_number: "EU018456792", status: "registered", nice_class: 3, deal_type: "license", asking_price: 41000, is_published: true },
+  { o: 2, title: "AURELIA", description: "Cosmetics and fragrance house, registered figurative mark.", jurisdiction: "European Union", registration_number: "EU018456792", status: "registered", nice_classes: [3, 5], deal_type: "license", asking_price: 41000, is_published: true },
   { o: 2, title: "CASTELLAN", description: "Legal-tech services mark for IP management.", jurisdiction: "United Kingdom", registration_number: "UK00003456713", status: "registered", nice_class: 45, deal_type: "license", asking_price: 33000, is_published: true },
   { o: 2, title: "OAKEN", description: "Craft whisky brand, available to acquire outright.", jurisdiction: "United Kingdom", registration_number: "UK00003456714", status: "registered", nice_class: 33, deal_type: "sale", asking_price: 75000, is_published: true },
   { o: 2, title: "PULSE", description: "Wearable health device brand, application pending.", jurisdiction: "United States", registration_number: "US-90790011", status: "pending", nice_class: 10, deal_type: "both", asking_price: 48000, is_published: true },
@@ -334,6 +334,24 @@ async function main() {
   }
 
   console.log("Inserting demo trademarks…");
+  // Slice B fields are derived from the base data so every expanded detail
+  // page demos non-empty: currency/territory follow the office, filing dates
+  // are spread deterministically, license deals carry duration + renewal.
+  const territoryFor = {
+    "United Kingdom": ["United Kingdom"],
+    "United States": ["United States"],
+    "European Union": ["European Union (all member states)"],
+  };
+  const currencyFor = {
+    "United Kingdom": "GBP",
+    "United States": "USD",
+    "European Union": "EUR",
+  };
+  const officeUrlFor = {
+    "United Kingdom": "https://www.gov.uk/search-for-trademark",
+    "United States": "https://tmsearch.uspto.gov/",
+    "European Union": "https://euipo.europa.eu/eSearch/",
+  };
   const rows = LISTINGS.map((l, i) => ({
     owner_id: users[l.o].id,
     type: "trademark",
@@ -343,9 +361,23 @@ async function main() {
     jurisdiction: l.jurisdiction,
     registration_number: l.registration_number,
     status: l.status,
-    nice_class: l.nice_class,
+    nice_classes: l.nice_classes ?? [l.nice_class],
     deal_type: l.deal_type,
     asking_price: l.asking_price,
+    currency: currencyFor[l.jurisdiction] ?? "GBP",
+    office_url: officeUrlFor[l.jurisdiction] ?? null,
+    territory: territoryFor[l.jurisdiction] ?? [l.jurisdiction],
+    filing_date: `20${14 + (i % 9)}-${String((i % 12) + 1).padStart(2, "0")}-${String((i % 27) + 1).padStart(2, "0")}`,
+    license_duration: l.deal_type !== "sale" ? `${3 + (i % 5)} years` : null,
+    license_renewable: l.deal_type !== "sale" ? i % 3 !== 2 : null,
+    encumbrances:
+      i % 5 === 0
+        ? "One existing non-exclusive license in force (retail, expires next year)."
+        : null,
+    quality_control:
+      i % 4 === 0
+        ? "Licensee samples subject to approval before each production run."
+        : null,
     mark_image_url: markDataUri(l.title, i),
     is_published: l.is_published,
   }));

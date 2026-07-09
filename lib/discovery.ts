@@ -63,6 +63,12 @@ export function niceClassLabel(n: number | null | undefined): string | null {
   return hit ? `${n} — ${hit.label}` : `${n}`;
 }
 
+// Multi-class variant for the expanded listings (nice_classes int[]).
+export function niceClassesLabel(ns: number[] | null | undefined): string | null {
+  if (!ns?.length) return null;
+  return ns.map((n) => niceClassLabel(n)).join(" · ");
+}
+
 // Curated jurisdiction options (kept small for the MVP filter).
 export const JURISDICTIONS = [
   "United Kingdom",
@@ -132,15 +138,21 @@ export async function searchListings(
 
   let query = supabase
     .from("ip_assets")
+    // Card columns only. The long-text fields (encumbrances, quality_control),
+    // license terms, and certificate_path are detail-page data — selecting
+    // them here would ship kilobytes of dead payload per row AND leak private
+    // certificate paths into every browse response.
     .select(
-      "id,owner_id,type,title,description,jurisdiction,registration_number,status,deal_type,asking_price,source,nice_class,mark_image_url,ipc_class,abstract,images,is_published,created_at,updated_at",
+      "id,owner_id,type,title,description,jurisdiction,registration_number,status,deal_type,asking_price,currency,source,nice_classes,mark_image_url,images,is_published,created_at,updated_at",
       { count: "exact" },
     )
     .eq("is_published", true);
 
   if (excludeOwnerId) query = query.neq("owner_id", excludeOwnerId);
 
-  if (params.nice_class) query = query.eq("nice_class", params.nice_class);
+  // Single-class filter over the multi-class column (array containment).
+  if (params.nice_class)
+    query = query.contains("nice_classes", [params.nice_class]);
   if (params.jurisdiction) query = query.eq("jurisdiction", params.jurisdiction);
   if (params.deal_type) query = query.eq("deal_type", params.deal_type);
 
