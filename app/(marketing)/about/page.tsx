@@ -46,7 +46,7 @@ export default function AboutPage() {
           </h1>
           <p className="mt-6 max-w-xl text-lg leading-relaxed text-white/75">
             Most valuable IP never reaches the people who could put it to work.
-            Spiral Nexus exists to close that gap — starting with trademarks.
+            Spiral Nexus exists to close that gap.
           </p>
         </div>
 
@@ -63,20 +63,21 @@ export default function AboutPage() {
             The problem
           </span>
           <h2 className="mt-3 text-3xl leading-tight font-semibold text-ink sm:text-4xl">
-            Brands and marks worth millions, going nowhere
+            Opportunity shouldn&apos;t stay hidden
           </h2>
           <div className="mt-6 space-y-5 text-lg leading-relaxed text-slate-600">
             <p>
-              Companies register far more trademarks than they ever use. Marks
-              from sunset products, rebrands, and abandoned launches sit
-              dormant on a register — valuable, but invisible to the businesses
-              that would license or buy them.
+              Behind every unused trade mark is the potential for a new product,
+              a new partnership or a new business.
             </p>
             <p>
-              The people who want them have no good way to find them, and the
-              owners have no simple way to signal &ldquo;this is
-              available.&rdquo; The result is a market that mostly happens
-              through expensive intermediaries, or not at all.
+              Yet discovering available intellectual property remains
+              fragmented, time-consuming and reliant on existing networks.
+            </p>
+            <p>
+              Our platform creates a central hub where intellectual property
+              owners and businesses can discover opportunities, make meaningful
+              connections and unlock value together.
             </p>
           </div>
         </Reveal>
@@ -86,7 +87,7 @@ export default function AboutPage() {
             What we do
           </span>
           <h2 className="mt-3 text-3xl leading-tight font-semibold text-ink sm:text-4xl">
-            A direct, credible marketplace for IP
+            A direct, credible hub for IP
           </h2>
           <div className="mt-6 space-y-5 text-lg leading-relaxed text-slate-600">
             <p>
@@ -127,6 +128,9 @@ export default function AboutPage() {
           >
             The principles behind the platform
           </h2>
+          <p className="mt-4 font-display text-xl font-medium text-brand">
+            Efficiency. Community. Accessibility. Transparency.
+          </p>
         </Reveal>
 
         <div className="mt-12 grid gap-6 sm:grid-cols-3">
@@ -154,7 +158,7 @@ export default function AboutPage() {
           <div className="relative isolate overflow-hidden rounded-2xl bg-[image:var(--gradient-hero)] px-8 py-16 text-center text-white sm:px-16 sm:py-20">
             <NexusMark className="pointer-events-none absolute -top-16 -right-10 size-72 text-white opacity-[0.07]" />
             <h2 className="mx-auto max-w-2xl text-3xl leading-tight font-semibold text-white sm:text-4xl">
-              Join the marketplace for intellectual property
+              Join the hub for intellectual property
             </h2>
             <p className="mx-auto mt-4 max-w-xl text-lg text-white/75">
               Whether you hold IP or you&apos;re looking for it, your next move

@@ -39,10 +39,10 @@ export const REGISTRIES: Registry[] = [
   },
   {
     id: "euipo",
-    name: "EUIPO · TMview",
+    name: "EUIPO",
     jurisdiction: "European Union",
-    landingUrl: "https://www.tmview.org/",
-    blurb: "EUIPO-run TMview — EU and worldwide trade marks.",
+    landingUrl: "https://euipo.europa.eu/eSearch/",
+    blurb: "EU Intellectual Property Office — eSearch trade mark search.",
   },
   {
     id: "wipo",

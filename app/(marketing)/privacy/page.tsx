@@ -12,11 +12,9 @@ export default function PrivacyPage() {
         This Privacy Policy explains how <strong>[Spiral Nexus Ltd]</strong>
         (&ldquo;Spiral Nexus&rdquo;, &ldquo;we&rdquo;, &ldquo;us&rdquo;) collects,
         uses, and protects personal data when you use the Spiral Nexus
-        marketplace. We are the data controller. Contact us at{" "}
-        <a href="mailto:[privacy@spiralnexus.example]">
-          [privacy@spiralnexus.example]
-        </a>
-        , [registered address].
+        platform. We are the data controller. Contact us at{" "}
+        <a href="mailto:team@spiralnexus.io">team@spiralnexus.io</a>,
+        [registered address].
       </p>
 
       <h2>Who this applies to</h2>
@@ -57,7 +55,7 @@ export default function PrivacyPage() {
       <h2>How and why we use it (legal bases)</h2>
       <p>
         Under the UK GDPR and the EU GDPR we rely on: <strong>contract</strong>
-        (to provide your account and the marketplace), <strong>legitimate
+        (to provide your account and the platform), <strong>legitimate
         interests</strong> (to keep the service secure, prevent abuse, and
         improve it), and <strong>consent</strong> where required. We do not sell
         your personal data.
