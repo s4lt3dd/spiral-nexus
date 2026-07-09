@@ -1,4 +1,5 @@
 import { LegalArticle } from "@/components/legal/legal-article";
+import { CONTACT_EMAIL } from "@/lib/site";
 
 export const metadata = {
   title: "Terms of Use · Spiral Nexus",
@@ -92,7 +93,7 @@ export default function TermsPage() {
       <h2>Contact</h2>
       <p>
         Questions about these terms:{" "}
-        <a href="mailto:team@spiralnexus.io">team@spiralnexus.io</a>.
+        <a href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a>.
       </p>
     </LegalArticle>
   );

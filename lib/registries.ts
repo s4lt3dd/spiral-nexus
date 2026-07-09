@@ -6,7 +6,9 @@
 //     are SPAs with no documented text-query URL param (WIPO's terms also
 //     disallow automated querying);
 //   - UKIPO trade mark text search uses a POST form;
-//   - TMview's basicSearch param (ST13) is an internal mark id, not free text.
+//   - EUIPO eSearch is an SPA whose search state lives in an undocumented
+//     hash fragment, not a stable GET param (its predecessor here, TMview,
+//     was dropped July 2026 — tmview.org fails its TLS handshake).
 // So we open each registry's official SEARCH LANDING page and copy the user's
 // query to the clipboard to paste — no fake pre-filled links. If a registry
 // later documents a GET query format, add `buildSearchUrl` and the UI will

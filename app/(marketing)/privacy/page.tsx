@@ -1,4 +1,5 @@
 import { LegalArticle } from "@/components/legal/legal-article";
+import { CONTACT_EMAIL } from "@/lib/site";
 
 export const metadata = {
   title: "Privacy Policy · Spiral Nexus",
@@ -13,7 +14,7 @@ export default function PrivacyPage() {
         (&ldquo;Spiral Nexus&rdquo;, &ldquo;we&rdquo;, &ldquo;us&rdquo;) collects,
         uses, and protects personal data when you use the Spiral Nexus
         platform. We are the data controller. Contact us at{" "}
-        <a href="mailto:team@spiralnexus.io">team@spiralnexus.io</a>,
+        <a href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a>,
         [registered address].
       </p>
 
