@@ -84,11 +84,28 @@ export default async function ListingDetailPage({
   if (!listingRow) notFound();
   const listing = listingRow as IpAsset;
 
-  const { data: ownerRow } = await supabase
-    .from("profiles")
-    .select("display_name, org_name, verified")
-    .eq("id", listing.owner_id)
-    .maybeSingle();
+  // Owner profile, viewer's saved state, and the certificate signed URL
+  // (short-lived; the listing-docs bucket is private) are independent —
+  // fetch them concurrently.
+  const [{ data: ownerRow }, { data: savedRow }, signedRes] =
+    await Promise.all([
+      supabase
+        .from("profiles")
+        .select("display_name, org_name, verified")
+        .eq("id", listing.owner_id)
+        .maybeSingle(),
+      supabase
+        .from("saved_listings")
+        .select("listing_id")
+        .eq("user_id", user.id)
+        .eq("listing_id", id)
+        .maybeSingle(),
+      listing.certificate_path
+        ? supabase.storage
+            .from("listing-docs")
+            .createSignedUrl(listing.certificate_path, 60 * 60)
+        : Promise.resolve(null),
+    ]);
   const owner = ownerRow as Pick<
     Profile,
     "display_name" | "org_name" | "verified"
@@ -96,29 +113,13 @@ export default async function ListingDetailPage({
 
   const isOwner = user?.id === listing.owner_id;
   const ownerName = owner?.display_name || owner?.org_name || "Listing owner";
-
-  const { data: savedRow } = await supabase
-    .from("saved_listings")
-    .select("listing_id")
-    .eq("user_id", user.id)
-    .eq("listing_id", id)
-    .maybeSingle();
   const isSaved = !!savedRow;
+  const certificateUrl = signedRes?.data?.signedUrl ?? null;
 
-  // The certificate lives in the PRIVATE listing-docs bucket; mint a
-  // short-lived signed URL for this signed-in viewer.
-  let certificateUrl: string | null = null;
-  if (listing.certificate_path) {
-    const { data: signed } = await supabase.storage
-      .from("listing-docs")
-      .createSignedUrl(listing.certificate_path, 60 * 60);
-    certificateUrl = signed?.signedUrl ?? null;
-  }
-
-  // Primary image: legacy single mark image first, then uploaded images.
+  // Uploaded images win over the legacy single mark URL.
   const gallery = [
-    ...(listing.mark_image_url ? [listing.mark_image_url] : []),
     ...(listing.images ?? []),
+    ...(listing.mark_image_url ? [listing.mark_image_url] : []),
   ];
   const [mainImage, ...moreImages] = gallery;
 

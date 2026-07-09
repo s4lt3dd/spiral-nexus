@@ -99,7 +99,6 @@ export function ListingForm({ listing }: { listing?: IpAsset }) {
       quality_control: listing?.quality_control ?? "",
       certificate_path: listing?.certificate_path ?? "",
       images: listing?.images ?? [],
-      mark_image_url: listing?.mark_image_url ?? "",
       is_published: listing?.is_published ?? false,
     },
   });

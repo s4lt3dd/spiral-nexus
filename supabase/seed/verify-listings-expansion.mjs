@@ -70,9 +70,14 @@ function ssrCookie(session) {
   return `${name}.0=${b64.slice(0, mid)}; ${name}.1=${b64.slice(mid)}`;
 }
 
+// Cleanup state — populated as the run creates things, reaped in `finally`
+// so a crash (e.g. dev server down) never strands probe data in the shared DB.
+const cleanup = { probeId: null, owner: null, ownPath: null, docPath: null };
+
 async function main() {
   const owner = await signIn(OWNER);
   const other = await signIn(OTHER);
+  cleanup.owner = owner;
 
   // ---- 1. Full expanded insert through RLS -------------------------------
   const { data: created, error: insErr } = await owner.client
@@ -111,6 +116,19 @@ async function main() {
       created.license_renewable === true,
   );
   const probeId = created?.id;
+  cleanup.probeId = probeId;
+
+  // certificate_path pointing at ANOTHER member's folder must be rejected at
+  // the DB (ip_assets_certificate_owner_folder CHECK), not just the action.
+  const { error: foreignCert } = await owner.client
+    .from("ip_assets")
+    .update({ certificate_path: `${other.userId}/stolen-cert.pdf` })
+    .eq("id", probeId);
+  check(
+    "cross-owner certificate_path rejected by DB CHECK",
+    !!foreignCert,
+    foreignCert?.message ?? "update accepted",
+  );
 
   // ---- 2. CHECK constraints ----------------------------------------------
   const { error: badCur } = await owner.client
@@ -151,10 +169,13 @@ async function main() {
     "base64",
   );
 
-  const ownPath = `${owner.userId}/verify-probe.png`;
+  // Fresh UUID names each run (mirrors the app) — no upsert, so the run
+  // doesn't depend on an UPDATE policy the buckets deliberately don't have.
+  const ownPath = `${owner.userId}/${crypto.randomUUID()}-probe.png`;
+  cleanup.ownPath = ownPath;
   const { error: upOwn } = await owner.client.storage
     .from("listing-images")
-    .upload(ownPath, png, { contentType: "image/png", upsert: true });
+    .upload(ownPath, png, { contentType: "image/png" });
   check("upload into own images folder", !upOwn, upOwn?.message);
 
   const foreignPath = `${other.userId}/verify-intruder.png`;
@@ -167,10 +188,11 @@ async function main() {
     upForeign?.message ?? "upload accepted",
   );
 
-  const docPath = `${owner.userId}/verify-cert.pdf`;
+  const docPath = `${owner.userId}/${crypto.randomUUID()}-cert.pdf`;
+  cleanup.docPath = docPath;
   const { error: upDoc } = await owner.client.storage
     .from("listing-docs")
-    .upload(docPath, png, { contentType: "application/pdf", upsert: true });
+    .upload(docPath, png, { contentType: "application/pdf" });
   check("upload certificate to own docs folder", !upDoc, upDoc?.message);
 
   // Anon (no session) must not read the private docs bucket.
@@ -231,16 +253,32 @@ async function main() {
     "expected €12,345 in detail HTML",
   );
 
-  // ---- Cleanup -------------------------------------------------------------
-  if (probeId) await owner.client.from("ip_assets").delete().eq("id", probeId);
-  await owner.client.storage.from("listing-images").remove([ownPath]);
-  await owner.client.storage.from("listing-docs").remove([docPath]);
-
   console.log(failures ? `\n${failures} FAILURE(S)` : "\nAll checks passed.");
-  process.exit(failures ? 1 : 0);
+  return failures ? 1 : 0;
 }
 
-main().catch((e) => {
+// Reap probe data even when the run crashes mid-way (dev server down, etc.).
+async function reap() {
+  const { owner, probeId, ownPath, docPath } = cleanup;
+  if (!owner) return;
+  try {
+    if (probeId)
+      await owner.client.from("ip_assets").delete().eq("id", probeId);
+    if (ownPath)
+      await owner.client.storage.from("listing-images").remove([ownPath]);
+    if (docPath)
+      await owner.client.storage.from("listing-docs").remove([docPath]);
+  } catch {
+    // best-effort
+  }
+}
+
+let exitCode = 1;
+try {
+  exitCode = await main();
+} catch (e) {
   console.error("FATAL", e);
-  process.exit(1);
-});
+} finally {
+  await reap();
+}
+process.exit(exitCode);

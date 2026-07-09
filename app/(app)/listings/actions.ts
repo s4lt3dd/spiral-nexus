@@ -13,6 +13,9 @@ export type ActionResult =
 // Map a validated payload to the columns we let users control. owner_id, type
 // and source are set server-side below - never trusted from the client.
 function toRow(values: ReturnType<typeof listingSchema.parse>) {
+  // A sale-only deal has no license terms: normalize here so hidden form
+  // fields can't persist stale duration/renewal on the row.
+  const isLicense = values.deal_type !== "sale";
   return {
     title: values.title,
     description: values.description ?? null,
@@ -26,21 +29,34 @@ function toRow(values: ReturnType<typeof listingSchema.parse>) {
     office_url: values.office_url ?? null,
     territory: values.territory,
     filing_date: values.filing_date ?? null,
-    license_duration: values.license_duration ?? null,
-    license_renewable: values.license_renewable,
+    license_duration: isLicense ? (values.license_duration ?? null) : null,
+    license_renewable: isLicense ? values.license_renewable : null,
     encumbrances: values.encumbrances ?? null,
     quality_control: values.quality_control ?? null,
     certificate_path: values.certificate_path ?? null,
     images: values.images,
-    mark_image_url: values.mark_image_url ?? null,
+    // mark_image_url (legacy) is deliberately absent: the form no longer
+    // manages it, and omitting the key preserves existing values on update.
     is_published: values.is_published,
   };
 }
 
-// A certificate path must live in the caller's own Storage folder — otherwise
-// a crafted payload could point a listing at someone else's document.
-function ownsUploadPath(path: string | undefined, userId: string): boolean {
-  return path === undefined || path.startsWith(`${userId}/`);
+// Uploads referenced by a listing must live in the caller's OWN Storage
+// folder — otherwise a crafted payload could point a listing at someone
+// else's document or image. (A DB CHECK backstops the certificate; see
+// migration 20260709140000.)
+function ownsUploads(
+  values: ReturnType<typeof listingSchema.parse>,
+  userId: string,
+): boolean {
+  if (
+    values.certificate_path !== undefined &&
+    !values.certificate_path.startsWith(`${userId}/`)
+  ) {
+    return false;
+  }
+  const imagePrefix = `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/listing-images/${userId}/`;
+  return values.images.every((u) => u.startsWith(imagePrefix));
 }
 
 export async function createListing(input: ListingInput): Promise<ActionResult> {
@@ -55,8 +71,8 @@ export async function createListing(input: ListingInput): Promise<ActionResult> 
   } = await supabase.auth.getUser();
   if (!user) return { ok: false, error: "You must be signed in." };
 
-  if (!ownsUploadPath(parsed.data.certificate_path, user.id)) {
-    return { ok: false, error: "Invalid certificate reference." };
+  if (!ownsUploads(parsed.data, user.id)) {
+    return { ok: false, error: "Invalid upload reference." };
   }
 
   // Enforce the listing cap server-side. The UI is never the boundary.
@@ -112,8 +128,8 @@ export async function updateListing(
   } = await supabase.auth.getUser();
   if (!user) return { ok: false, error: "You must be signed in." };
 
-  if (!ownsUploadPath(parsed.data.certificate_path, user.id)) {
-    return { ok: false, error: "Invalid certificate reference." };
+  if (!ownsUploads(parsed.data, user.id)) {
+    return { ok: false, error: "Invalid upload reference." };
   }
 
   // Scope the update to this owner's row. RLS is the backstop; this fails fast.

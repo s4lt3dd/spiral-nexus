@@ -138,8 +138,12 @@ export async function searchListings(
 
   let query = supabase
     .from("ip_assets")
+    // Card columns only. The long-text fields (encumbrances, quality_control),
+    // license terms, and certificate_path are detail-page data — selecting
+    // them here would ship kilobytes of dead payload per row AND leak private
+    // certificate paths into every browse response.
     .select(
-      "id,owner_id,type,title,description,jurisdiction,registration_number,status,deal_type,asking_price,currency,source,nice_classes,office_url,territory,filing_date,license_duration,license_renewable,encumbrances,quality_control,certificate_path,mark_image_url,ipc_class,abstract,images,is_published,created_at,updated_at",
+      "id,owner_id,type,title,description,jurisdiction,registration_number,status,deal_type,asking_price,currency,source,nice_classes,mark_image_url,images,is_published,created_at,updated_at",
       { count: "exact" },
     )
     .eq("is_published", true);

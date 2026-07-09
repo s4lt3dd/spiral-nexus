@@ -34,6 +34,8 @@ import {
 } from "@/components/ui/alert-dialog";
 
 export function ListingCard({ listing }: { listing: IpAsset }) {
+  // Uploaded images win over the legacy single mark URL.
+  const cover = listing.images?.[0] ?? listing.mark_image_url ?? null;
   const router = useRouter();
   const [pending, startTransition] = useTransition();
   const [deleting, setDeleting] = useState(false);
@@ -69,9 +71,9 @@ export function ListingCard({ listing }: { listing: IpAsset }) {
       <div className="flex flex-1 flex-col gap-5 p-5 sm:flex-row sm:items-stretch">
         {/* Mark / image block */}
         <div className="relative aspect-[16/10] w-full shrink-0 overflow-hidden rounded-md bg-slate-100 ring-1 ring-slate-200/70 sm:w-40">
-          {(listing.mark_image_url ?? listing.images?.[0]) ? (
+          {cover ? (
             <Image
-              src={(listing.mark_image_url ?? listing.images?.[0]) as string}
+              src={cover}
               alt={`${listing.title} mark`}
               fill
               sizes="160px"

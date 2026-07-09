@@ -52,7 +52,7 @@ Most users are both buyer and seller, so treat "role" as a set of capabilities g
 Core entities (Postgres / Supabase). Fields are a starting point — confirm with founders.
 
 - **users** — id, email, name, org_name, role_flags, subscription_tier, verified (bool), created_at, stripe_customer_id.
-- **ip_assets (listings)** — id, owner_id, type (patent | trademark), title, abstract/description, jurisdiction, registration_number, status (registered | pending | granted), filing_date, ipc/nice_class, deal_type (license | sale | both), asking_price, source (user_submitted | ip_office), external_ref, images, created_at, is_published.
+- **ip_assets (listings)** — id, owner_id, type (patent | trademark), title, abstract/description, jurisdiction (= registration office), registration_number, status (registered | pending | expired | opposed), filing_date, ipc_class / nice_classes (int[], multi), deal_type (license | sale | both), asking_price, currency, office_url, territory (text[]), license_duration, license_renewable, encumbrances, quality_control, certificate_path (private Storage), images, mark_image_url (legacy), source (user_submitted | ip_office), created_at, is_published.
 - **ip_office_records** — cached/imported records from public IP registries (separate from user listings so you don't conflate owned vs. referenced data).
 - **matches** — id, asset_id, user_id, score, reason, status (suggested | viewed | dismissed), created_at. (AI matchmaking output.)
 - **conversations** / **messages** — standard DM model; enforce weekly DM limits per tier.

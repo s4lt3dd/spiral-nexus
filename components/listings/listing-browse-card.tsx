@@ -26,6 +26,9 @@ export function ListingBrowseCard({
   listing: IpAsset;
   saved?: boolean;
 }) {
+  // Uploaded images win over the legacy single mark URL.
+  const cover = listing.images?.[0] ?? listing.mark_image_url ?? null;
+
   const card = (
     <Link
       href={`/listings/${listing.id}`}
@@ -34,9 +37,9 @@ export function ListingBrowseCard({
       <Card className="h-full gap-0 p-0 transition-[transform,box-shadow,border-color] duration-200 ease-out group-hover:-translate-y-0.5 group-hover:border-brand/30 group-hover:shadow-md">
         {/* Mark / image block */}
         <div className="relative aspect-[16/10] w-full overflow-hidden rounded-t-lg bg-slate-100">
-          {(listing.mark_image_url ?? listing.images?.[0]) ? (
+          {cover ? (
             <Image
-              src={(listing.mark_image_url ?? listing.images?.[0]) as string}
+              src={cover}
               alt={`${listing.title} mark`}
               fill
               sizes="(max-width: 768px) 100vw, 360px"

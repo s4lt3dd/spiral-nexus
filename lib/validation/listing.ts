@@ -68,10 +68,12 @@ export const listingSchema = z.object({
       .regex(/^\d{4}-\d{2}-\d{2}$/, "Enter a valid date")
       .refine((d) => {
         const t = new Date(`${d}T00:00:00Z`).getTime();
+        // +24h tolerance: "today" for a user ahead of UTC parses as a future
+        // UTC midnight; don't reject their own filing day.
         return (
           !Number.isNaN(t) &&
           t >= Date.UTC(1875, 0, 1) &&
-          t <= Date.now()
+          t <= Date.now() + 24 * 60 * 60 * 1000
         );
       }, "Filing date must be in the past")
       .optional(),
@@ -100,12 +102,24 @@ export const listingSchema = z.object({
       )
       .optional(),
   ),
-  // Uploaded listing images (public bucket URLs).
-  images: z.array(httpsUrl("Invalid image URL")).max(6).default([]),
-  mark_image_url: z.preprocess(
-    emptyToUndefined,
-    httpsUrl("Enter a valid URL").optional(),
-  ),
+  // Uploaded listing images. Pinned to OUR public bucket so a crafted payload
+  // can't make every viewer's browser fetch an attacker-controlled host (the
+  // server action additionally requires the caller's own folder).
+  images: z
+    .array(
+      httpsUrl("Invalid image URL").refine(
+        (u) =>
+          u.startsWith(
+            `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/listing-images/`,
+          ),
+        "Images must be uploaded to the listing",
+      ),
+    )
+    .max(6)
+    .default([]),
+  // NOTE: mark_image_url (legacy single image) is intentionally NOT accepted
+  // here anymore — the upload flow supersedes it. Existing values are
+  // preserved because the actions never write the column.
   is_published: z.boolean().default(false),
 });
 

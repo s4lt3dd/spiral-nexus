@@ -347,6 +347,11 @@ async function main() {
     "United States": "USD",
     "European Union": "EUR",
   };
+  const officeUrlFor = {
+    "United Kingdom": "https://www.gov.uk/search-for-trademark",
+    "United States": "https://tmsearch.uspto.gov/",
+    "European Union": "https://euipo.europa.eu/eSearch/",
+  };
   const rows = LISTINGS.map((l, i) => ({
     owner_id: users[l.o].id,
     type: "trademark",
@@ -360,6 +365,7 @@ async function main() {
     deal_type: l.deal_type,
     asking_price: l.asking_price,
     currency: currencyFor[l.jurisdiction] ?? "GBP",
+    office_url: officeUrlFor[l.jurisdiction] ?? null,
     territory: territoryFor[l.jurisdiction] ?? [l.jurisdiction],
     filing_date: `20${14 + (i % 9)}-${String((i % 12) + 1).padStart(2, "0")}-${String((i % 27) + 1).padStart(2, "0")}`,
     license_duration: l.deal_type !== "sale" ? `${3 + (i % 5)} years` : null,
