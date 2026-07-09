@@ -18,6 +18,7 @@ function toRow(values: ReturnType<typeof profileSchema.parse>) {
     headline: values.headline ?? null,
     bio: values.bio ?? null,
     location: values.location ?? null,
+    country: values.country ?? null,
     avatar_url: values.avatar_url ?? null,
     website: values.website ?? null,
     linkedin_url: values.linkedin_url ?? null,

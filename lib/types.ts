@@ -54,6 +54,8 @@ export interface Profile {
   website: string | null;
   linkedin_url: string | null;
   location: string | null;
+  // Where the member is based (curated COUNTRIES vocab; Connect filters on it).
+  country: string | null;
   sectors: string[];
   nice_class_interests: number[];
   jurisdictions: string[];

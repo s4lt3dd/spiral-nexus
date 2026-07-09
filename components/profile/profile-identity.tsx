@@ -66,10 +66,12 @@ export function ProfileIdentity({
                 {profile.org_name}
               </span>
             )}
-            {profile.location && (
+            {(profile.location || profile.country) && (
               <span className="inline-flex items-center gap-1">
                 <MapPin className="size-3.5" aria-hidden />
-                {profile.location}
+                {[profile.location, profile.country]
+                  .filter(Boolean)
+                  .join(", ")}
               </span>
             )}
           </div>

@@ -33,6 +33,7 @@ export default async function OnboardingPage() {
           headline: p?.headline ?? "",
           org_name: p?.org_name ?? "",
           location: p?.location ?? "",
+          country: p?.country ?? "",
           avatar_url: p?.avatar_url ?? "",
           website: p?.website ?? "",
           linkedin_url: p?.linkedin_url ?? "",
