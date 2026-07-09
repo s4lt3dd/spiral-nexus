@@ -9,8 +9,8 @@ function hrefFor(current: MemberParams, page: number): string {
   const p = new URLSearchParams();
   if (current.q) p.set("q", current.q);
   if (current.role) p.set("role", current.role);
-  if (current.sector) p.set("sector", current.sector);
-  if (current.jurisdiction) p.set("jurisdiction", current.jurisdiction);
+  if (current.sectors?.length) p.set("sectors", current.sectors.join(","));
+  if (current.country) p.set("country", current.country);
   if (current.sort && current.sort !== "newest") p.set("sort", current.sort);
   if (page > 1) p.set("page", String(page));
   const qs = p.toString();

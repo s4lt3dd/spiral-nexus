@@ -30,7 +30,7 @@ const url = env.NEXT_PUBLIC_SUPABASE_URL;
 const anon = env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
 const PUBLIC_COLS =
-  "id, display_name, org_name, role_flags, subscription_tier, verified, headline, bio, avatar_url, website, linkedin_url, location, sectors, nice_class_interests, jurisdictions, onboarded_at, created_at";
+  "id, display_name, org_name, role_flags, subscription_tier, verified, headline, bio, avatar_url, website, linkedin_url, location, country, sectors, nice_class_interests, jurisdictions, onboarded_at, created_at";
 
 let failures = 0;
 function check(name, pass, detail = "") {

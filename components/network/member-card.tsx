@@ -53,9 +53,12 @@ export function MemberCard({
               </Badge>
             )}
           </div>
-          {(member.org_name || member.location) && (
+          {(member.org_name || member.location || member.country) && (
             <p className="mt-0.5 truncate text-sm text-slate-500">
-              {[member.org_name, member.location].filter(Boolean).join(" · ")}
+              {/* Prefer the specific free-text location; fall back to country. */}
+              {[member.org_name, member.location || member.country]
+                .filter(Boolean)
+                .join(" · ")}
             </p>
           )}
         </div>

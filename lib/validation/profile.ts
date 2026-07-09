@@ -4,11 +4,12 @@
 // and `stripe_customer_id` so a user can never self-verify or self-upgrade.
 
 import { z } from "zod";
-import { ROLE_VALUES, SECTORS, JURISDICTIONS } from "@/lib/profile";
+import { ROLE_VALUES, SECTORS, JURISDICTIONS, COUNTRIES } from "@/lib/profile";
 
 const roleValues = ROLE_VALUES as [string, ...string[]];
 const sectorValues = SECTORS as unknown as [string, ...string[]];
 const jurisdictionValues = JURISDICTIONS as unknown as [string, ...string[]];
+const countryValues = COUNTRIES as unknown as [string, ...string[]];
 
 const emptyToUndefined = (v: unknown) =>
   typeof v === "string" && v.trim() === "" ? undefined : v;
@@ -37,6 +38,7 @@ export const profileSchema = z.object({
   headline: optionalText(140),
   bio: optionalText(1000),
   location: optionalText(120),
+  country: z.preprocess(emptyToUndefined, z.enum(countryValues).optional()),
   avatar_url: httpUrl("Avatar URL"),
   website: httpUrl("Website"),
   linkedin_url: httpUrl("LinkedIn URL"),

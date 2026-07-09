@@ -9,6 +9,7 @@ import {
   PROFILE_ROLES,
   SECTORS,
   JURISDICTIONS,
+  COUNTRIES,
   NICE_CLASSES,
   type ProfileRole,
 } from "@/lib/profile";
@@ -18,12 +19,20 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { ChipMultiSelect } from "@/components/profile/chip-multi-select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 type FormState = {
   display_name: string;
   headline: string;
   org_name: string;
   location: string;
+  country: string;
   avatar_url: string;
   website: string;
   linkedin_url: string;
@@ -40,6 +49,7 @@ function initialState(p: PublicProfile): FormState {
     headline: p.headline ?? "",
     org_name: p.org_name ?? "",
     location: p.location ?? "",
+    country: p.country ?? "",
     avatar_url: p.avatar_url ?? "",
     website: p.website ?? "",
     linkedin_url: p.linkedin_url ?? "",
@@ -131,15 +141,35 @@ export function ProfileForm({ profile }: { profile: PublicProfile }) {
             />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="avatar_url">Profile photo URL</Label>
-            <Input
-              id="avatar_url"
-              type="url"
-              value={state.avatar_url}
-              onChange={(e) => set("avatar_url", e.target.value)}
-              placeholder="https://…"
-            />
+            <Label htmlFor="country">Country</Label>
+            <Select
+              items={COUNTRIES.map((c) => ({ value: c, label: c }))}
+              value={state.country || null}
+              onValueChange={(v) => set("country", v ?? "")}
+            >
+              <SelectTrigger id="country" className="w-full">
+                <SelectValue placeholder="Where you're based" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value={null}>Not specified</SelectItem>
+                {COUNTRIES.map((c) => (
+                  <SelectItem key={c} value={c}>
+                    {c}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </div>
+        </div>
+        <div className="space-y-2">
+          <Label htmlFor="avatar_url">Profile photo URL</Label>
+          <Input
+            id="avatar_url"
+            type="url"
+            value={state.avatar_url}
+            onChange={(e) => set("avatar_url", e.target.value)}
+            placeholder="https://…"
+          />
         </div>
         <div className="space-y-2">
           <Label htmlFor="bio">Bio</Label>

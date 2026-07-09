@@ -9,6 +9,7 @@ import {
   PROFILE_ROLES,
   SECTORS,
   JURISDICTIONS,
+  COUNTRIES,
   NICE_CLASSES,
   type ProfileRole,
 } from "@/lib/profile";
@@ -22,12 +23,20 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { ChipMultiSelect } from "@/components/profile/chip-multi-select";
 import { NexusMark } from "@/components/brand/nexus-mark";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 type FormState = {
   display_name: string;
   headline: string;
   org_name: string;
   location: string;
+  country: string;
   avatar_url: string;
   website: string;
   linkedin_url: string;
@@ -66,6 +75,7 @@ export function OnboardingFlow({
     headline: initial.headline ?? "",
     org_name: initial.org_name ?? "",
     location: initial.location ?? "",
+    country: initial.country ?? "",
     avatar_url: initial.avatar_url ?? "",
     website: initial.website ?? "",
     linkedin_url: initial.linkedin_url ?? "",
@@ -177,6 +187,26 @@ export function OnboardingFlow({
                   placeholder="Acme Brands Ltd"
                   maxLength={120}
                 />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="country">Country</Label>
+                <Select
+                  items={COUNTRIES.map((c) => ({ value: c, label: c }))}
+                  value={state.country || null}
+                  onValueChange={(v) => set("country", v ?? "")}
+                >
+                  <SelectTrigger id="country" className="w-full">
+                    <SelectValue placeholder="Where you're based" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value={null}>Not specified</SelectItem>
+                    {COUNTRIES.map((c) => (
+                      <SelectItem key={c} value={c}>
+                        {c}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
               </div>
               <div className="space-y-2">
                 <Label htmlFor="location">Location</Label>

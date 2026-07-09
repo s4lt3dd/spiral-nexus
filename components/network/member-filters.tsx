@@ -7,7 +7,7 @@ import { Search, X } from "lucide-react";
 import {
   PROFILE_ROLES,
   SECTORS,
-  JURISDICTIONS,
+  COUNTRIES,
   roleLabel,
 } from "@/lib/profile";
 import { MEMBER_SORT_OPTIONS, type MemberParams } from "@/lib/members";
@@ -48,8 +48,17 @@ export function MemberFilters({ current }: { current: MemberParams }) {
     debounce.current = setTimeout(() => setParam("q", v.trim()), 350);
   }
 
+  const selectedSectors = current.sectors ?? [];
+
+  function toggleSector(s: string) {
+    const next = selectedSectors.includes(s)
+      ? selectedSectors.filter((x) => x !== s)
+      : [...selectedSectors, s];
+    setParam("sectors", next.length ? next.join(",") : null);
+  }
+
   const hasFilters = Boolean(
-    current.q || current.role || current.sector || current.jurisdiction,
+    current.q || current.role || selectedSectors.length || current.country,
   );
 
   function clearAll() {
@@ -101,20 +110,27 @@ export function MemberFilters({ current }: { current: MemberParams }) {
         </div>
 
         <div className="space-y-1.5">
-          <Label htmlFor="sector">Sector</Label>
+          <Label htmlFor="sectors">Sectors</Label>
+          {/* Multi-select: picking a sector ADDS it; picked sectors render as
+              removable chips below the whole filter row. */}
           <Select
             items={SECTORS.map((s) => ({ value: s, label: s }))}
-            value={current.sector ?? null}
-            onValueChange={(v) => setParam("sector", v)}
+            value={null}
+            onValueChange={(v) => v && toggleSector(v)}
           >
-            <SelectTrigger id="sector" className="w-full">
-              <SelectValue placeholder="Any sector" />
+            <SelectTrigger id="sectors" className="w-full">
+              <SelectValue
+                placeholder={
+                  selectedSectors.length
+                    ? `${selectedSectors.length} selected`
+                    : "Any sector"
+                }
+              />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value={null}>Any sector</SelectItem>
               {SECTORS.map((s) => (
                 <SelectItem key={s} value={s}>
-                  {s}
+                  {selectedSectors.includes(s) ? `✓ ${s}` : s}
                 </SelectItem>
               ))}
             </SelectContent>
@@ -122,20 +138,20 @@ export function MemberFilters({ current }: { current: MemberParams }) {
         </div>
 
         <div className="space-y-1.5">
-          <Label htmlFor="jurisdiction">Jurisdiction</Label>
+          <Label htmlFor="country">Based in</Label>
           <Select
-            items={JURISDICTIONS.map((j) => ({ value: j, label: j }))}
-            value={current.jurisdiction ?? null}
-            onValueChange={(v) => setParam("jurisdiction", v)}
+            items={COUNTRIES.map((c) => ({ value: c, label: c }))}
+            value={current.country ?? null}
+            onValueChange={(v) => setParam("country", v)}
           >
-            <SelectTrigger id="jurisdiction" className="w-full">
-              <SelectValue placeholder="Any jurisdiction" />
+            <SelectTrigger id="country" className="w-full">
+              <SelectValue placeholder="Any country" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value={null}>Any jurisdiction</SelectItem>
-              {JURISDICTIONS.map((j) => (
-                <SelectItem key={j} value={j}>
-                  {j}
+              <SelectItem value={null}>Any country</SelectItem>
+              {COUNTRIES.map((c) => (
+                <SelectItem key={c} value={c}>
+                  {c}
                 </SelectItem>
               ))}
             </SelectContent>
@@ -166,12 +182,35 @@ export function MemberFilters({ current }: { current: MemberParams }) {
         </div>
       </div>
 
-      {hasFilters && (
-        <div className="mt-4 flex justify-end">
-          <Button variant="ghost" size="sm" onClick={clearAll}>
-            <X className="size-4" aria-hidden />
-            Clear filters
-          </Button>
+      {(selectedSectors.length > 0 || hasFilters) && (
+        <div className="mt-4 flex flex-wrap items-center gap-2">
+          {selectedSectors.map((s) => (
+            <span
+              key={s}
+              className="inline-flex items-center gap-1 rounded-full bg-brand-tint py-0.5 pr-1 pl-2.5 text-xs font-medium text-brand"
+            >
+              {s}
+              <button
+                type="button"
+                aria-label={`Remove ${s}`}
+                onClick={() => toggleSector(s)}
+                className="cursor-pointer rounded-full p-0.5 transition-colors hover:bg-brand/15"
+              >
+                <X className="size-3" aria-hidden />
+              </button>
+            </span>
+          ))}
+          {hasFilters && (
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={clearAll}
+              className="ml-auto"
+            >
+              <X className="size-4" aria-hidden />
+              Clear filters
+            </Button>
+          )}
         </div>
       )}
     </div>
