@@ -25,6 +25,8 @@ import { VerifiedAvatar } from "@/components/marketing/verified-avatar";
 import { SiteHeader } from "@/components/marketing/site-header";
 import { ContactOwnerDialog } from "@/components/messages/contact-owner-dialog";
 import { SaveButton } from "@/components/listings/save-button";
+import { LikeButton } from "@/components/listings/like-button";
+import { engagementCounts, viewerLikedSet } from "@/lib/engagement";
 
 function formatDate(iso: string): string {
   return new Date(`${iso}T00:00:00Z`).toLocaleDateString("en-GB", {
@@ -84,10 +86,10 @@ export default async function ListingDetailPage({
   if (!listingRow) notFound();
   const listing = listingRow as IpAsset;
 
-  // Owner profile, viewer's saved state, and the certificate signed URL
-  // (short-lived; the listing-docs bucket is private) are independent —
-  // fetch them concurrently.
-  const [{ data: ownerRow }, { data: savedRow }, signedRes] =
+  // Owner profile, viewer's saved state, engagement counts, viewer's like,
+  // and the certificate signed URL (short-lived; the listing-docs bucket is
+  // private) are independent — fetch them concurrently.
+  const [{ data: ownerRow }, { data: savedRow }, signedRes, counts, likedSet] =
     await Promise.all([
       supabase
         .from("profiles")
@@ -105,7 +107,11 @@ export default async function ListingDetailPage({
             .from("listing-docs")
             .createSignedUrl(listing.certificate_path, 60 * 60)
         : Promise.resolve(null),
+      engagementCounts(supabase, [id]),
+      viewerLikedSet(supabase, user.id, [id]),
     ]);
+  const likeCount = counts.likes.get(id) ?? 0;
+  const saveCount = counts.saves.get(id) ?? 0;
   const owner = ownerRow as Pick<
     Profile,
     "display_name" | "org_name" | "verified"
@@ -354,14 +360,23 @@ export default async function ListingDetailPage({
                 )}
               </div>
 
-              <div className="mt-3">
+              <div className="mt-3 grid grid-cols-2 gap-3">
                 <SaveButton
                   listingId={listing.id}
                   initialSaved={isSaved}
                   showLabel
-                  className="w-full"
+                />
+                <LikeButton
+                  listingId={listing.id}
+                  initialLiked={likedSet.has(id)}
+                  initialCount={likeCount}
+                  showLabel
                 />
               </div>
+              <p className="mt-3 text-center text-xs text-slate-500">
+                Saved by {saveCount}{" "}
+                {saveCount === 1 ? "member" : "members"}
+              </p>
             </div>
           </aside>
         </div>
