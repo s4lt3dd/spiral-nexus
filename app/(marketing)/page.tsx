@@ -59,15 +59,15 @@ export default function HomePage() {
         <div className="mx-auto grid max-w-6xl items-center gap-10 px-6 py-20 sm:py-28 lg:grid-cols-2 lg:gap-8">
           <div className="animate-rise relative z-10 max-w-xl">
             <span className="inline-flex items-center rounded-full border border-white/20 bg-white/10 px-3 py-1 text-xs font-medium tracking-wide text-white/90 uppercase backdrop-blur">
-              The IP marketplace
+              The IP hub
             </span>
             <h1 className="mt-6 text-5xl leading-[1.04] font-semibold text-balance text-white sm:text-6xl lg:text-7xl">
               Where dormant IP finds its next owner
             </h1>
             <p className="mt-6 max-w-lg text-lg leading-relaxed text-white/75">
-              Spiral Nexus is the marketplace to list, discover, and
-              commercialise trademarks — and connect directly with the partners
-              who want them.
+              Spiral Nexus is the centralised listing hub that helps you
+              discover and commercialise intangible assets and find the right
+              business partners.
             </p>
             <div className="mt-9 flex flex-wrap gap-3">
               <Link
@@ -348,7 +348,8 @@ export default function HomePage() {
             </h2>
             <p className="mx-auto mt-4 max-w-xl text-lg text-white/75">
               List a trademark in minutes, or start discovering the marks that
-              fit your next move.
+              fit your next move. Get access to a global community of
+              innovators, creators and brand partners.
             </p>
             <div className="mt-8 flex flex-wrap justify-center gap-3">
               <Link

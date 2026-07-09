@@ -4,6 +4,10 @@ Two-sided marketplace for intellectual property assets (trademarks first for
 MVP, patents later). Owners list assets to license/sell; buyers and licensees
 discover them and make contact.
 
+**Copy rule (founder decision, July 2026):** user-facing copy never says
+"marketplace" — say **hub** (product/brand contexts) or **platform** (legal
+pages). "Marketplace" stays only in internal docs like this one.
+
 **Core loop to protect:** owner lists an asset -> buyer finds it -> buyer
 contacts the owner.
 

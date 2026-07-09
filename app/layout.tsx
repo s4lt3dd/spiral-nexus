@@ -19,7 +19,7 @@ const inter = Inter({
 export const metadata: Metadata = {
   title: "Spiral Nexus",
   description:
-    "The marketplace to discover, list, and commercialise intellectual property assets.",
+    "The centralised hub to discover and commercialise intangible assets and find the right business partners.",
 };
 
 export default function RootLayout({

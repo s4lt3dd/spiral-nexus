@@ -25,7 +25,8 @@ export interface NavLink {
 }
 
 // Top-nav links for signed-in users (the product surface). The brand logo
-// covers "home" (your profile), so it's intentionally not repeated here.
+// links to the marketing Home page (not repeated here). About is kept in the
+// signed-in nav too, for visibility, per founder feedback.
 export const appNav: NavLink[] = [
   { href: "/dashboard/listings", label: "My listings" },
   { href: "/listings", label: "Browse" },
@@ -33,6 +34,7 @@ export const appNav: NavLink[] = [
   { href: "/network", label: "Connect" },
   { href: "/registries", label: "Registries" },
   { href: "/messages", label: "Messages" },
+  { href: "/about", label: "About" },
 ];
 
 // Marketing links for signed-out visitors. Browse is sign-in-only, so it's

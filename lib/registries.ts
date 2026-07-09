@@ -6,7 +6,9 @@
 //     are SPAs with no documented text-query URL param (WIPO's terms also
 //     disallow automated querying);
 //   - UKIPO trade mark text search uses a POST form;
-//   - TMview's basicSearch param (ST13) is an internal mark id, not free text.
+//   - EUIPO eSearch is an SPA whose search state lives in an undocumented
+//     hash fragment, not a stable GET param (its predecessor here, TMview,
+//     was dropped July 2026 — tmview.org fails its TLS handshake).
 // So we open each registry's official SEARCH LANDING page and copy the user's
 // query to the clipboard to paste — no fake pre-filled links. If a registry
 // later documents a GET query format, add `buildSearchUrl` and the UI will
@@ -39,10 +41,10 @@ export const REGISTRIES: Registry[] = [
   },
   {
     id: "euipo",
-    name: "EUIPO · TMview",
+    name: "EUIPO",
     jurisdiction: "European Union",
-    landingUrl: "https://www.tmview.org/",
-    blurb: "EUIPO-run TMview — EU and worldwide trade marks.",
+    landingUrl: "https://euipo.europa.eu/eSearch/",
+    blurb: "EU Intellectual Property Office — eSearch trade mark search.",
   },
   {
     id: "wipo",

@@ -75,17 +75,14 @@ export function SiteHeader({ email: initialEmail }: { email?: string | null }) {
   return (
     <header className="sticky top-0 z-30 border-b border-border bg-surface/85 backdrop-blur supports-[backdrop-filter]:bg-surface/70">
       <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-6">
-        <Link
-          href={authed ? "/dashboard" : "/"}
-          className="flex items-center gap-2.5"
-        >
+        <Link href="/" className="flex items-center gap-2.5">
           <NexusMark className="size-7" />
           <span className="font-display text-lg font-medium tracking-[-0.02em] text-ink">
             Spiral Nexus
           </span>
         </Link>
 
-        <nav className="hidden items-center gap-7 sm:flex">
+        <nav className="hidden items-center gap-5 sm:flex lg:gap-7">
           {links.map((l) => (
             <Link
               key={l.href}
@@ -109,7 +106,7 @@ export function SiteHeader({ email: initialEmail }: { email?: string | null }) {
               <span className="flex size-7 items-center justify-center rounded-[6px] bg-brand-tint font-display text-xs font-medium text-brand">
                 {email!.charAt(0).toUpperCase()}
               </span>
-              <span className="hidden max-w-[12rem] truncate text-slate-700 sm:inline">
+              <span className="hidden max-w-[12rem] truncate text-slate-700 lg:inline">
                 {email}
               </span>
               <ChevronDown className="size-4 text-slate-400" aria-hidden />

@@ -1,8 +1,9 @@
 import { LegalArticle } from "@/components/legal/legal-article";
+import { CONTACT_EMAIL } from "@/lib/site";
 
 export const metadata = {
   title: "Terms of Use · Spiral Nexus",
-  description: "The terms governing use of the Spiral Nexus marketplace.",
+  description: "The terms governing use of the Spiral Nexus platform.",
 };
 
 export default function TermsPage() {
@@ -10,7 +11,7 @@ export default function TermsPage() {
     <LegalArticle title="Terms of Use" lastUpdated="21 June 2026">
       <p>
         These Terms of Use govern your access to and use of the Spiral Nexus
-        marketplace operated by <strong>[Spiral Nexus Ltd]</strong>. By using the
+        platform operated by <strong>[Spiral Nexus Ltd]</strong>. By using the
         service you agree to these terms. If you do not agree, do not use the
         service.
       </p>
@@ -92,10 +93,7 @@ export default function TermsPage() {
       <h2>Contact</h2>
       <p>
         Questions about these terms:{" "}
-        <a href="mailto:[legal@spiralnexus.example]">
-          [legal@spiralnexus.example]
-        </a>
-        .
+        <a href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a>.
       </p>
     </LegalArticle>
   );

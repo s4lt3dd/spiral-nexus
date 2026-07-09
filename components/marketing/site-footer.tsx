@@ -16,7 +16,7 @@ export function SiteFooter() {
           </span>
         </div>
         <p className="text-sm text-slate-500">
-          The marketplace for intellectual property.
+          Discover. Connect. Commercialise.
         </p>
         <nav className="flex items-center gap-6">
           {footerNav.map((l) => (
