@@ -54,3 +54,6 @@ esbuild.err
 # python bytecode (skill tooling)
 __pycache__/
 *.pyc
+
+# Claude Code personal settings
+.claude/settings.local.json

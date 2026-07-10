@@ -1,8 +1,10 @@
 import { redirect } from "next/navigation";
 
 import { createClient } from "@/lib/supabase/server";
+import { recentNotifications } from "@/lib/engagement";
 import { SiteHeader } from "@/components/marketing/site-header";
 import { InboxList, type InboxRowVM } from "@/components/messages/inbox-list";
+import { NotificationsPanel } from "@/components/messages/notifications-panel";
 
 export const metadata = { title: "Messages · Spiral Nexus" };
 
@@ -27,13 +29,18 @@ export default async function MessagesPage() {
   } = await supabase.auth.getUser();
   if (!user) redirect("/login");
 
-  // RLS limits this to conversations the user participates in.
-  const { data } = await supabase
-    .from("conversations")
-    .select(
-      "id, buyer_id, owner_id, last_message_at, listing:ip_assets(title), buyer:profiles!conversations_buyer_id_fkey(display_name, org_name), owner:profiles!conversations_owner_id_fkey(display_name, org_name)",
-    )
-    .order("last_message_at", { ascending: false });
+  // Conversations (RLS-scoped to the user's own) and their notifications
+  // (likes on their listings + new followers) are independent — fetch both
+  // concurrently.
+  const [{ data }, notifications] = await Promise.all([
+    supabase
+      .from("conversations")
+      .select(
+        "id, buyer_id, owner_id, last_message_at, listing:ip_assets(title), buyer:profiles!conversations_buyer_id_fkey(display_name, org_name), owner:profiles!conversations_owner_id_fkey(display_name, org_name)",
+      )
+      .order("last_message_at", { ascending: false }),
+    recentNotifications(supabase, user.id),
+  ]);
   const conversations = (data ?? []) as unknown as InboxRow[];
 
   // The latest message per conversation (snippet) + how many are unread for this
@@ -96,6 +103,8 @@ export default async function MessagesPage() {
         </p>
 
         <InboxList currentUserId={user.id} initialRows={rows} />
+
+        <NotificationsPanel items={notifications} />
       </main>
     </div>
   );

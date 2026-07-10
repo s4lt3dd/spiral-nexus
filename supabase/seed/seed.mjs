@@ -408,6 +408,7 @@ async function main() {
   await seedMessages(users);
   await seedSaved(users);
   await seedFollows(users, members);
+  await seedLikes(users, members);
 
   console.log(`Sign in as ${OWNERS[0].email} / ${TEST_PASSWORD} to demo.`);
 }
@@ -482,6 +483,44 @@ async function seedSaved(users) {
     .upsert(rows, { onConflict: "user_id,listing_id", ignoreDuplicates: true });
   if (error) throw error;
   console.log(`Seeded ${rows.length} saved listing(s) for ${OWNERS[2].email}.`);
+}
+
+// Seed likes across owners + members so counts, the activity tab, and the
+// notifications panel all demo non-empty. Tolerant of the engagement
+// migration not being applied yet.
+async function seedLikes(users, members) {
+  const probe = await admin.from("listing_likes").select("user_id").limit(1);
+  if (probe.error) {
+    console.log(
+      "Skipping likes seed — listing_likes table not found. Run `npm run db:push`, then re-run this seed.",
+    );
+    return;
+  }
+
+  const { data: published } = await admin
+    .from("ip_assets")
+    .select("id, owner_id")
+    .eq("is_published", true)
+    .order("created_at", { ascending: true });
+  if (!published?.length) return;
+
+  const likers = [...users, ...members];
+  const rows = [];
+  // Deterministic spread: each liker likes every 3rd listing offset by their
+  // index, skipping their own — varied counts without randomness.
+  likers.forEach((liker, li) => {
+    published.forEach((l, i) => {
+      if (l.owner_id === liker.id) return;
+      if ((i + li) % 3 !== 0) return;
+      rows.push({ user_id: liker.id, listing_id: l.id });
+    });
+  });
+
+  const { error } = await admin
+    .from("listing_likes")
+    .upsert(rows, { onConflict: "user_id,listing_id", ignoreDuplicates: true });
+  if (error) throw error;
+  console.log(`Seeded ${rows.length} like(s) across ${likers.length} members.`);
 }
 
 // Seed a few conversations so the inbox demos. One thread is addressed to the

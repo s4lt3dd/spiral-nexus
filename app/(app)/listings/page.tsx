@@ -12,6 +12,7 @@ import {
   type DiscoveryParams,
 } from "@/lib/discovery";
 import type { IpAsset } from "@/lib/types";
+import { engagementCounts, viewerLikedSet } from "@/lib/engagement";
 import { SiteHeader } from "@/components/marketing/site-header";
 import { SearchFilters } from "@/components/listings/search-filters";
 import { ListingBrowseCard } from "@/components/listings/listing-browse-card";
@@ -51,11 +52,14 @@ export default async function BrowsePage({
   );
   const listings = rows as IpAsset[];
 
-  // The viewer's saved set, to render the bookmark toggle in the right state.
-  const { data: savedRows } = await supabase
-    .from("saved_listings")
-    .select("listing_id")
-    .eq("user_id", user.id);
+  // The viewer's saved set (bookmark state), like/save counts, and the
+  // viewer's likes — three batched queries for the whole page, never per-card.
+  const pageIds = listings.map((l) => l.id);
+  const [{ data: savedRows }, counts, likedSet] = await Promise.all([
+    supabase.from("saved_listings").select("listing_id").eq("user_id", user.id),
+    engagementCounts(supabase, pageIds),
+    viewerLikedSet(supabase, user.id, pageIds),
+  ]);
   const savedIds = new Set((savedRows ?? []).map((r) => r.listing_id));
 
   return (
@@ -101,6 +105,11 @@ export default async function BrowsePage({
                 key={listing.id}
                 listing={listing}
                 saved={savedIds.has(listing.id)}
+                engagement={{
+                  liked: likedSet.has(listing.id),
+                  likeCount: counts.likes.get(listing.id) ?? 0,
+                  saveCount: counts.saves.get(listing.id) ?? 0,
+                }}
               />
             ))}
           </div>

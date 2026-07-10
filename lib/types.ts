@@ -77,6 +77,12 @@ export interface SavedListing {
   created_at: string;
 }
 
+export interface ListingLike {
+  user_id: string;
+  listing_id: string;
+  created_at: string;
+}
+
 export interface Follow {
   follower_id: string;
   following_id: string;
