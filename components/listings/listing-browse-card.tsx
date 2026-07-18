@@ -22,13 +22,13 @@ export interface CardEngagement {
   saveCount: number;
 }
 
-// Public, clickable listing card for the browse grid. Mirrors the dashboard
-// ListingCard's visual language (mark block, Fraunces title, meta, price) but
-// links to the detail page and carries no owner actions.
-// `saved` / `engagement` are optional: when provided (Browse + Saved pages)
-// the toggles are overlaid as siblings of the Link (not nested — invalid
-// HTML + would swallow navigation). Omitted in showcase contexts (home,
-// public profile).
+// Public, clickable listing card for the browse grid. Uniform height across the
+// grid (founder ask): the image is a fixed 16:10 that FILLS the block, the
+// description reserves two lines, and the meta/price row is pinned to the card
+// bottom (mt-auto) — so cards with a one-line and a two-line description are the
+// same height. `saved` / `engagement` are optional: when provided (Browse +
+// Saved pages) the toggles are overlaid as siblings of the Link (not nested —
+// invalid HTML + would swallow navigation). Omitted in showcase contexts.
 export function ListingBrowseCard({
   listing,
   saved,
@@ -46,9 +46,12 @@ export function ListingBrowseCard({
       href={`/listings/${listing.id}`}
       className="group rounded-lg outline-none focus-visible:ring-[3px] focus-visible:ring-brand/25"
     >
-      <Card className="h-full gap-0 p-0 transition-[transform,box-shadow,border-color] duration-200 ease-out group-hover:-translate-y-0.5 group-hover:border-brand/30 group-hover:shadow-md">
-        {/* Mark / image block */}
-        <div className="relative aspect-[16/10] w-full overflow-hidden rounded-t-lg bg-slate-100">
+      <Card className="flex h-full flex-col gap-0 p-0 transition-[transform,box-shadow,border-color] duration-200 ease-out group-hover:-translate-y-0.5 group-hover:border-brand/30 group-hover:shadow-md">
+        {/* Mark / image block. It carries no radius of its own — the Card's
+            `overflow-hidden rounded-lg` clips the image to the card's rounded
+            top corners, so the image respects the card shape with no corner
+            gap or overhang. */}
+        <div className="relative aspect-[16/10] w-full overflow-hidden bg-surface-raised">
           {cover ? (
             <Image
               src={cover}
@@ -56,7 +59,7 @@ export function ListingBrowseCard({
               fill
               sizes="(max-width: 768px) 100vw, 360px"
               unoptimized
-              className="object-contain p-6"
+              className="object-cover"
             />
           ) : (
             <div className="flex h-full items-center justify-center">
@@ -78,13 +81,13 @@ export function ListingBrowseCard({
             )}
           </div>
 
-          {listing.description && (
-            <p className="mt-1.5 line-clamp-2 text-sm text-slate-500">
-              {listing.description}
-            </p>
-          )}
+          {/* Description — reserved two lines so every card matches height. */}
+          <p className="mt-1.5 line-clamp-2 min-h-[2.5rem] text-sm text-slate-500">
+            {listing.description}
+          </p>
 
-          <div className="mt-4 flex flex-wrap items-center gap-x-2.5 gap-y-2 text-sm text-slate-500">
+          {/* Meta / price — pinned to the card bottom. */}
+          <div className="mt-auto flex flex-wrap items-center gap-x-2.5 gap-y-2 pt-4 text-sm text-slate-500">
             {listing.jurisdiction && <span>{listing.jurisdiction}</span>}
             {listing.nice_classes?.length > 0 && (
               <span className="inline-flex items-center rounded-sm border border-slate-200 bg-slate-50 px-1.5 py-0.5 text-[0.7rem] font-medium tracking-wide text-slate-600 uppercase">
