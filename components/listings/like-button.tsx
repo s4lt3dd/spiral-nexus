@@ -56,11 +56,14 @@ export function LikeButton({
         aria-pressed={liked}
         className={cn(
           "inline-flex h-10 cursor-pointer items-center justify-center gap-2 rounded-md border border-border bg-surface px-4 text-sm font-medium text-slate-700 shadow-xs transition-colors outline-none hover:bg-slate-50 focus-visible:ring-[3px] focus-visible:ring-brand/25 disabled:opacity-50",
-          liked && "border-brand/30 bg-brand-tint text-brand-text",
+          liked && "border-red-500/40 bg-red-500/10 text-foreground",
           className,
         )}
       >
-        <Heart className={cn("size-4", liked && "fill-current")} aria-hidden />
+        <Heart
+          className={cn("size-4", liked && "fill-red-500 text-red-500")}
+          aria-hidden
+        />
         {liked ? "Liked" : "Like"}
         <span className="tabular-nums text-slate-500">{count}</span>
       </button>
@@ -75,12 +78,15 @@ export function LikeButton({
       aria-pressed={liked}
       aria-label={liked ? "Unlike listing" : "Like listing"}
       className={cn(
-        "inline-flex h-9 cursor-pointer items-center justify-center gap-1.5 rounded-full border border-border bg-surface/90 px-3 text-sm text-slate-600 shadow-sm backdrop-blur transition-colors outline-none hover:bg-surface hover:text-brand-text focus-visible:ring-[3px] focus-visible:ring-brand/25 disabled:opacity-50",
-        liked && "border-brand/30 text-brand-text",
+        "inline-flex h-9 cursor-pointer items-center justify-center gap-1.5 rounded-full border border-border bg-surface/90 px-3 text-sm text-slate-600 shadow-sm backdrop-blur transition-colors outline-none hover:bg-surface focus-visible:ring-[3px] focus-visible:ring-brand/25 disabled:opacity-50",
+        liked && "border-red-500/40 text-foreground",
         className,
       )}
     >
-      <Heart className={cn("size-4", liked && "fill-current")} aria-hidden />
+      <Heart
+        className={cn("size-4", liked && "fill-red-500 text-red-500")}
+        aria-hidden
+      />
       <span className="tabular-nums">{count}</span>
     </button>
   );
