@@ -79,6 +79,9 @@ export function ProfileForm({ profile }: { profile: PublicProfile }) {
     setState((s) => ({ ...s, [key]: value }));
   }
 
+  // A name is required for every member (matches the server schema).
+  const nameOk = state.display_name.trim().length > 0;
+
   function onSubmit(e: React.FormEvent) {
     e.preventDefault();
     startTransition(async () => {
@@ -99,14 +102,22 @@ export function ProfileForm({ profile }: { profile: PublicProfile }) {
       <section className="space-y-5">
         <div className="grid gap-5 sm:grid-cols-2">
           <div className="space-y-2">
-            <Label htmlFor="display_name">Name</Label>
+            <Label htmlFor="display_name">
+              Name <span className="text-brand-text">*</span>
+            </Label>
             <Input
               id="display_name"
               value={state.display_name}
               onChange={(e) => set("display_name", e.target.value)}
               placeholder="Jane Doe"
               maxLength={80}
+              aria-required
             />
+            {!nameOk && (
+              <p className="text-xs text-slate-500">
+                Required — every member needs a name.
+              </p>
+            )}
           </div>
           <div className="space-y-2">
             <Label htmlFor="org_name">Organisation</Label>
@@ -278,7 +289,7 @@ export function ProfileForm({ profile }: { profile: PublicProfile }) {
       </section>
 
       <div className="flex items-center gap-3 border-t border-border pt-6">
-        <Button type="submit" size="lg" disabled={pending}>
+        <Button type="submit" size="lg" disabled={pending || !nameOk}>
           {pending ? "Saving…" : "Save profile"}
         </Button>
         <Button

@@ -17,6 +17,15 @@ const emptyToUndefined = (v: unknown) =>
 const optionalText = (max: number) =>
   z.preprocess(emptyToUndefined, z.string().trim().max(max).optional());
 
+// Name is REQUIRED — every member must have a display name (founder decision:
+// no more nameless "Spiral Nexus member" ghosts). This is the single
+// server-side enforcement point for both onboarding completion AND profile
+// edits, so a name can never be omitted or later cleared.
+const requiredName = z.preprocess(
+  (v) => (typeof v === "string" ? v.trim() : v),
+  z.string().min(1, "Please add your name").max(80),
+);
+
 // http(s)-only URL (blocks javascript:/data: URLs that could bite when rendered).
 const httpUrl = (label: string) =>
   z.preprocess(
@@ -33,7 +42,7 @@ const httpUrl = (label: string) =>
   );
 
 export const profileSchema = z.object({
-  display_name: optionalText(80),
+  display_name: requiredName,
   org_name: optionalText(120),
   headline: optionalText(140),
   bio: optionalText(1000),

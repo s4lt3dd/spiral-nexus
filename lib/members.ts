@@ -91,7 +91,12 @@ export async function searchMembers(
     .from("profiles")
     .select(PUBLIC_PROFILE_COLUMNS, { count: "exact" })
     // Only real, onboarded members — keeps ghost/auto-created rows out.
-    .not("onboarded_at", "is", null);
+    .not("onboarded_at", "is", null)
+    // …and never surface nameless rows: a member must have a display name or an
+    // org name (the real inputs to profileDisplayName), so the directory never
+    // shows a "Spiral Nexus member" placeholder. New profiles always have a
+    // name (required at onboarding); this also hides any legacy nameless rows.
+    .or("display_name.not.is.null,org_name.not.is.null");
 
   if (opts?.excludeId) query = query.neq("id", opts.excludeId);
 
