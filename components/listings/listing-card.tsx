@@ -70,7 +70,7 @@ export function ListingCard({ listing }: { listing: IpAsset }) {
     <Card className="flex-row gap-0 p-0">
       <div className="flex flex-1 flex-col gap-5 p-5 sm:flex-row sm:items-stretch">
         {/* Mark / image block */}
-        <div className="relative aspect-[16/10] w-full shrink-0 overflow-hidden rounded-md bg-slate-100 ring-1 ring-slate-200/70 sm:w-40">
+        <div className="relative aspect-[16/10] w-full shrink-0 overflow-hidden rounded-md bg-surface-raised ring-1 ring-border sm:w-40">
           {cover ? (
             <Image
               src={cover}
@@ -80,7 +80,7 @@ export function ListingCard({ listing }: { listing: IpAsset }) {
               // User-supplied external URL — skip the optimizer (avoids it
               // proxying arbitrary hosts) until uploads move to our Storage.
               unoptimized
-              className="object-contain p-3"
+              className="object-cover"
             />
           ) : (
             <div className="flex h-full items-center justify-center">

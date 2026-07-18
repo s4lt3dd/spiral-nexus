@@ -18,6 +18,7 @@ import {
   renewalLabel,
 } from "@/lib/listings";
 import { niceClassesLabel } from "@/lib/discovery";
+import { niceClassLabel } from "@/lib/profile";
 import { buttonVariants } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { NexusMark } from "@/components/brand/nexus-mark";
@@ -149,6 +150,7 @@ export default async function ListingDetailPage({
           { label: "Renewal", value: renewalLabel(listing.license_renewable) },
         ]
       : []),
+    { label: "Listed", value: formatDate(listing.created_at.slice(0, 10)) },
   ];
 
   return (
@@ -184,7 +186,7 @@ export default async function ListingDetailPage({
         <div className="mt-8 grid gap-8 lg:grid-cols-3">
           {/* Left: mark + description + facts */}
           <div className="lg:col-span-2">
-            <div className="relative aspect-[16/9] w-full overflow-hidden rounded-xl border border-border bg-slate-100">
+            <div className="relative aspect-[16/10] w-full overflow-hidden rounded-xl border border-border bg-surface-raised">
               {mainImage ? (
                 <Image
                   src={mainImage}
@@ -192,7 +194,7 @@ export default async function ListingDetailPage({
                   fill
                   sizes="(max-width: 1024px) 100vw, 640px"
                   unoptimized
-                  className="object-contain p-8"
+                  className="object-cover"
                 />
               ) : (
                 <div className="flex h-full items-center justify-center">
@@ -206,7 +208,7 @@ export default async function ListingDetailPage({
                 {moreImages.map((url) => (
                   <li
                     key={url}
-                    className="relative aspect-square overflow-hidden rounded-lg border border-border bg-slate-100"
+                    className="relative aspect-square overflow-hidden rounded-lg border border-border bg-surface-raised"
                   >
                     <Image
                       src={url}
@@ -214,7 +216,7 @@ export default async function ListingDetailPage({
                       fill
                       sizes="120px"
                       unoptimized
-                      className="object-contain p-2"
+                      className="object-cover"
                     />
                   </li>
                 ))}
@@ -236,6 +238,28 @@ export default async function ListingDetailPage({
               <p className="mt-4 text-lg leading-relaxed text-slate-600">
                 {listing.description}
               </p>
+            )}
+
+            {/* What the mark actually covers — Nice classes with their names,
+                not just numbers. The single most useful "more detail" for a
+                trademark buyer. */}
+            {listing.nice_classes?.length > 0 && (
+              <section className="mt-8">
+                <h2 className="text-xs font-medium tracking-wide text-slate-500 uppercase">
+                  Goods &amp; services covered
+                </h2>
+                <ul className="mt-3 flex flex-wrap gap-2">
+                  {listing.nice_classes.map((n) => (
+                    <li
+                      key={n}
+                      className="inline-flex items-center gap-1.5 rounded-lg border border-border bg-surface-raised px-3 py-1.5 text-sm"
+                    >
+                      <span className="font-medium text-brand-text">Nice {n}</span>
+                      <span className="text-slate-600">{niceClassLabel(n)}</span>
+                    </li>
+                  ))}
+                </ul>
+              </section>
             )}
 
             <dl className="mt-8 grid grid-cols-1 gap-px overflow-hidden rounded-xl border border-border bg-border sm:grid-cols-2">
