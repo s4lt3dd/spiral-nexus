@@ -222,7 +222,7 @@ export default async function ListingDetailPage({
             )}
 
             <div className="mt-6 flex items-center gap-3">
-              <h1 className="text-3xl font-semibold tracking-tight text-ink sm:text-4xl">
+              <h1 className="text-3xl font-semibold tracking-tight text-foreground sm:text-4xl">
                 {listing.title}
               </h1>
               {listing.status && (
@@ -246,7 +246,7 @@ export default async function ListingDetailPage({
                     <dt className="text-xs font-medium tracking-wide text-slate-500 uppercase">
                       {f.label}
                     </dt>
-                    <dd className="mt-1 text-sm font-medium text-ink">
+                    <dd className="mt-1 text-sm font-medium text-foreground">
                       {f.value}
                     </dd>
                   </div>
@@ -311,7 +311,7 @@ export default async function ListingDetailPage({
           <aside className="lg:col-span-1">
             <div className="rounded-xl border border-border bg-surface p-6 shadow-sm lg:sticky lg:top-24">
               <p className="text-sm text-slate-500">{dealTypeLabel(listing.deal_type)}</p>
-              <p className="mt-1 text-3xl font-semibold text-ink">
+              <p className="mt-1 text-3xl font-semibold text-foreground">
                 {listing.asking_price != null
                   ? formatPrice(listing.asking_price, listing.currency)
                   : "Price on request"}
@@ -321,14 +321,14 @@ export default async function ListingDetailPage({
                 {owner?.verified ? (
                   <VerifiedAvatar initials={initials(ownerName)} />
                 ) : (
-                  <span className="flex size-11 shrink-0 items-center justify-center rounded-full bg-brand-tint font-display text-sm font-medium text-brand">
+                  <span className="flex size-11 shrink-0 items-center justify-center rounded-full bg-brand-tint font-display text-sm font-medium text-brand-text">
                     {initials(ownerName)}
                   </span>
                 )}
                 <div className="min-w-0">
                   <Link
                     href={`/u/${listing.owner_id}`}
-                    className="flex items-center gap-1.5 truncate text-sm font-medium text-ink hover:underline"
+                    className="flex items-center gap-1.5 truncate text-sm font-medium text-foreground hover:underline"
                   >
                     {ownerName}
                     {owner?.verified && (

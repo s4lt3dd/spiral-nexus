@@ -8,39 +8,46 @@
 
 /* =========================================================================
    Spiral Nexus design system — tokens from design-system/spiral-nexus/MASTER.md
-   Premium & authoritative: neutral slate backbone, single purple accent with
-   gradients, gold reserved for verified/premium. Serif display + grotesque body.
+   AUTHORITATIVE DARK THEME (founder decision, July 2026): the dark values ARE
+   the base :root values. No light mode, no toggle. Purple-cast night canvas,
+   violet actions anchored by the logo plum, gold reserved for verified.
    ========================================================================= */
 :root {
-  /* ---- Colour (raw brand tokens) ---- */
-  /* Brand = purple, matching the Softr mockup identity (overrides the original
-     emerald direction; see design-system/spiral-nexus/MASTER.md). */
-  --ink: #0b1220;
-  --brand: #6d28d9; /* violet-700 */
-  --brand-hover: #5b21b6; /* violet-800 */
-  --brand-tint: #ede9fe; /* violet-100 */
-  --gold: #9a7b22;
-  --gold-tint: #f7f1df;
+  color-scheme: dark;
 
-  /* Purple gradients (the mockup's signature). */
+  /* ---- Colour (raw brand tokens) ---- */
+  --ink: #0a0811; /* deepest surface (marketing footer band) */
+  --brand-deep: #551d67; /* logo plum — gradient anchor, never text */
+  --brand: #7c3aed; /* primary action violet */
+  --brand-hover: #8b5cf6;
+  --brand-text: #a78bfa; /* links / accent text — AA on the dark canvas */
+  --brand-tint: rgba(124, 58, 237, 0.16);
+  --gold: #e3b341;
+  --gold-tint: rgba(227, 179, 65, 0.12);
+
+  /* Purple gradients (the brand signature). */
   --gradient-brand: linear-gradient(135deg, #7c3aed 0%, #6d28d9 50%, #4f46e5 100%);
-  --gradient-hero: linear-gradient(165deg, #1b1140 0%, #2c1a57 45%, #5b3f86 100%);
-  --bg: #fbfcfd;
-  --surface: #ffffff;
-  --slate-50: #f8fafc;
-  --slate-100: #f1f5f9;
-  --slate-200: #e2e8f0;
-  --slate-300: #cbd5e1;
-  --slate-400: #94a3b8;
-  --slate-500: #64748b;
-  --slate-600: #475569;
-  --slate-700: #334155;
-  --slate-800: #1e293b;
-  --slate-900: #0f172a;
-  --success: #15803d;
-  --warning: #b45309;
-  --danger: #b91c1c;
-  --info: #2563eb;
+  --gradient-hero: linear-gradient(165deg, #0d0b14 10%, #2a1245 55%, #551d67 100%);
+  --bg: #0d0b14;
+  --surface: #161225;
+  --surface-raised: #1d1830;
+  /* Neutral ramp, purple-cast. Step semantics are preserved from the light
+     theme (50 = subtlest fill, 200 = borders, 600 = secondary text,
+     900 = headlines) so existing slate-* utilities re-theme in place. */
+  --slate-50: #1a1528;
+  --slate-100: #221c36;
+  --slate-200: #2a2440;
+  --slate-300: #3a3355;
+  --slate-400: #8a82a4; /* AA (≥4.5) even on --surface-raised */
+  --slate-500: #948cab;
+  --slate-600: #b3acc9;
+  --slate-700: #c9c3db;
+  --slate-800: #e2ddf0;
+  --slate-900: #f2effa;
+  --success: #34d399;
+  --warning: #fbbf24;
+  --danger: #f87171;
+  --info: #60a5fa;
 
   /* ---- Spacing (4px base) ---- */
   --space-1: 4px;
@@ -62,13 +69,13 @@
   /* shadcn base radius (its primitives derive sm/md/lg from this) */
   --radius: 10px;
 
-  /* ---- Elevation (soft, layered — the premium tell) ---- */
-  --shadow-xs: 0 1px 2px rgba(11, 18, 32, 0.06);
-  --shadow-sm: 0 1px 3px rgba(11, 18, 32, 0.08), 0 1px 2px rgba(11, 18, 32, 0.04);
-  --shadow-md: 0 4px 12px -2px rgba(11, 18, 32, 0.1),
-    0 2px 6px -2px rgba(11, 18, 32, 0.06);
-  --shadow-lg: 0 12px 28px -8px rgba(11, 18, 32, 0.16);
-  --focus-ring: 0 0 0 3px rgba(109, 40, 217, 0.25);
+  /* ---- Elevation (dark: lighter surface + shadow do the separating) ---- */
+  --shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.35);
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.45);
+  --shadow-md: 0 4px 14px -2px rgba(0, 0, 0, 0.55);
+  --shadow-lg: 0 16px 40px -12px rgba(0, 0, 0, 0.65);
+  --glow-brand: 0 0 28px rgba(124, 58, 237, 0.28); /* one element per screen */
+  --focus-ring: 0 0 0 3px rgba(167, 139, 250, 0.4);
 
   /* ---- Motion ---- */
   --ease-out: cubic-bezier(0.2, 0.8, 0.2, 1);
@@ -81,33 +88,33 @@
   --foreground: var(--slate-900);
   --card: var(--surface);
   --card-foreground: var(--slate-900);
-  --popover: var(--surface);
+  --popover: var(--surface-raised);
   --popover-foreground: var(--slate-900);
   --primary: var(--brand);
   --primary-foreground: #ffffff;
-  --secondary: var(--surface);
+  --secondary: var(--surface-raised);
   --secondary-foreground: var(--slate-800);
   --muted: var(--slate-100);
   --muted-foreground: var(--slate-600);
   --accent: var(--brand-tint);
-  --accent-foreground: var(--brand);
+  --accent-foreground: var(--brand-text);
   --destructive: var(--danger);
   --border: var(--slate-200);
   --input: var(--slate-300);
-  --ring: var(--brand);
-  --chart-1: var(--brand);
-  --chart-2: #0891b2;
-  --chart-3: var(--ink);
-  --chart-4: var(--slate-600);
-  --chart-5: var(--gold);
+  --ring: var(--brand-text);
+  --chart-1: var(--brand-text);
+  --chart-2: var(--gold);
+  --chart-3: var(--success);
+  --chart-4: var(--info);
+  --chart-5: var(--slate-400);
   --sidebar: var(--surface);
   --sidebar-foreground: var(--slate-900);
   --sidebar-primary: var(--brand);
   --sidebar-primary-foreground: #ffffff;
   --sidebar-accent: var(--brand-tint);
-  --sidebar-accent-foreground: var(--brand);
+  --sidebar-accent-foreground: var(--brand-text);
   --sidebar-border: var(--slate-200);
-  --sidebar-ring: var(--brand);
+  --sidebar-ring: var(--brand-text);
 }
 
 /* Expose tokens to Tailwind v4 utilities + shadcn components (shared source).
@@ -122,14 +129,31 @@
   --color-ink: var(--ink);
   --color-brand: var(--brand);
   --color-brand-hover: var(--brand-hover);
+  --color-brand-deep: var(--brand-deep);
+  --color-brand-text: var(--brand-text);
   --color-brand-tint: var(--brand-tint);
   --color-gold: var(--gold);
   --color-gold-tint: var(--gold-tint);
   --color-surface: var(--surface);
+  --color-surface-raised: var(--surface-raised);
   --color-success: var(--success);
   --color-warning: var(--warning);
   --color-danger: var(--danger);
   --color-info: var(--info);
+
+  /* Remap Tailwind's slate utilities onto the purple-cast dark neutral ramp
+     (same step semantics as the light theme — see :root). Existing
+     text-slate-600 / border-slate-200 / bg-slate-50 usage re-themes in place. */
+  --color-slate-50: var(--slate-50);
+  --color-slate-100: var(--slate-100);
+  --color-slate-200: var(--slate-200);
+  --color-slate-300: var(--slate-300);
+  --color-slate-400: var(--slate-400);
+  --color-slate-500: var(--slate-500);
+  --color-slate-600: var(--slate-600);
+  --color-slate-700: var(--slate-700);
+  --color-slate-800: var(--slate-800);
+  --color-slate-900: var(--slate-900);
 
   /* shadcn semantic colours */
   --color-background: var(--background);

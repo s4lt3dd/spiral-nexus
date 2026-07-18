@@ -368,7 +368,7 @@ export function MessageThread({
         <button
           type="button"
           onClick={() => scrollToBottom(true)}
-          className="fixed bottom-24 left-1/2 z-20 -translate-x-1/2 rounded-full border border-border bg-surface px-4 py-1.5 text-sm font-medium text-brand shadow-md transition-transform hover:-translate-y-0.5 motion-reduce:transition-none"
+          className="fixed bottom-24 left-1/2 z-20 -translate-x-1/2 rounded-full border border-border bg-surface px-4 py-1.5 text-sm font-medium text-brand-text shadow-md transition-transform hover:-translate-y-0.5 motion-reduce:transition-none"
         >
           New messages ↓
         </button>

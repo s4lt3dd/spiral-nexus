@@ -40,7 +40,7 @@ export function ProfileIdentity({
 
         <div className="min-w-0 flex-1">
           <div className="flex flex-wrap items-center gap-2.5">
-            <h1 className="font-display text-3xl leading-[1.1] font-semibold tracking-[-0.02em] text-ink">
+            <h1 className="font-display text-3xl leading-[1.1] font-semibold tracking-[-0.02em] text-foreground">
               {name}
             </h1>
             {profile.verified && (
@@ -93,7 +93,7 @@ export function ProfileIdentity({
                   href={profile.website}
                   target="_blank"
                   rel="noopener noreferrer nofollow"
-                  className="inline-flex items-center gap-1.5 font-medium text-brand hover:underline"
+                  className="inline-flex items-center gap-1.5 font-medium text-brand-text hover:underline"
                 >
                   <Globe className="size-4" aria-hidden />
                   Website
@@ -104,7 +104,7 @@ export function ProfileIdentity({
                   href={profile.linkedin_url}
                   target="_blank"
                   rel="noopener noreferrer nofollow"
-                  className="inline-flex items-center gap-1.5 font-medium text-brand hover:underline"
+                  className="inline-flex items-center gap-1.5 font-medium text-brand-text hover:underline"
                 >
                   <LinkedInIcon className="size-4" />
                   LinkedIn

@@ -59,10 +59,10 @@ export default function AboutPage() {
       {/* ---------------- Narrative ---------------- */}
       <section className="mx-auto max-w-3xl px-6 py-20 sm:py-24">
         <Reveal>
-          <span className="text-sm font-medium tracking-wide text-brand uppercase">
+          <span className="text-sm font-medium tracking-wide text-brand-text uppercase">
             The problem
           </span>
-          <h2 className="mt-3 text-3xl leading-tight font-semibold text-ink sm:text-4xl">
+          <h2 className="mt-3 text-3xl leading-tight font-semibold text-foreground sm:text-4xl">
             Opportunity shouldn&apos;t stay hidden
           </h2>
           <div className="mt-6 space-y-5 text-lg leading-relaxed text-slate-600">
@@ -83,10 +83,10 @@ export default function AboutPage() {
         </Reveal>
 
         <Reveal className="mt-16">
-          <span className="text-sm font-medium tracking-wide text-brand uppercase">
+          <span className="text-sm font-medium tracking-wide text-brand-text uppercase">
             What we do
           </span>
-          <h2 className="mt-3 text-3xl leading-tight font-semibold text-ink sm:text-4xl">
+          <h2 className="mt-3 text-3xl leading-tight font-semibold text-foreground sm:text-4xl">
             A direct, credible hub for IP
           </h2>
           <div className="mt-6 space-y-5 text-lg leading-relaxed text-slate-600">
@@ -105,7 +105,7 @@ export default function AboutPage() {
         <Reveal className="mx-auto max-w-4xl">
           <figure className="relative overflow-hidden rounded-2xl border border-border bg-brand-tint/40 px-8 py-14 text-center sm:px-16">
             <NexusMark className="pointer-events-none absolute -top-10 -left-8 size-48 opacity-[0.08]" />
-            <blockquote className="relative font-display text-2xl leading-snug font-medium text-ink sm:text-3xl">
+            <blockquote className="relative font-display text-2xl leading-snug font-medium text-foreground sm:text-3xl">
               Turn a dormant trademark into a licensing or sale opportunity —
               without the noise, the gatekeepers, or the guesswork.
             </blockquote>
@@ -119,16 +119,16 @@ export default function AboutPage() {
         className="mx-auto max-w-6xl px-6 pb-20 sm:pb-24"
       >
         <Reveal className="max-w-2xl">
-          <span className="text-sm font-medium tracking-wide text-brand uppercase">
+          <span className="text-sm font-medium tracking-wide text-brand-text uppercase">
             How we operate
           </span>
           <h2
             id="principles-heading"
-            className="mt-3 text-3xl leading-tight font-semibold text-ink sm:text-4xl"
+            className="mt-3 text-3xl leading-tight font-semibold text-foreground sm:text-4xl"
           >
             The principles behind the platform
           </h2>
-          <p className="mt-4 font-display text-xl font-medium text-brand">
+          <p className="mt-4 font-display text-xl font-medium text-brand-text">
             Efficiency. Community. Accessibility. Transparency.
           </p>
         </Reveal>
@@ -137,10 +137,10 @@ export default function AboutPage() {
           {principles.map((p, i) => (
             <Reveal key={p.title} delay={i}>
               <div className="flex h-full flex-col rounded-xl border border-border bg-surface p-6 shadow-sm">
-                <span className="flex size-11 items-center justify-center rounded-md bg-brand-tint text-brand">
+                <span className="flex size-11 items-center justify-center rounded-md bg-brand-tint text-brand-text">
                   <p.icon className="size-5" aria-hidden />
                 </span>
-                <h3 className="mt-4 font-display text-xl font-medium text-ink">
+                <h3 className="mt-4 font-display text-xl font-medium text-foreground">
                   {p.title}
                 </h3>
                 <p className="mt-2 text-sm leading-relaxed text-slate-600">

@@ -187,7 +187,7 @@ export function ProfileForm({ profile }: { profile: PublicProfile }) {
       {/* Intent */}
       <section className="space-y-3">
         <div>
-          <h2 className="font-display text-lg font-medium text-ink">
+          <h2 className="font-display text-lg font-medium text-foreground">
             What brings you here?
           </h2>
           <p className="text-sm text-slate-500">Pick all that apply.</p>
@@ -202,7 +202,7 @@ export function ProfileForm({ profile }: { profile: PublicProfile }) {
       {/* Sectors */}
       <section className="space-y-3">
         <div>
-          <h2 className="font-display text-lg font-medium text-ink">Sectors</h2>
+          <h2 className="font-display text-lg font-medium text-foreground">Sectors</h2>
           <p className="text-sm text-slate-500">
             The industries you focus on.
           </p>
@@ -217,7 +217,7 @@ export function ProfileForm({ profile }: { profile: PublicProfile }) {
       {/* Jurisdictions */}
       <section className="space-y-3">
         <div>
-          <h2 className="font-display text-lg font-medium text-ink">
+          <h2 className="font-display text-lg font-medium text-foreground">
             Jurisdictions
           </h2>
           <p className="text-sm text-slate-500">
@@ -234,7 +234,7 @@ export function ProfileForm({ profile }: { profile: PublicProfile }) {
       {/* Nice classes */}
       <section className="space-y-3">
         <div>
-          <h2 className="font-display text-lg font-medium text-ink">
+          <h2 className="font-display text-lg font-medium text-foreground">
             Nice classes of interest
           </h2>
           <p className="text-sm text-slate-500">

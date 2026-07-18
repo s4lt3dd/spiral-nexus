@@ -52,7 +52,7 @@ export function ProfileNudge({ result }: { result: CompletenessResult }) {
         <X className="size-4" aria-hidden />
       </button>
       <div className="relative max-w-md">
-        <h2 className="font-display text-lg font-medium text-ink">
+        <h2 className="font-display text-lg font-medium text-foreground">
           Finish your profile
         </h2>
         <p className="mt-1 text-sm text-slate-600">

@@ -83,10 +83,10 @@ export default async function SavedPage({
 
       <main className="mx-auto max-w-6xl px-6 py-10 sm:py-14">
         <header className="max-w-2xl">
-          <p className="text-sm font-medium tracking-wide text-brand uppercase">
+          <p className="text-sm font-medium tracking-wide text-brand-text uppercase">
             Saved
           </p>
-          <h1 className="mt-2 font-display text-3xl font-semibold tracking-[-0.02em] text-ink sm:text-4xl">
+          <h1 className="mt-2 font-display text-3xl font-semibold tracking-[-0.02em] text-foreground sm:text-4xl">
             Your shortlist
           </h1>
           <p className="mt-3 text-lg text-slate-600">
@@ -110,7 +110,7 @@ export default async function SavedPage({
                 className={cn(
                   "inline-flex items-center gap-2 border-b-2 px-4 py-2.5 text-sm font-medium transition-colors outline-none focus-visible:ring-[3px] focus-visible:ring-brand/25",
                   active
-                    ? "border-brand text-brand"
+                    ? "border-brand text-brand-text"
                     : "border-transparent text-slate-500 hover:text-foreground",
                 )}
               >
@@ -124,10 +124,10 @@ export default async function SavedPage({
         {tab === "saved" ? (
           listings.length === 0 ? (
             <div className="mt-8 rounded-xl border border-dashed border-border bg-surface px-8 py-16 text-center">
-              <span className="mx-auto flex size-12 items-center justify-center rounded-full bg-brand-tint text-brand">
+              <span className="mx-auto flex size-12 items-center justify-center rounded-full bg-brand-tint text-brand-text">
                 <Bookmark className="size-6" aria-hidden />
               </span>
-              <h2 className="mt-5 text-xl font-semibold text-ink">
+              <h2 className="mt-5 text-xl font-semibold text-foreground">
                 Nothing saved yet
               </h2>
               <p className="mx-auto mt-2 max-w-sm text-slate-600">
@@ -159,10 +159,10 @@ export default async function SavedPage({
           )
         ) : activity.length === 0 ? (
           <div className="mt-8 rounded-xl border border-dashed border-border bg-surface px-8 py-16 text-center">
-            <span className="mx-auto flex size-12 items-center justify-center rounded-full bg-brand-tint text-brand">
+            <span className="mx-auto flex size-12 items-center justify-center rounded-full bg-brand-tint text-brand-text">
               <Clock className="size-6" aria-hidden />
             </span>
-            <h2 className="mt-5 text-xl font-semibold text-ink">
+            <h2 className="mt-5 text-xl font-semibold text-foreground">
               No activity yet
             </h2>
             <p className="mx-auto mt-2 max-w-sm text-slate-600">
@@ -185,12 +185,12 @@ export default async function SavedPage({
                     href={`/listings/${item.listing.id}`}
                     className="flex items-center gap-3.5 px-5 py-4 transition-colors outline-none hover:bg-slate-50 focus-visible:bg-slate-50"
                   >
-                    <span className="flex size-9 shrink-0 items-center justify-center rounded-full bg-brand-tint text-brand">
+                    <span className="flex size-9 shrink-0 items-center justify-center rounded-full bg-brand-tint text-brand-text">
                       <Heart className="size-4" aria-hidden />
                     </span>
                     <span className="min-w-0 flex-1 text-sm text-slate-600">
                       You liked{" "}
-                      <span className="font-medium text-ink">
+                      <span className="font-medium text-foreground">
                         {item.listing.title}
                       </span>
                     </span>
@@ -203,12 +203,12 @@ export default async function SavedPage({
                     href={`/u/${item.member.id}`}
                     className="flex items-center gap-3.5 px-5 py-4 transition-colors outline-none hover:bg-slate-50 focus-visible:bg-slate-50"
                   >
-                    <span className="flex size-9 shrink-0 items-center justify-center rounded-full bg-brand-tint text-brand">
+                    <span className="flex size-9 shrink-0 items-center justify-center rounded-full bg-brand-tint text-brand-text">
                       <UserPlus className="size-4" aria-hidden />
                     </span>
                     <span className="min-w-0 flex-1 text-sm text-slate-600">
                       You followed{" "}
-                      <span className="font-medium text-ink">
+                      <span className="font-medium text-foreground">
                         {profileDisplayName(item.member)}
                       </span>
                       {item.member.org_name && item.member.display_name && (

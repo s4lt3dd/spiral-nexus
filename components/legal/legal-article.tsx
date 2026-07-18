@@ -4,10 +4,10 @@ import { AlertTriangle } from "lucide-react";
 // prose styling (no typography plugin — styled via descendant utilities) so
 // /privacy and /terms read consistently and on-brand.
 const prose =
-  "mt-8 [&_h2]:mt-9 [&_h2]:mb-2 [&_h2]:font-display [&_h2]:text-xl [&_h2]:font-semibold [&_h2]:text-ink " +
+  "mt-8 [&_h2]:mt-9 [&_h2]:mb-2 [&_h2]:font-display [&_h2]:text-xl [&_h2]:font-semibold [&_h2]:text-foreground " +
   "[&_p]:mb-3 [&_p]:leading-relaxed [&_p]:text-slate-700 " +
   "[&_ul]:mb-4 [&_ul]:list-disc [&_ul]:pl-5 [&_li]:mb-1 [&_li]:text-slate-700 " +
-  "[&_a]:font-medium [&_a]:text-brand [&_a]:underline [&_strong]:font-semibold [&_strong]:text-ink";
+  "[&_a]:font-medium [&_a]:text-brand-text [&_a]:underline [&_strong]:font-semibold [&_strong]:text-foreground";
 
 export function LegalArticle({
   title,
@@ -29,7 +29,7 @@ export function LegalArticle({
         </p>
       </div>
 
-      <h1 className="mt-8 font-display text-4xl leading-[1.1] font-semibold tracking-[-0.02em] text-ink">
+      <h1 className="mt-8 font-display text-4xl leading-[1.1] font-semibold tracking-[-0.02em] text-foreground">
         {title}
       </h1>
       <p className="mt-2 text-sm text-slate-500">Last updated: {lastUpdated}</p>

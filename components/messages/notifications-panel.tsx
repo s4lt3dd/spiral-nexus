@@ -14,10 +14,10 @@ export function NotificationsPanel({ items }: { items: NotificationItem[] }) {
   return (
     <section aria-labelledby="notifications-heading" className="mt-10">
       <div className="flex items-center gap-2">
-        <Bell className="size-4 text-brand" aria-hidden />
+        <Bell className="size-4 text-brand-text" aria-hidden />
         <h2
           id="notifications-heading"
-          className="font-display text-lg font-medium text-ink"
+          className="font-display text-lg font-medium text-foreground"
         >
           Notifications
         </h2>
@@ -35,13 +35,13 @@ export function NotificationsPanel({ items }: { items: NotificationItem[] }) {
                   href={`/listings/${n.listing.id}`}
                   className="flex items-center gap-3.5 px-5 py-3.5 transition-colors outline-none hover:bg-slate-50 focus-visible:bg-slate-50"
                 >
-                  <span className="flex size-8 shrink-0 items-center justify-center rounded-full bg-brand-tint text-brand">
+                  <span className="flex size-8 shrink-0 items-center justify-center rounded-full bg-brand-tint text-brand-text">
                     <Heart className="size-4" aria-hidden />
                   </span>
                   <span className="min-w-0 flex-1 truncate text-sm text-slate-600">
-                    <span className="font-medium text-ink">{actorName}</span>{" "}
+                    <span className="font-medium text-foreground">{actorName}</span>{" "}
                     liked{" "}
-                    <span className="font-medium text-ink">
+                    <span className="font-medium text-foreground">
                       {n.listing.title}
                     </span>
                   </span>
@@ -54,11 +54,11 @@ export function NotificationsPanel({ items }: { items: NotificationItem[] }) {
                   href={n.actor ? `/u/${n.actor.id}` : "/network"}
                   className="flex items-center gap-3.5 px-5 py-3.5 transition-colors outline-none hover:bg-slate-50 focus-visible:bg-slate-50"
                 >
-                  <span className="flex size-8 shrink-0 items-center justify-center rounded-full bg-brand-tint text-brand">
+                  <span className="flex size-8 shrink-0 items-center justify-center rounded-full bg-brand-tint text-brand-text">
                     <UserPlus className="size-4" aria-hidden />
                   </span>
                   <span className="min-w-0 flex-1 truncate text-sm text-slate-600">
-                    <span className="font-medium text-ink">{actorName}</span>{" "}
+                    <span className="font-medium text-foreground">{actorName}</span>{" "}
                     started following you
                   </span>
                   <span className="shrink-0 text-xs text-slate-400">

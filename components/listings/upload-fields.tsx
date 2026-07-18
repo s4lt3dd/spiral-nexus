@@ -125,7 +125,7 @@ export function ListingImagesField({
                 // silently undone by the stale `values` the upload captured.
                 disabled={busy}
                 onClick={() => removeImage(url)}
-                className="absolute top-1.5 right-1.5 rounded-md bg-white/90 p-1.5 text-slate-500 opacity-0 shadow-sm transition-opacity group-hover:opacity-100 hover:text-destructive focus-visible:opacity-100 disabled:pointer-events-none"
+                className="absolute top-1.5 right-1.5 rounded-md bg-ink/80 p-1.5 text-slate-600 opacity-0 shadow-sm backdrop-blur-sm transition-opacity group-hover:opacity-100 hover:text-destructive focus-visible:opacity-100 disabled:pointer-events-none"
               >
                 <Trash2 className="size-3.5" aria-hidden />
               </button>
@@ -142,7 +142,7 @@ export function ListingImagesField({
           )}
         >
           {busy ? (
-            <Loader2 className="size-5 animate-spin text-brand" aria-hidden />
+            <Loader2 className="size-5 animate-spin text-brand-text" aria-hidden />
           ) : (
             <ImagePlus className="size-5 text-slate-400" aria-hidden />
           )}
@@ -234,7 +234,7 @@ export function CertificateField({
     return (
       <div className="flex items-center justify-between gap-3 rounded-lg border border-border bg-slate-50/60 px-4 py-3">
         <span className="flex min-w-0 items-center gap-2.5 text-sm text-slate-700">
-          <FileText className="size-4 shrink-0 text-brand" aria-hidden />
+          <FileText className="size-4 shrink-0 text-brand-text" aria-hidden />
           <span className="truncate font-medium">Certificate uploaded</span>
         </span>
         <Button type="button" variant="ghost" size="sm" onClick={removeCertificate}>
@@ -253,7 +253,7 @@ export function CertificateField({
       )}
     >
       {busy ? (
-        <Loader2 className="size-4 animate-spin text-brand" aria-hidden />
+        <Loader2 className="size-4 animate-spin text-brand-text" aria-hidden />
       ) : (
         <Upload className="size-4 text-slate-400" aria-hidden />
       )}

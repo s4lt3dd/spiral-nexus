@@ -11,7 +11,7 @@ export function VerifiedAvatar({
 }) {
   return (
     <span className={cn("relative inline-flex shrink-0", className)}>
-      <span className="flex size-11 items-center justify-center rounded-full bg-brand-tint font-display text-sm font-medium text-brand ring-2 ring-gold ring-offset-2 ring-offset-surface">
+      <span className="flex size-11 items-center justify-center rounded-full bg-brand-tint font-display text-sm font-medium text-brand-text ring-2 ring-gold ring-offset-2 ring-offset-surface">
         {initials}
       </span>
       <span className="absolute -right-0.5 -bottom-0.5 flex size-4 items-center justify-center rounded-full bg-gold text-white ring-2 ring-surface">

@@ -187,7 +187,7 @@ export function MemberFilters({ current }: { current: MemberParams }) {
           {selectedSectors.map((s) => (
             <span
               key={s}
-              className="inline-flex items-center gap-1 rounded-full bg-brand-tint py-0.5 pr-1 pl-2.5 text-xs font-medium text-brand"
+              className="inline-flex items-center gap-1 rounded-full bg-brand-tint py-0.5 pr-1 pl-2.5 text-xs font-medium text-brand-text"
             >
               {s}
               <button

@@ -66,10 +66,10 @@ export default async function NetworkPage({
 
       <main className="mx-auto max-w-6xl px-6 py-10 sm:py-14">
         <header className="max-w-2xl">
-          <p className="text-sm font-medium tracking-wide text-brand uppercase">
+          <p className="text-sm font-medium tracking-wide text-brand-text uppercase">
             Connect
           </p>
-          <h1 className="mt-2 font-display text-3xl font-semibold tracking-[-0.02em] text-ink sm:text-4xl">
+          <h1 className="mt-2 font-display text-3xl font-semibold tracking-[-0.02em] text-foreground sm:text-4xl">
             Find members
           </h1>
           <p className="mt-3 text-lg text-slate-600">
@@ -88,10 +88,10 @@ export default async function NetworkPage({
 
         {rows.length === 0 ? (
           <div className="mt-6 rounded-xl border border-dashed border-border bg-surface px-8 py-16 text-center">
-            <span className="mx-auto flex size-12 items-center justify-center rounded-full bg-brand-tint text-brand">
+            <span className="mx-auto flex size-12 items-center justify-center rounded-full bg-brand-tint text-brand-text">
               <Users className="size-6" aria-hidden />
             </span>
-            <h2 className="mt-5 text-xl font-semibold text-ink">
+            <h2 className="mt-5 text-xl font-semibold text-foreground">
               No matching members
             </h2>
             <p className="mx-auto mt-2 max-w-sm text-slate-600">

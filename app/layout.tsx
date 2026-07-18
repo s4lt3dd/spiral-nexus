@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import "./globals.css";
 import { Fraunces, Inter } from "next/font/google";
 import { cn } from "@/lib/utils";
@@ -20,6 +20,16 @@ export const metadata: Metadata = {
   title: "Spiral Nexus",
   description:
     "The centralised hub to discover and commercialise intangible assets and find the right business partners.",
+  openGraph: {
+    title: "Spiral Nexus",
+    description:
+      "The centralised hub to discover and commercialise intangible assets and find the right business partners.",
+    images: ["/brand/spiral-nexus-og.jpg"],
+  },
+};
+
+export const viewport: Viewport = {
+  themeColor: "#0d0b14",
 };
 
 export default function RootLayout({

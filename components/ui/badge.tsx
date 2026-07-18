@@ -15,7 +15,7 @@ const badgeVariants = cva(
         outline:
           "border-border text-slate-600 [a]:hover:bg-muted [a]:hover:text-foreground",
         // Status pills (trademark domain)
-        brand: "bg-brand-tint text-brand",
+        brand: "bg-brand-tint text-brand-text",
         success: "bg-brand-tint text-success",
         warning: "bg-[var(--gold-tint)] text-warning",
         slate: "bg-slate-100 text-slate-500",

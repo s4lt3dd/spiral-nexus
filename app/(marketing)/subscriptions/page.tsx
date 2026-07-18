@@ -37,10 +37,10 @@ export default function SubscriptionsPage() {
   return (
     <main className="mx-auto max-w-6xl px-6 py-20 sm:py-24">
       <div className="max-w-2xl">
-        <span className="text-sm font-medium tracking-wide text-brand uppercase">
+        <span className="text-sm font-medium tracking-wide text-brand-text uppercase">
           Plans
         </span>
-        <h1 className="mt-3 text-4xl leading-[1.1] font-semibold text-ink">
+        <h1 className="mt-3 text-4xl leading-[1.1] font-semibold text-foreground">
           Pricing that fits every stage
         </h1>
         <p className="mt-4 text-lg text-slate-600">
@@ -70,12 +70,12 @@ export default function SubscriptionsPage() {
               <h2
                 className={cn(
                   "font-display text-xl font-medium",
-                  isEnterprise ? "text-gold" : "text-ink",
+                  isEnterprise ? "text-gold" : "text-foreground",
                 )}
               >
                 {tier.label}
               </h2>
-              <p className="mt-3 text-3xl font-semibold text-ink">
+              <p className="mt-3 text-3xl font-semibold text-foreground">
                 £{tier.pricePerMonth}
                 <span className="text-base font-normal text-slate-500">
                   {" "}
@@ -89,7 +89,7 @@ export default function SubscriptionsPage() {
                     <Check
                       className={cn(
                         "mt-0.5 size-4 shrink-0",
-                        isEnterprise ? "text-gold" : "text-brand",
+                        isEnterprise ? "text-gold" : "text-brand-text",
                       )}
                       aria-hidden
                     />

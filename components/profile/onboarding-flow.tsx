@@ -125,7 +125,7 @@ export function OnboardingFlow({
         <span className="flex size-9 items-center justify-center rounded-lg bg-[image:var(--gradient-brand)] shadow-sm">
           <NexusMark className="size-5 text-white" />
         </span>
-        <span className="font-display text-lg font-medium tracking-[-0.02em] text-ink">
+        <span className="font-display text-lg font-medium tracking-[-0.02em] text-foreground">
           Spiral Nexus
         </span>
       </div>
@@ -146,7 +146,7 @@ export function OnboardingFlow({
       </div>
 
       <div className="mt-7">
-        <h1 className="font-display text-2xl font-semibold text-ink">
+        <h1 className="font-display text-2xl font-semibold text-foreground">
           {STEPS[step].title}
         </h1>
         <p className="mt-1 text-sm text-slate-600">{STEPS[step].blurb}</p>

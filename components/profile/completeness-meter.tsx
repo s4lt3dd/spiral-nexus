@@ -22,7 +22,7 @@ export function CompletenessMeter({
       <div>
         <div className="flex items-end justify-between gap-3">
           <p className="text-sm font-medium text-slate-700">Profile strength</p>
-          <p className="font-display text-2xl font-semibold text-ink tabular-nums">
+          <p className="font-display text-2xl font-semibold text-foreground tabular-nums">
             {percent}%
           </p>
         </div>

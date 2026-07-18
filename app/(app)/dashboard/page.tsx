@@ -108,11 +108,11 @@ export default async function ProfileHomePage() {
             href="/dashboard/listings"
             className="group flex items-center gap-4 rounded-xl border border-border bg-surface p-5 shadow-sm transition-colors hover:bg-slate-50"
           >
-            <span className="flex size-11 shrink-0 items-center justify-center rounded-lg bg-brand-tint text-brand">
+            <span className="flex size-11 shrink-0 items-center justify-center rounded-lg bg-brand-tint text-brand-text">
               <List className="size-5" aria-hidden />
             </span>
             <span>
-              <span className="block font-medium text-ink">My listings</span>
+              <span className="block font-medium text-foreground">My listings</span>
               <span className="block text-sm text-slate-500">
                 Create, edit, and publish your marks
               </span>
@@ -122,11 +122,11 @@ export default async function ProfileHomePage() {
             href="/messages"
             className="group flex items-center gap-4 rounded-xl border border-border bg-surface p-5 shadow-sm transition-colors hover:bg-slate-50"
           >
-            <span className="flex size-11 shrink-0 items-center justify-center rounded-lg bg-brand-tint text-brand">
+            <span className="flex size-11 shrink-0 items-center justify-center rounded-lg bg-brand-tint text-brand-text">
               <MessagesSquare className="size-5" aria-hidden />
             </span>
             <span>
-              <span className="block font-medium text-ink">Messages</span>
+              <span className="block font-medium text-foreground">Messages</span>
               <span className="block text-sm text-slate-500">
                 Conversations with buyers and owners
               </span>
@@ -137,13 +137,13 @@ export default async function ProfileHomePage() {
         {/* Published listings */}
         <section className="mt-10">
           <div className="flex items-end justify-between gap-4">
-            <h2 className="font-display text-2xl font-semibold text-ink">
+            <h2 className="font-display text-2xl font-semibold text-foreground">
               Your published listings
             </h2>
             {listings.length > 0 && (
               <Link
                 href="/dashboard/listings"
-                className="text-sm font-medium text-brand hover:underline"
+                className="text-sm font-medium text-brand-text hover:underline"
               >
                 Manage all
               </Link>
@@ -157,7 +157,7 @@ export default async function ProfileHomePage() {
                 <span className="flex size-14 items-center justify-center rounded-full bg-[image:var(--gradient-brand)] shadow-sm">
                   <NexusMark className="size-8 text-white" />
                 </span>
-                <h3 className="mt-5 text-xl font-semibold text-ink">
+                <h3 className="mt-5 text-xl font-semibold text-foreground">
                   Nothing published yet
                 </h3>
                 <p className="mt-2 text-base text-slate-600">

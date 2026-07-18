@@ -110,12 +110,12 @@ export default function HomePage() {
         className="mx-auto max-w-6xl px-6 py-20 sm:py-28"
       >
         <Reveal className="max-w-2xl">
-          <span className="text-sm font-medium tracking-wide text-brand uppercase">
+          <span className="text-sm font-medium tracking-wide text-brand-text uppercase">
             How it works
           </span>
           <h2
             id="how-heading"
-            className="mt-3 text-3xl leading-tight font-semibold text-ink sm:text-4xl"
+            className="mt-3 text-3xl leading-tight font-semibold text-foreground sm:text-4xl"
           >
             From listing to introduction, in three moves
           </h2>
@@ -130,10 +130,10 @@ export default function HomePage() {
           <Reveal>
             <div className="grid items-center gap-8 rounded-xl border border-border bg-surface p-6 shadow-sm sm:p-10 lg:grid-cols-2">
               <div className="min-w-0">
-                <span className="font-display text-sm font-medium text-brand">
+                <span className="font-display text-sm font-medium text-brand-text">
                   01
                 </span>
-                <h3 className="mt-2 font-display text-2xl font-medium text-ink">
+                <h3 className="mt-2 font-display text-2xl font-medium text-foreground">
                   List your trademark
                 </h3>
                 <p className="mt-3 text-base leading-relaxed text-slate-600">
@@ -149,7 +149,7 @@ export default function HomePage() {
                   </div>
                   <div className="min-w-0 flex-1">
                     <div className="flex items-start justify-between gap-3">
-                      <h4 className="font-display text-base font-medium text-ink">
+                      <h4 className="font-display text-base font-medium text-foreground">
                         NIMBUS
                       </h4>
                       <Badge variant="brand">Published</Badge>
@@ -163,7 +163,7 @@ export default function HomePage() {
                       <span className="inline-flex items-center rounded-sm border border-slate-200 bg-slate-50 px-1.5 py-0.5 text-[0.7rem] font-medium tracking-wide text-slate-600 uppercase">
                         Nice 9
                       </span>
-                      <span className="ml-auto font-semibold text-ink">
+                      <span className="ml-auto font-semibold text-foreground">
                         £24,000
                       </span>
                     </div>
@@ -177,10 +177,10 @@ export default function HomePage() {
           <Reveal>
             <div className="grid items-center gap-8 rounded-xl border border-border bg-surface p-6 shadow-sm sm:p-10 lg:grid-cols-2">
               <div className="order-1 min-w-0 lg:order-2">
-                <span className="font-display text-sm font-medium text-brand">
+                <span className="font-display text-sm font-medium text-brand-text">
                   02
                 </span>
-                <h3 className="mt-2 font-display text-2xl font-medium text-ink">
+                <h3 className="mt-2 font-display text-2xl font-medium text-foreground">
                   Discover the right mark
                 </h3>
                 <p className="mt-3 text-base leading-relaxed text-slate-600">
@@ -200,7 +200,7 @@ export default function HomePage() {
                   {["NICE 3", "United Kingdom", "Licence"].map((c) => (
                     <span
                       key={c}
-                      className="inline-flex items-center rounded-full bg-brand-tint px-2.5 py-0.5 text-xs font-medium text-brand"
+                      className="inline-flex items-center rounded-full bg-brand-tint px-2.5 py-0.5 text-xs font-medium text-brand-text"
                     >
                       {c}
                     </span>
@@ -219,12 +219,12 @@ export default function HomePage() {
                         <NexusMark className="size-4 opacity-30" />
                       </div>
                       <div className="min-w-0 flex-1">
-                        <p className="truncate text-sm font-medium text-ink">
+                        <p className="truncate text-sm font-medium text-foreground">
                           {r.t}
                         </p>
                         <p className="truncate text-xs text-slate-500">{r.d}</p>
                       </div>
-                      <span className="text-xs font-semibold text-ink">
+                      <span className="text-xs font-semibold text-foreground">
                         {r.p}
                       </span>
                     </div>
@@ -238,10 +238,10 @@ export default function HomePage() {
           <Reveal>
             <div className="grid items-center gap-8 rounded-xl border border-border bg-surface p-6 shadow-sm sm:p-10 lg:grid-cols-2">
               <div className="min-w-0">
-                <span className="font-display text-sm font-medium text-brand">
+                <span className="font-display text-sm font-medium text-brand-text">
                   03
                 </span>
-                <h3 className="mt-2 font-display text-2xl font-medium text-ink">
+                <h3 className="mt-2 font-display text-2xl font-medium text-foreground">
                   Connect directly
                 </h3>
                 <p className="mt-3 text-base leading-relaxed text-slate-600">
@@ -253,7 +253,7 @@ export default function HomePage() {
                 <div className="flex items-center gap-3 border-b border-border pb-3">
                   <VerifiedAvatar initials="AO" />
                   <div className="min-w-0">
-                    <p className="truncate text-sm font-medium text-ink">
+                    <p className="truncate text-sm font-medium text-foreground">
                       Ava Okafor
                     </p>
                     <p className="truncate text-xs text-slate-500">
@@ -305,12 +305,12 @@ export default function HomePage() {
         className="mx-auto max-w-6xl px-6 py-20 sm:py-28"
       >
         <Reveal className="max-w-2xl">
-          <span className="text-sm font-medium tracking-wide text-brand uppercase">
+          <span className="text-sm font-medium tracking-wide text-brand-text uppercase">
             Trusted by both sides
           </span>
           <h2
             id="loved-heading"
-            className="mt-3 text-3xl leading-tight font-semibold text-ink sm:text-4xl"
+            className="mt-3 text-3xl leading-tight font-semibold text-foreground sm:text-4xl"
           >
             Owners and partners, meeting in the middle
           </h2>
@@ -320,13 +320,13 @@ export default function HomePage() {
           {testimonials.map((t, i) => (
             <Reveal key={t.name} delay={i}>
               <figure className="flex h-full flex-col rounded-xl border border-border bg-surface p-6 shadow-sm">
-                <blockquote className="flex-1 font-display text-lg leading-relaxed text-ink">
+                <blockquote className="flex-1 font-display text-lg leading-relaxed text-foreground">
                   “{t.quote}”
                 </blockquote>
                 <figcaption className="mt-6 flex items-center gap-3">
                   <VerifiedAvatar initials={t.initials} />
                   <div className="min-w-0">
-                    <p className="truncate text-sm font-medium text-ink">
+                    <p className="truncate text-sm font-medium text-foreground">
                       {t.name}
                     </p>
                     <p className="truncate text-sm text-slate-500">{t.role}</p>

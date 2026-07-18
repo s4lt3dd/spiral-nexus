@@ -55,7 +55,7 @@ function Section({
 }) {
   return (
     <section className="rounded-lg border border-border bg-surface p-6 shadow-sm sm:p-8">
-      <h2 className="font-display text-lg font-medium text-ink">{title}</h2>
+      <h2 className="font-display text-lg font-medium text-foreground">{title}</h2>
       {hint && <p className="mt-1 text-sm text-slate-500">{hint}</p>}
       <div className="mt-5 space-y-5">{children}</div>
     </section>

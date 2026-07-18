@@ -51,10 +51,10 @@ export default async function MyListingsPage() {
         {/* Page heading */}
         <div className="animate-rise flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between">
           <div>
-            <p className="text-sm font-medium tracking-wide text-brand uppercase">
+            <p className="text-sm font-medium tracking-wide text-brand-text uppercase">
               Your portfolio
             </p>
-            <h1 className="mt-2 text-4xl leading-[1.05] font-semibold text-ink">
+            <h1 className="mt-2 text-4xl leading-[1.05] font-semibold text-foreground">
               My listings
             </h1>
             <p className="mt-3 max-w-prose text-base text-slate-600">
@@ -96,7 +96,7 @@ export default async function MyListingsPage() {
                 <dt className="truncate text-xs font-medium tracking-wide text-slate-500 uppercase">
                   {s.label}
                 </dt>
-                <dd className="mt-1 truncate text-xl font-semibold text-ink sm:text-2xl">
+                <dd className="mt-1 truncate text-xl font-semibold text-foreground sm:text-2xl">
                   {s.value}
                 </dd>
               </div>
@@ -120,7 +120,7 @@ export default async function MyListingsPage() {
                 <span className="flex size-14 items-center justify-center rounded-full bg-[image:var(--gradient-brand)] shadow-sm">
                   <NexusMark className="size-8 text-white" />
                 </span>
-                <h2 className="mt-5 text-2xl font-semibold text-ink">
+                <h2 className="mt-5 text-2xl font-semibold text-foreground">
                   List your first trademark
                 </h2>
                 <p className="mt-2 text-base text-slate-600">
