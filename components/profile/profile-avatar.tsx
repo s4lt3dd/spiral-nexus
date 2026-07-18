@@ -1,24 +1,7 @@
 import Image from "next/image";
+import { UserRound } from "lucide-react";
 
 import { cn } from "@/lib/utils";
-import { profileInitials } from "@/lib/profile";
-
-// Deterministic brand-gradient set for the monogram fallback (purple/indigo
-// family per design-system MASTER). Picked by a stable hash of the user id so a
-// given member always gets the same colours.
-const GRADIENTS = [
-  "linear-gradient(135deg,#7C3AED,#4F46E5)",
-  "linear-gradient(135deg,#6D28D9,#4338CA)",
-  "linear-gradient(135deg,#5B21B6,#312E81)",
-  "linear-gradient(135deg,#7E22CE,#4F46E5)",
-  "linear-gradient(135deg,#6D28D9,#9333EA)",
-];
-
-function hashIndex(seed: string, n: number) {
-  let h = 0;
-  for (let i = 0; i < seed.length; i++) h = (h * 31 + seed.charCodeAt(i)) >>> 0;
-  return h % n;
-}
 
 type AvatarProfile = {
   id: string;
@@ -27,7 +10,10 @@ type AvatarProfile = {
   avatar_url: string | null;
 };
 
-// Round avatar: the user's photo if set, else an on-brand gradient monogram.
+// Round avatar: the member's photo when set, otherwise a neutral person icon
+// on a muted disc — the conventional "no photo" placeholder (founder ask:
+// drop the coloured initials monograms). display_name/org_name stay on the
+// type so callers are unchanged; only the photo drives what renders.
 export function ProfileAvatar({
   profile,
   size = 64,
@@ -49,26 +35,26 @@ export function ProfileAvatar({
         // User-supplied external URL — skip the optimizer until uploads move to
         // our own Storage (deferred to Launch).
         unoptimized
-        className={cn(
-          "rounded-full object-cover ring-1 ring-slate-200/70",
-          className,
-        )}
+        className={cn("rounded-full object-cover ring-1 ring-border", className)}
         style={box}
       />
     );
   }
 
-  const grad = GRADIENTS[hashIndex(profile.id, GRADIENTS.length)];
   return (
     <span
       aria-hidden
       className={cn(
-        "inline-flex select-none items-center justify-center rounded-full font-display font-medium text-white shadow-sm",
+        "inline-flex select-none items-center justify-center rounded-full bg-surface-raised text-slate-400 ring-1 ring-border",
         className,
       )}
-      style={{ ...box, backgroundImage: grad, fontSize: Math.round(size * 0.38) }}
+      style={box}
     >
-      {profileInitials(profile)}
+      <UserRound
+        strokeWidth={1.75}
+        style={{ width: Math.round(size * 0.5), height: Math.round(size * 0.5) }}
+        aria-hidden
+      />
     </span>
   );
 }

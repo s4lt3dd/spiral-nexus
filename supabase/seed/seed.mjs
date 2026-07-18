@@ -36,20 +36,10 @@ const admin = createClient(url, serviceKey, {
 
 export const TEST_PASSWORD = "SpiralNexus!Test123";
 
-// Avatar monogram (round gradient + initials) as an inline SVG data URI — same
-// approach as the listing marks, so the demo has real avatars with no host.
-function avatarDataUri(initials, c1, c2) {
-  const svg =
-    `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 96">` +
-    `<defs><linearGradient id="a" x1="0" y1="0" x2="1" y2="1">` +
-    `<stop offset="0" stop-color="${c1}"/><stop offset="1" stop-color="${c2}"/>` +
-    `</linearGradient></defs>` +
-    `<circle cx="48" cy="48" r="48" fill="url(#a)"/>` +
-    `<text x="48" y="62" text-anchor="middle" fill="#ffffff" ` +
-    `font-family="Georgia, 'Times New Roman', serif" font-size="38" font-weight="600">${initials}</text>` +
-    `</svg>`;
-  return `data:image/svg+xml,${encodeURIComponent(svg)}`;
-}
+// Demo members are seeded WITHOUT avatars (avatar_url: null) so they render the
+// neutral person-icon placeholder — the founder retired the coloured-initials
+// monogram (issue #4). Real photo uploads land at Launch; until then a blank
+// avatar is the honest, consistent state.
 
 // Richer profiles so the home, public profiles, and the future directory demo
 // well. onboarded_at is set so signing in as a seed user lands on the profile
@@ -67,7 +57,7 @@ export const OWNERS = [
     country: "United Kingdom",
     website: "https://northwind.example.com",
     linkedin_url: "https://linkedin.com/in/ava-owner",
-    avatar_url: avatarDataUri("AO", "#7C3AED", "#4F46E5"),
+    avatar_url: null,
     role_flags: ["owner", "licensee"],
     sectors: ["Technology & Software", "Beauty & Cosmetics", "Fashion & Apparel"],
     nice_class_interests: [3, 9, 25],
@@ -100,7 +90,7 @@ export const OWNERS = [
     country: "United Kingdom",
     website: "https://castellan.example.com",
     linkedin_url: "https://linkedin.com/in/cara-owner",
-    avatar_url: avatarDataUri("CO", "#5B21B6", "#312E81"),
+    avatar_url: null,
     role_flags: ["buyer", "licensee", "investor"],
     sectors: ["Food & Beverage", "Hospitality & Travel", "Professional Services"],
     nice_class_interests: [33, 43, 45],
@@ -123,7 +113,7 @@ export const MEMBERS = [
     country: "United Kingdom",
     website: "https://reedventures.example.com",
     linkedin_url: "https://linkedin.com/in/dana-reed",
-    avatar_url: avatarDataUri("DR", "#7C3AED", "#4F46E5"),
+    avatar_url: null,
     role_flags: ["investor", "buyer"],
     sectors: ["Technology & Software", "Financial Services"],
     nice_class_interests: [9, 36],
@@ -157,7 +147,7 @@ export const MEMBERS = [
     country: "France",
     website: "https://astercapital.example.com",
     linkedin_url: "https://linkedin.com/in/farah-niu",
-    avatar_url: avatarDataUri("FN", "#7E22CE", "#4F46E5"),
+    avatar_url: null,
     role_flags: ["investor"],
     sectors: ["Beauty & Cosmetics", "Health & Wellness"],
     nice_class_interests: [3, 5],
@@ -191,7 +181,7 @@ export const MEMBERS = [
     country: "United States",
     website: "https://okoyemedia.example.com",
     linkedin_url: "https://linkedin.com/in/hana-okoye",
-    avatar_url: avatarDataUri("HO", "#6D28D9", "#9333EA"),
+    avatar_url: null,
     role_flags: ["licensee", "buyer"],
     sectors: ["Media & Entertainment", "Technology & Software"],
     nice_class_interests: [41, 9],
