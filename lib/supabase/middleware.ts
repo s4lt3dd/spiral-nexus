@@ -63,5 +63,14 @@ export async function updateSession(request: NextRequest) {
     return NextResponse.redirect(url);
   }
 
+  // Once signed in, Browse is the product home — the marketing landing page is
+  // for visitors. Redirect the bare "/" to Browse (founder decision). Other
+  // marketing pages (/about, /subscriptions) stay reachable when signed in.
+  if (user && request.nextUrl.pathname === "/") {
+    const url = request.nextUrl.clone();
+    url.pathname = "/listings";
+    return NextResponse.redirect(url);
+  }
+
   return supabaseResponse;
 }

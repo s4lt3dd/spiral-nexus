@@ -75,7 +75,10 @@ export function SiteHeader({ email: initialEmail }: { email?: string | null }) {
   return (
     <header className="sticky top-0 z-30 border-b border-border bg-surface/85 backdrop-blur supports-[backdrop-filter]:bg-surface/70">
       <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-6">
-        <Link href="/" className="flex items-center gap-2.5">
+        <Link
+          href={authed ? "/listings" : "/"}
+          className="flex items-center gap-2.5"
+        >
           <NexusMark className="size-7" />
           <span className="font-display text-lg font-medium tracking-[-0.02em] text-foreground">
             Spiral Nexus
@@ -121,6 +124,23 @@ export function SiteHeader({ email: initialEmail }: { email?: string | null }) {
                   {email}
                 </p>
                 <div className="my-1 h-px bg-border" />
+                {/* Primary destinations: in the top nav on desktop, so only
+                    surfaced here on mobile where that nav is hidden. */}
+                <div className="sm:hidden">
+                  {appNav.map((item) => (
+                    <Link
+                      key={item.href}
+                      role="menuitem"
+                      href={item.href}
+                      onClick={() => setOpen(false)}
+                      className={itemClass}
+                    >
+                      {item.icon && <item.icon aria-hidden />}
+                      {item.label}
+                    </Link>
+                  ))}
+                  <div className="my-1 h-px bg-border" />
+                </div>
                 {accountMenu.map((item) => (
                   <Link
                     key={item.href}
