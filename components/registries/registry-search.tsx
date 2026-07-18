@@ -66,7 +66,7 @@ export function RegistrySearch() {
                     {r.name}
                   </h3>
                   <ExternalLink
-                    className="size-4 text-slate-400 transition-colors group-hover:text-brand"
+                    className="size-4 text-slate-400 transition-colors group-hover:text-brand-text"
                     aria-hidden
                   />
                 </div>

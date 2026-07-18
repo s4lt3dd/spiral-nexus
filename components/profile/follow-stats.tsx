@@ -9,11 +9,11 @@ export function FollowStats({
   return (
     <>
       <span>
-        <strong className="font-semibold text-ink">{followers}</strong>{" "}
+        <strong className="font-semibold text-foreground">{followers}</strong>{" "}
         {followers === 1 ? "follower" : "followers"}
       </span>
       <span>
-        <strong className="font-semibold text-ink">{following}</strong> following
+        <strong className="font-semibold text-foreground">{following}</strong> following
       </span>
     </>
   );

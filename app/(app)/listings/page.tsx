@@ -68,7 +68,7 @@ export default async function BrowsePage({
 
       <main className="mx-auto max-w-6xl px-6 py-10 sm:py-14">
         <header className="max-w-2xl">
-          <h1 className="text-3xl font-semibold tracking-tight text-ink sm:text-4xl">
+          <h1 className="text-3xl font-semibold tracking-tight text-foreground sm:text-4xl">
             Browse trademarks
           </h1>
           <p className="mt-3 text-lg text-slate-600">
@@ -87,10 +87,10 @@ export default async function BrowsePage({
 
         {listings.length === 0 ? (
           <div className="mt-6 rounded-xl border border-dashed border-border bg-surface px-8 py-16 text-center">
-            <span className="mx-auto flex size-12 items-center justify-center rounded-full bg-brand-tint text-brand">
+            <span className="mx-auto flex size-12 items-center justify-center rounded-full bg-brand-tint text-brand-text">
               <Search className="size-6" aria-hidden />
             </span>
-            <h2 className="mt-5 text-xl font-semibold text-ink">
+            <h2 className="mt-5 text-xl font-semibold text-foreground">
               No matching listings
             </h2>
             <p className="mx-auto mt-2 max-w-sm text-slate-600">

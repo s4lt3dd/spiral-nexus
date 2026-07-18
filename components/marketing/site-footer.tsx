@@ -11,12 +11,12 @@ export function SiteFooter() {
       <div className="mx-auto flex max-w-6xl flex-col items-center justify-between gap-4 px-6 py-8 sm:flex-row">
         <div className="flex items-center gap-2">
           <NexusMark className="size-5" />
-          <span className="font-display text-sm font-medium text-ink">
+          <span className="font-display text-sm font-medium text-foreground">
             Spiral Nexus
           </span>
         </div>
         <p className="text-sm text-slate-500">
-          Discover. Connect. Commercialise.
+          Discover | Connect | Commercialise
         </p>
         <nav className="flex items-center gap-6">
           {footerNav.map((l) => (

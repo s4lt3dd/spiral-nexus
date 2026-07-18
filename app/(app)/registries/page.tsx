@@ -23,10 +23,10 @@ export default async function RegistriesPage() {
 
       <main className="mx-auto max-w-5xl px-6 py-10 sm:py-14">
         <header className="max-w-2xl">
-          <p className="text-sm font-medium tracking-wide text-brand uppercase">
+          <p className="text-sm font-medium tracking-wide text-brand-text uppercase">
             Official registries
           </p>
-          <h1 className="mt-2 font-display text-3xl font-semibold tracking-[-0.02em] text-ink sm:text-4xl">
+          <h1 className="mt-2 font-display text-3xl font-semibold tracking-[-0.02em] text-foreground sm:text-4xl">
             Search the IP offices
           </h1>
           <p className="mt-3 text-lg text-slate-600">

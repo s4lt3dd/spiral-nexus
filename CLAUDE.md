@@ -36,10 +36,13 @@ component specs). Page-specific overrides live in
 `design-system/spiral-nexus/pages/[page].md`. Use `.claude/skills/ui-ux-pro-max`
 for deeper UX/accessibility guidance, but the MASTER file wins on visual
 identity. Build on shadcn/ui primitives, but theme them via the tokens - never
-ship the default shadcn look. The brand is **purple with gradients** (matches
-the Softr mockup); emerald is retired. Avoid the anti-patterns listed in
-MASTER.md (flat shadowless cards, timid type, emoji headings, flat/cheap
-gradients, lifeless empty states).
+ship the default shadcn look. The brand is **purple with gradients** (emerald
+is retired) and **dark mode is THE theme** (founder decision, July 2026):
+every surface, marketing and app, ships dark - no light mode, no toggle.
+Official logo assets live in `public/brand/` (logo plum `#551D67`; white mark
+in-app). Avoid the anti-patterns listed in MASTER.md (pure-black canvas,
+borderless cards on dark, glow overload, timid type, emoji headings,
+flat/cheap gradients, lifeless empty states).
 
 ## Stack
 Next.js (App Router) + TypeScript + Tailwind + shadcn/ui · Supabase

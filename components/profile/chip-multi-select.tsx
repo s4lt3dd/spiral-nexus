@@ -31,7 +31,7 @@ export function ChipMultiSelect<T extends string | number>({
             className={cn(
               "inline-flex cursor-pointer items-center gap-1.5 rounded-full border px-3 py-1.5 text-sm font-medium transition-colors outline-none focus-visible:ring-[3px] focus-visible:ring-brand/25",
               active
-                ? "border-brand/40 bg-brand-tint text-brand"
+                ? "border-brand/40 bg-brand-tint text-brand-text"
                 : "border-border bg-surface text-slate-600 hover:bg-slate-50",
             )}
           >

@@ -65,7 +65,7 @@ export function AccountActions() {
     <div className="space-y-8">
       {/* Export */}
       <section className="rounded-xl border border-border bg-surface p-6 shadow-sm">
-        <h2 className="font-display text-lg font-medium text-ink">
+        <h2 className="font-display text-lg font-medium text-foreground">
           Export your data
         </h2>
         <p className="mt-1 max-w-prose text-sm text-slate-600">

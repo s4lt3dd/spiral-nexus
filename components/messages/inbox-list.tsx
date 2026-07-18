@@ -155,17 +155,17 @@ export function InboxList({
   if (rows.length === 0) {
     return (
       <div className="mt-10 rounded-xl border border-dashed border-border bg-surface px-8 py-16 text-center">
-        <span className="mx-auto flex size-12 items-center justify-center rounded-full bg-brand-tint text-brand">
+        <span className="mx-auto flex size-12 items-center justify-center rounded-full bg-brand-tint text-brand-text">
           <MessagesSquare className="size-6" aria-hidden />
         </span>
-        <h2 className="mt-5 text-lg font-medium text-ink">No messages yet</h2>
+        <h2 className="mt-5 text-lg font-medium text-foreground">No messages yet</h2>
         <p className="mx-auto mt-1 max-w-sm text-sm text-slate-600">
           When you contact an owner from a listing, the conversation shows up
           here.
         </p>
         <Link
           href="/listings"
-          className="mt-5 inline-block text-sm font-medium text-brand hover:underline"
+          className="mt-5 inline-block text-sm font-medium text-brand-text hover:underline"
         >
           Browse trademarks →
         </Link>
@@ -184,14 +184,14 @@ export function InboxList({
               href={`/messages/${c.id}`}
               className="flex items-start gap-3 px-5 py-4 transition-colors hover:bg-slate-50"
             >
-              <span className="mt-0.5 flex size-9 shrink-0 items-center justify-center rounded-full bg-brand-tint font-display text-sm font-medium text-brand">
+              <span className="mt-0.5 flex size-9 shrink-0 items-center justify-center rounded-full bg-brand-tint font-display text-sm font-medium text-brand-text">
                 {c.otherInitial}
               </span>
               <div className="min-w-0 flex-1">
                 <div className="flex items-center justify-between gap-3">
                   <p
                     className={cn(
-                      "truncate text-ink",
+                      "truncate text-foreground",
                       unread ? "font-semibold" : "font-medium",
                     )}
                   >
@@ -215,7 +215,7 @@ export function InboxList({
                   <p
                     className={cn(
                       "mt-0.5 truncate text-sm",
-                      unread ? "font-medium text-ink" : "text-slate-600",
+                      unread ? "font-medium text-foreground" : "text-slate-600",
                     )}
                   >
                     {prefix}

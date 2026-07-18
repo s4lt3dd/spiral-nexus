@@ -68,11 +68,11 @@ export default async function ThreadPage({
         </Link>
 
         <header className="mt-4 flex items-center gap-3 border-b border-border pb-4">
-          <span className="flex size-10 shrink-0 items-center justify-center rounded-full bg-brand-tint font-display text-sm font-medium text-brand">
+          <span className="flex size-10 shrink-0 items-center justify-center rounded-full bg-brand-tint font-display text-sm font-medium text-brand-text">
             {partyName(other).charAt(0).toUpperCase()}
           </span>
           <div className="min-w-0">
-            <h1 className="truncate font-display text-lg font-medium text-ink">
+            <h1 className="truncate font-display text-lg font-medium text-foreground">
               {partyName(other)}
             </h1>
             <p className="truncate text-sm text-slate-500">

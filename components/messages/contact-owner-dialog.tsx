@@ -69,7 +69,7 @@ export function ContactOwnerDialog({
           >
             <h2
               id="contact-title"
-              className="font-display text-lg font-medium text-ink"
+              className="font-display text-lg font-medium text-foreground"
             >
               Contact {ownerName}
             </h2>

@@ -77,7 +77,7 @@ export function SiteHeader({ email: initialEmail }: { email?: string | null }) {
       <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-6">
         <Link href="/" className="flex items-center gap-2.5">
           <NexusMark className="size-7" />
-          <span className="font-display text-lg font-medium tracking-[-0.02em] text-ink">
+          <span className="font-display text-lg font-medium tracking-[-0.02em] text-foreground">
             Spiral Nexus
           </span>
         </Link>
@@ -103,7 +103,7 @@ export function SiteHeader({ email: initialEmail }: { email?: string | null }) {
               aria-expanded={open}
               className="flex cursor-pointer items-center gap-2 rounded-md border border-border bg-surface py-1 pr-2 pl-1 text-sm shadow-xs transition-colors outline-none hover:bg-slate-50 focus-visible:ring-[3px] focus-visible:ring-brand/25 aria-expanded:bg-slate-50"
             >
-              <span className="flex size-7 items-center justify-center rounded-[6px] bg-brand-tint font-display text-xs font-medium text-brand">
+              <span className="flex size-7 items-center justify-center rounded-[6px] bg-brand-tint font-display text-xs font-medium text-brand-text">
                 {email!.charAt(0).toUpperCase()}
               </span>
               <span className="hidden max-w-[12rem] truncate text-slate-700 lg:inline">

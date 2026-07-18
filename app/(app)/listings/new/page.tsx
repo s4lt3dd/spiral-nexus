@@ -29,7 +29,7 @@ export default async function NewListingPage() {
         </Link>
 
         <header className="mt-6 mb-8">
-          <h1 className="text-3xl font-semibold tracking-tight text-ink">
+          <h1 className="text-3xl font-semibold tracking-tight text-foreground">
             List a trademark
           </h1>
           <p className="mt-2 text-base text-slate-600">

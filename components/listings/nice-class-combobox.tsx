@@ -146,7 +146,7 @@ export function NiceClassCombobox({
                   <span>
                     <span className="font-medium">{c.value}</span> — {c.label}
                   </span>
-                  {isSel && <Check className="size-4 text-brand" aria-hidden />}
+                  {isSel && <Check className="size-4 text-brand-text" aria-hidden />}
                 </li>
               );
             })

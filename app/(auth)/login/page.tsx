@@ -73,7 +73,7 @@ export default function LoginPage() {
     <main className="flex min-h-screen flex-col items-center justify-center px-6 py-12">
       <Link href="/" className="flex items-center gap-2.5">
         <NexusMark className="size-7" />
-        <span className="font-display text-lg font-medium tracking-[-0.02em] text-ink">
+        <span className="font-display text-lg font-medium tracking-[-0.02em] text-foreground">
           Spiral Nexus
         </span>
       </Link>
@@ -81,10 +81,10 @@ export default function LoginPage() {
       <div className="animate-rise mt-8 w-full max-w-sm rounded-xl border border-border bg-surface p-8 shadow-md">
         {sent ? (
           <div className="text-center">
-            <span className="mx-auto flex size-12 items-center justify-center rounded-full bg-brand-tint text-brand">
+            <span className="mx-auto flex size-12 items-center justify-center rounded-full bg-brand-tint text-brand-text">
               <MailCheck className="size-6" aria-hidden />
             </span>
-            <h1 className="mt-5 font-display text-2xl font-medium text-ink">
+            <h1 className="mt-5 font-display text-2xl font-medium text-foreground">
               Check your inbox
             </h1>
             <p className="mt-2 text-sm text-slate-600">
@@ -95,14 +95,14 @@ export default function LoginPage() {
             <button
               type="button"
               onClick={() => setSent(false)}
-              className="mt-6 text-sm font-medium text-brand hover:underline"
+              className="mt-6 text-sm font-medium text-brand-text hover:underline"
             >
               Use a different email
             </button>
           </div>
         ) : (
           <>
-            <h1 className="font-display text-2xl font-medium text-ink">
+            <h1 className="font-display text-2xl font-medium text-foreground">
               Sign in to Spiral Nexus
             </h1>
             <p className="mt-2 text-sm text-slate-600">
@@ -168,14 +168,14 @@ export default function LoginPage() {
         By continuing you agree to our{" "}
         <Link
           href="/terms"
-          className="font-medium text-brand hover:underline"
+          className="font-medium text-brand-text hover:underline"
         >
           Terms of Use
         </Link>{" "}
         and{" "}
         <Link
           href="/privacy"
-          className="font-medium text-brand hover:underline"
+          className="font-medium text-brand-text hover:underline"
         >
           Privacy Policy
         </Link>

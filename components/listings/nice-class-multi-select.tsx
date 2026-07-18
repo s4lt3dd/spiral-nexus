@@ -91,7 +91,7 @@ export function NiceClassMultiSelect({
             return (
               <span
                 key={v}
-                className="inline-flex items-center gap-1 rounded-full bg-brand-tint py-0.5 pr-1 pl-2.5 text-xs font-medium text-brand"
+                className="inline-flex items-center gap-1 rounded-full bg-brand-tint py-0.5 pr-1 pl-2.5 text-xs font-medium text-brand-text"
               >
                 {c ? labelFor(c) : v}
                 <button
@@ -166,7 +166,7 @@ export function NiceClassMultiSelect({
                     <span>
                       <span className="font-medium">{c.value}</span> — {c.label}
                     </span>
-                    {isSel && <Check className="size-4 text-brand" aria-hidden />}
+                    {isSel && <Check className="size-4 text-brand-text" aria-hidden />}
                   </li>
                 );
               })

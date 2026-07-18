@@ -122,13 +122,13 @@ export default async function PublicProfilePage({
         />
 
         <section className="mt-10">
-          <h2 className="font-display text-2xl font-semibold text-ink">
+          <h2 className="font-display text-2xl font-semibold text-foreground">
             {isSelf ? "Your published listings" : `Listings from ${name}`}
           </h2>
 
           {listings.length === 0 ? (
             <div className="mt-5 rounded-xl border border-dashed border-border bg-surface px-8 py-14 text-center">
-              <span className="mx-auto flex size-12 items-center justify-center rounded-full bg-brand-tint text-brand">
+              <span className="mx-auto flex size-12 items-center justify-center rounded-full bg-brand-tint text-brand-text">
                 <NexusMark className="size-7" />
               </span>
               <p className="mx-auto mt-4 max-w-sm text-slate-600">
