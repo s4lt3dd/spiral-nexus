@@ -60,13 +60,13 @@ premium/verified moments. Never more than two accent colours visible at once.
 | Role | Value | Token | Use |
 |------|-------|-------|-----|
 | Canvas (page bg) | `#0D0B14` | `--bg` | Page background — near-black with a purple cast, never pure `#000` |
-| Surface (cards, inputs) | `#161225` | `--surface` | Cards, sheets, inputs, nav |
-| Surface raised | `#1D1830` | `--surface-raised` | Popovers, dialogs, hovered rows, stacked panels |
-| Border | `#2A2440` | `--border` | Card/input borders, dividers (≈ white at 10% over surface) |
-| Border strong | `#3A3355` | `--border-strong` | Focused input borders, table header rules |
+| Surface (cards, inputs) | `#262338` | `--surface` | Cards, sheets, inputs, nav — lifted ≈1.26:1 off the canvas so it reads as elevated, not painted-on |
+| Surface raised | `#302B44` | `--surface-raised` | Popovers, dialogs, hovered rows, stacked panels |
+| Border | `#383350` | `--border` | Card/input borders, dividers — lifted to stay visible on the raised surface |
+| Border strong | `#4A4468` | `--border-strong` | Focused input borders, table header rules |
 | Text primary | `#F2EFFA` | `--text` | Headlines, body |
 | Text secondary | `#B3ACC9` | `--text-secondary` | Supporting copy, labels |
-| Text muted | `#8A82A4` | `--text-muted` | Meta, placeholders, timestamps (AA on raised surfaces) |
+| Text muted | `#9A93B4` | `--text-muted` | Meta, placeholders, timestamps (AA ≥4.5 even on the raised surface) |
 | Brand deep (logo plum) | `#551D67` | `--brand-deep` | Gradient anchor, hero washes — never as text |
 | Brand / primary action | `#7C3AED` | `--brand` | Primary buttons, active states, selected controls |
 | Brand hover | `#8B5CF6` | `--brand-hover` | Hover/pressed |
