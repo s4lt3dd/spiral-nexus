@@ -13,10 +13,7 @@ import {
   NICE_CLASSES,
   type ProfileRole,
 } from "@/lib/profile";
-import {
-  completeOnboarding,
-  skipOnboarding,
-} from "@/app/(app)/dashboard/profile/actions";
+import { completeOnboarding } from "@/app/(app)/dashboard/profile/actions";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -103,9 +100,12 @@ export function OnboardingFlow({
     });
   }
 
+  // "Skip the rest" still finishes onboarding, but it routes through
+  // completeOnboarding so the name entered on step 1 is saved and required —
+  // we never create a nameless profile. Everything else stays optional.
   function skip() {
     startTransition(async () => {
-      const result = await skipOnboarding();
+      const result = await completeOnboarding(state);
       if (!result.ok) {
         toast.error(result.error);
         return;
@@ -117,6 +117,8 @@ export function OnboardingFlow({
 
   const last = step === STEPS.length - 1;
   const percent = Math.round(((step + 1) / STEPS.length) * 100);
+  // A name is the one hard requirement to leave onboarding (any path).
+  const nameOk = state.display_name.trim().length > 0;
 
   return (
     <div className="animate-rise w-full max-w-xl rounded-2xl border border-border bg-surface p-6 shadow-md sm:p-8">
@@ -157,7 +159,9 @@ export function OnboardingFlow({
         {step === 0 && (
           <>
             <div className="space-y-2">
-              <Label htmlFor="display_name">Name</Label>
+              <Label htmlFor="display_name">
+                Name <span className="text-brand-text">*</span>
+              </Label>
               <Input
                 id="display_name"
                 value={state.display_name}
@@ -165,7 +169,13 @@ export function OnboardingFlow({
                 placeholder="Jane Doe"
                 maxLength={80}
                 autoFocus
+                aria-required
               />
+              {!nameOk && (
+                <p className="text-xs text-slate-500">
+                  Required — this is how members will recognise you.
+                </p>
+              )}
             </div>
             <div className="space-y-2">
               <Label htmlFor="headline">Headline</Label>
@@ -333,12 +343,12 @@ export function OnboardingFlow({
             type="button"
             variant="ghost"
             onClick={skip}
-            disabled={pending}
+            disabled={pending || !nameOk}
           >
             Skip for now
           </Button>
           {last ? (
-            <Button type="button" onClick={finish} disabled={pending}>
+            <Button type="button" onClick={finish} disabled={pending || !nameOk}>
               <Check className="size-4" aria-hidden />
               {pending ? "Finishing…" : "Finish"}
             </Button>
@@ -346,7 +356,7 @@ export function OnboardingFlow({
             <Button
               type="button"
               onClick={() => setStep((s) => s + 1)}
-              disabled={pending}
+              disabled={pending || (step === 0 && !nameOk)}
             >
               Continue
               <ArrowRight className="size-4" aria-hidden />

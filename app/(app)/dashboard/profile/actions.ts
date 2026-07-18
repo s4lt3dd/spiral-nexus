@@ -68,28 +68,13 @@ export async function updateProfile(input: ProfileInput): Promise<ActionResult> 
   return saveProfile(input, { markOnboarded: false });
 }
 
+// Completing onboarding requires a name — the schema (profileSchema) enforces
+// display_name, so this returns an error instead of onboarding a nameless
+// profile. "Skip the rest" in the UI still routes through here, so the only
+// hard requirement to leave onboarding is a name; everything else stays
+// optional and the completion nudge recovers the rest later.
 export async function completeOnboarding(
   input: ProfileInput,
 ): Promise<ActionResult> {
   return saveProfile(input, { markOnboarded: true });
-}
-
-// Skip onboarding: stamp onboarded_at only. We never trap a user behind a form
-// — the completion nudge recovers profile completeness later.
-export async function skipOnboarding(): Promise<ActionResult> {
-  const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-  if (!user) return { ok: false, error: "You must be signed in." };
-
-  const { error } = await supabase
-    .from("profiles")
-    .update({ onboarded_at: new Date().toISOString() })
-    .eq("id", user.id);
-
-  if (error) return { ok: false, error: error.message };
-
-  revalidatePath("/dashboard");
-  return { ok: true };
 }
