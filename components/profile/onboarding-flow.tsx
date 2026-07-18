@@ -19,6 +19,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { ChipMultiSelect } from "@/components/profile/chip-multi-select";
+import { TypeaheadMultiSelect } from "@/components/ui/typeahead-multi-select";
 import { NexusMark } from "@/components/brand/nexus-mark";
 import {
   Select,
@@ -247,20 +248,20 @@ export function OnboardingFlow({
             </div>
             <div className="space-y-3">
               <Label>Sectors you focus on</Label>
-              <ChipMultiSelect
+              <TypeaheadMultiSelect
                 options={sectorOptions}
-                selected={state.sectors}
-                onToggle={(v) => set("sectors", toggle(state.sectors, v))}
+                values={state.sectors}
+                onChange={(v) => set("sectors", v)}
+                placeholder="Search sectors…"
               />
             </div>
             <div className="space-y-3">
               <Label>Jurisdictions of interest</Label>
-              <ChipMultiSelect
+              <TypeaheadMultiSelect
                 options={jurisdictionOptions}
-                selected={state.jurisdictions}
-                onToggle={(v) =>
-                  set("jurisdictions", toggle(state.jurisdictions, v))
-                }
+                values={state.jurisdictions}
+                onChange={(v) => set("jurisdictions", v)}
+                placeholder="Search jurisdictions…"
               />
             </div>
           </>
@@ -281,21 +282,15 @@ export function OnboardingFlow({
             </div>
             <div className="space-y-3">
               <Label>Nice classes of interest (optional)</Label>
-              <div className="max-h-44 overflow-y-auto rounded-lg border border-border p-3">
-                <ChipMultiSelect
-                  options={NICE_CLASSES.map((c) => ({
-                    value: c.value,
-                    label: `${c.value} · ${c.label}`,
-                  }))}
-                  selected={state.nice_class_interests}
-                  onToggle={(v) =>
-                    set(
-                      "nice_class_interests",
-                      toggle(state.nice_class_interests, v),
-                    )
-                  }
-                />
-              </div>
+              <TypeaheadMultiSelect
+                options={NICE_CLASSES.map((c) => ({
+                  value: c.value,
+                  label: `${c.value} · ${c.label}`,
+                }))}
+                values={state.nice_class_interests}
+                onChange={(v) => set("nice_class_interests", v)}
+                placeholder="Search classes…"
+              />
             </div>
             <div className="grid gap-5 sm:grid-cols-2">
               <div className="space-y-2">

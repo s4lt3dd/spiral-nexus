@@ -19,6 +19,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { ChipMultiSelect } from "@/components/profile/chip-multi-select";
+import { TypeaheadMultiSelect } from "@/components/ui/typeahead-multi-select";
 import {
   Select,
   SelectContent,
@@ -218,10 +219,11 @@ export function ProfileForm({ profile }: { profile: PublicProfile }) {
             The industries you focus on.
           </p>
         </div>
-        <ChipMultiSelect
+        <TypeaheadMultiSelect
           options={sectorOptions}
-          selected={state.sectors}
-          onToggle={(v) => set("sectors", toggle(state.sectors, v))}
+          values={state.sectors}
+          onChange={(v) => set("sectors", v)}
+          placeholder="Search sectors…"
         />
       </section>
 
@@ -235,10 +237,11 @@ export function ProfileForm({ profile }: { profile: PublicProfile }) {
             Where your interests lie.
           </p>
         </div>
-        <ChipMultiSelect
+        <TypeaheadMultiSelect
           options={jurisdictionOptions}
-          selected={state.jurisdictions}
-          onToggle={(v) => set("jurisdictions", toggle(state.jurisdictions, v))}
+          values={state.jurisdictions}
+          onChange={(v) => set("jurisdictions", v)}
+          placeholder="Search jurisdictions…"
         />
       </section>
 
@@ -252,15 +255,14 @@ export function ProfileForm({ profile }: { profile: PublicProfile }) {
             The trademark classes you care about.
           </p>
         </div>
-        <ChipMultiSelect
+        <TypeaheadMultiSelect
           options={NICE_CLASSES.map((c) => ({
             value: c.value,
             label: `${c.value} · ${c.label}`,
           }))}
-          selected={state.nice_class_interests}
-          onToggle={(v) =>
-            set("nice_class_interests", toggle(state.nice_class_interests, v))
-          }
+          values={state.nice_class_interests}
+          onChange={(v) => set("nice_class_interests", v)}
+          placeholder="Search classes…"
         />
       </section>
 
