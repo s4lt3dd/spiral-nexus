@@ -47,8 +47,11 @@ export function ListingBrowseCard({
       className="group rounded-lg outline-none focus-visible:ring-[3px] focus-visible:ring-brand/25"
     >
       <Card className="flex h-full flex-col gap-0 p-0 transition-[transform,box-shadow,border-color] duration-200 ease-out group-hover:-translate-y-0.5 group-hover:border-brand/30 group-hover:shadow-md">
-        {/* Mark / image block — fills the frame edge to edge */}
-        <div className="relative aspect-[16/10] w-full overflow-hidden rounded-t-lg bg-surface-raised">
+        {/* Mark / image block. It carries no radius of its own — the Card's
+            `overflow-hidden rounded-lg` clips the image to the card's rounded
+            top corners, so the image respects the card shape with no corner
+            gap or overhang. */}
+        <div className="relative aspect-[16/10] w-full overflow-hidden bg-surface-raised">
           {cover ? (
             <Image
               src={cover}
