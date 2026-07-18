@@ -20,6 +20,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { ChipMultiSelect } from "@/components/profile/chip-multi-select";
 import { TypeaheadMultiSelect } from "@/components/ui/typeahead-multi-select";
+import { AvatarUploadField } from "@/components/profile/avatar-upload-field";
 import {
   Select,
   SelectContent,
@@ -174,13 +175,10 @@ export function ProfileForm({ profile }: { profile: PublicProfile }) {
           </div>
         </div>
         <div className="space-y-2">
-          <Label htmlFor="avatar_url">Profile photo URL</Label>
-          <Input
-            id="avatar_url"
-            type="url"
-            value={state.avatar_url}
-            onChange={(e) => set("avatar_url", e.target.value)}
-            placeholder="https://…"
+          <Label>Profile photo</Label>
+          <AvatarUploadField
+            value={state.avatar_url || null}
+            onChange={(url) => set("avatar_url", url ?? "")}
           />
         </div>
         <div className="space-y-2">
