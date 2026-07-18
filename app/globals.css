@@ -29,17 +29,24 @@
   --gradient-brand: linear-gradient(135deg, #7c3aed 0%, #6d28d9 50%, #4f46e5 100%);
   --gradient-hero: linear-gradient(165deg, #0d0b14 10%, #2a1245 55%, #551d67 100%);
   --bg: #0d0b14;
-  --surface: #161225;
-  --surface-raised: #1d1830;
-  /* Neutral ramp, purple-cast. Step semantics are preserved from the light
-     theme (50 = subtlest fill, 200 = borders, 600 = secondary text,
-     900 = headlines) so existing slate-* utilities re-theme in place. */
-  --slate-50: #1a1528;
-  --slate-100: #221c36;
-  --slate-200: #2a2440;
-  --slate-300: #3a3355;
-  --slate-400: #8a82a4; /* AA (≥4.5) even on --surface-raised */
-  --slate-500: #948cab;
+  /* Surfaces are lifted well clear of the canvas so cards read as elevated,
+     not painted-on (founder note: cards were "almost identical" to the bg).
+     Card:canvas ≈ 1.26:1; raised sits a further step up. The cast is
+     deliberately *desaturated* vs the canvas so violet stays the accent and
+     the screen doesn't read as one flat purple. */
+  --surface: #262338;
+  --surface-raised: #302b44;
+  /* Neutral ramp, purple-cast but restrained. Step semantics are preserved
+     from the light theme (50 = subtlest fill, 200 = borders, 600 = secondary
+     text, 900 = headlines) so existing slate-* utilities re-theme in place.
+     Borders (200/300) are lifted enough to stay visible on the raised cards —
+     on dark, the border does the separating a shadow did on light. */
+  --slate-50: #211e30;
+  --slate-100: #2a2740;
+  --slate-200: #383350;
+  --slate-300: #4a4468;
+  --slate-400: #9a93b4; /* muted text — AA (≥4.5) even on the raised surface */
+  --slate-500: #a7a0c0;
   --slate-600: #b3acc9;
   --slate-700: #c9c3db;
   --slate-800: #e2ddf0;
