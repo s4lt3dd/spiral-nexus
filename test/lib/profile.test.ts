@@ -19,9 +19,9 @@ const EMPTY_PROFILE = {
   bio: null,
   avatar_url: null,
   location: null,
-  role_flags: null,
-  sectors: null,
-  jurisdictions: null,
+  role_flags: [],
+  sectors: [],
+  jurisdictions: [],
 };
 
 describe("PUBLIC_PROFILE_COLUMNS", () => {
@@ -128,6 +128,23 @@ describe("profileCompleteness", () => {
   it("does not count an empty array as a completed multi-select", () => {
     const r = profileCompleteness({ ...EMPTY_PROFILE, sectors: [] });
     expect(r.missing.map((m) => m.key)).toContain("sectors");
+  });
+
+  // The columns are typed non-null, but a legacy row can still carry NULL.
+  // The helper guards for it, so the guard is worth pinning.
+  it("survives null array columns from a legacy row", () => {
+    const legacy = {
+      ...EMPTY_PROFILE,
+      role_flags: null,
+      sectors: null,
+      jurisdictions: null,
+    } as unknown as Parameters<typeof profileCompleteness>[0];
+
+    const r = profileCompleteness(legacy);
+    expect(r.percent).toBe(0);
+    expect(r.missing.map((m) => m.key)).toEqual(
+      expect.arrayContaining(["role_flags", "sectors", "jurisdictions"]),
+    );
   });
 
   it("counts partial progress and rounds to a whole percent", () => {

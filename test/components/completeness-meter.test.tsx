@@ -11,9 +11,9 @@ const EMPTY = {
   bio: null,
   avatar_url: null,
   location: null,
-  role_flags: null,
-  sectors: null,
-  jurisdictions: null,
+  role_flags: [],
+  sectors: [],
+  jurisdictions: [],
 };
 
 const FULL = {
