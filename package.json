@@ -10,6 +10,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
+    "test": "vitest run",
+    "test:watch": "vitest",
     "db:new": "supabase migration new",
     "db:push": "supabase db push",
     "db:reset": "supabase db reset",
@@ -37,14 +39,21 @@
   },
   "devDependencies": {
     "@tailwindcss/postcss": "4.3.1",
+    "@testing-library/dom": "10.4.1",
+    "@testing-library/jest-dom": "7.0.0",
+    "@testing-library/react": "16.3.2",
+    "@testing-library/user-event": "14.6.3",
     "@types/node": "22.19.21",
     "@types/react": "19.2.17",
     "@types/react-dom": "19.2.3",
+    "@vitejs/plugin-react": "6.0.5",
     "eslint": "9.39.4",
     "eslint-config-next": "16.2.9",
+    "jsdom": "30.0.1",
     "supabase": "2.106.0",
     "tailwindcss": "4.3.1",
-    "typescript": "5.9.3"
+    "typescript": "5.9.3",
+    "vitest": "4.1.10"
   },
   "overrides": {
     "postcss": "8.5.15"
