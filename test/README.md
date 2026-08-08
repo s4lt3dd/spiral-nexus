@@ -14,6 +14,26 @@ Layout:
   assembly, and the Zod boundary schemas.
 - `test/components/**` — component rendering, interaction, and conditional/empty
   states.
+Vitest runs these as two projects (see `vitest.config.mts`):
+
+| Project      | Files              | Environment                       |
+| ------------ | ------------------ | --------------------------------- |
+| `lib`        | `test/lib/**`      | `node` — no DOM, nothing to set up |
+| `components` | `test/components/**` | `jsdom` + `test/setup.ts`        |
+
+Keeping the pure-logic suite on `node` matters: building a jsdom per file
+dominated startup and, on a cold `node_modules`, pushed the run past Vitest's
+**fixed, non-configurable 60s worker-start timeout** — the whole run failed
+before a single test executed.
+
+The `components` project therefore also runs `isolate: false` on a single
+worker, so jsdom is imported once instead of per file. **Consequence:** files in
+that project share a module registry, so a `vi.mock` in one component test is
+visible to the others. Today only `like-button.test.tsx` mocks anything, and
+nothing else imports those modules. If you add a mock that another component
+test also imports, give it an explicit per-test override rather than relying on
+isolation.
+
 - `test/helpers/supabase-mock.ts` — a chainable stand-in for the PostgREST query
   builder. It records the chain a loader builds and resolves to a canned result,
   so query *shape* can be asserted (e.g. browse only ever asks for published
