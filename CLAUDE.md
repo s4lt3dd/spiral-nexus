@@ -61,12 +61,22 @@ adding dependencies outside this set.
 
 ## MVP slice order
 0. Skeleton: auth + empty dashboard + deploy. (DONE)
-1. Listings CRUD (trademark).
-2. Discovery: browse, detail, search/filter.
-3. Contact / 1:1 messaging.
-4. Subscriptions (Stripe) gating list count + DM limits.
-Post-MVP (do NOT build into the foundation): AI matchmaking, IP-office data
-ingestion, social feed, analytics, verification automation.
+1. Listings CRUD (trademark). (DONE)
+2. Discovery: browse, detail, search/filter. (DONE)
+3. Contact / 1:1 messaging. (DONE — incl. real-time + docked panel)
+4. Subscriptions (Stripe) gating list count + DM limits. (SCAFFOLDED — tiers
+   and server-side gating live in `lib/tiers.ts`; payments are OFF via
+   `PAYMENTS_ENABLED`, so a bounded free allowance applies until launch.)
+
+Beyond the core loop, the free invite-only pre-launch phase also shipped (full
+detail in `docs/ROADMAP-LOI-MVP.md`): user profiles + profile-as-home, the
+Connect member directory, legal/compliance pages, IP-office search redirect,
+saved listings, the follow graph, and an engagement layer (likes, activity,
+notifications).
+
+Still deferred — do NOT build into the foundation: AI matchmaking, IP-office
+data ingestion, a true social feed, analytics dashboards, verification
+automation.
 
 ## Auth
 Passwordless magic-link (Supabase OTP). Login at `/login`, code exchanged at

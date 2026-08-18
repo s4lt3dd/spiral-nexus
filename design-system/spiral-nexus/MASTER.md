@@ -23,8 +23,8 @@ decisions. These override anything below that appears to conflict:
    (dashboard stat cards with sparklines, distribution charts, activity
    meters). Numbers get confident display treatment.
 4. **Futuristic look with traditional details** — the dark/violet/glow canvas
-   is the futuristic half; the Fraunces serif display and calm editorial
-   layout are the traditional half. Keep both in tension.
+   is the futuristic half; the calm editorial layout, generous spacing and
+   restraint are the traditional half. Keep both in tension.
 5. **Social-media-like ease of navigation** — familiar patterns (feed-style
    activity, cards, filters that behave like consumer apps). This is about
    *navigation familiarity*, not building a social feed (the feed itself is
@@ -43,7 +43,7 @@ is **`#551D67`** (deep plum — sampled from the supplied files). Files live in
 | `spiral-nexus-purple.png` / `spiral-nexus-mark-purple.png` | Plum versions — light contexts only (emails, print, LOI/legal docs) |
 | `spiral-nexus-og.jpg` | White-on-plum social/OG image |
 
-**Usage rules:** in-app, use the white mark + the existing Fraunces text
+**Usage rules:** in-app, use the white mark + the Montserrat text
 wordmark side-by-side in the header (the stacked lockup is too tall for nav).
 Never recolour the mark; never place the plum mark on the dark canvas (fails
 contrast). The mark at low opacity (3–6%) is the approved background flourish
@@ -98,25 +98,30 @@ colours, more than 2 accents per screen, neon glows on everything.
 
 ## Typography
 
-Unchanged fonts — a serif display + grotesque body. On dark, the serif is
-what keeps the product feeling editorial and premium instead of "crypto
-dashboard".
+A geometric display + grotesque body. Titles use the same geometric sans as
+the logo wordmark (founder decision, Aug 2026 — "Gotham Bold or similar"),
+so headings read as **confident and corporate**, tying the product back to
+the brand mark. Hierarchy now comes from **weight and size**, not a
+serif/sans switch — keep display type large and bold so it never reads flat.
 
-- **Display / Headings:** **Fraunces** (serif), weights 400/500/600, optical
-  sizing on. h1–h3, hero, section titles, listing titles, big dashboard
-  numbers.
+- **Display / Headings:** **Montserrat** (geometric sans — a free Gotham
+  look-alike; real Gotham can be self-hosted later via `next/font/local`),
+  weights **600/700**, titles **bold (700)**. h1–h3, hero, section titles,
+  listing titles, big dashboard numbers.
 - **Body / UI:** **Inter**, weights 400/500/600/700. Everything else,
   including registration numbers and prices (no monospace — founder decision).
 
 **Scale (rem):** display `3.5` · h1 `2.25` · h2 `1.75` · h3 `1.375` ·
 body-lg `1.125` · body `1` · sm `0.875` · xs `0.75`.
-Display/h1/h2 use Fraunces, tracking `-0.02em`, line-height `1.05–1.15`.
+Display/h1/h2 use Montserrat 700, tracking `-0.01em` (looser than a serif —
+the geometric face runs wide), line-height `1.05–1.15`.
 Body line-height `1.6`. Headlines stay **confident and large**.
 
 **Dark-mode type rules:** set `-webkit-font-smoothing: antialiased`; light
 text on dark optically thickens, so prefer weight 400/500 where the light
-theme used 500/600 for body-size text (headlines keep their weights). Large
-Fraunces display numbers may use `--brand-text` or white — never mid-violet.
+theme used 500/600 for body-size text (headlines keep their bold weight).
+Large Montserrat display numbers may use `--brand-text` or white — never
+mid-violet.
 
 ---
 
@@ -172,7 +177,7 @@ everywhere = cheap.
   CTA. Never a lone muted sentence on a dark void.
 - **Data chips:** Nice class as a small labelled chip (e.g. `NICE 9`) —
   `--surface-raised` bg, `--border`, `--text-secondary`.
-- **Stat cards with sparklines** (dashboard): big Fraunces number, delta pill
+- **Stat cards with sparklines** (dashboard): big Montserrat number, delta pill
   (`--success`/`--danger` tint), small violet sparkline — the mood board's
   data-rich look, in our tokens.
 
@@ -197,7 +202,7 @@ everywhere = cheap.
 - `--surface`, `--radius-lg`, `1px --border`, `--shadow-sm`. **No card-level
   hover effect** (founder decision) — only controls inside respond.
 - Structure: mark/image block (16:10, `--surface-raised` placeholder with
-  faint mark motif if no image) → title (Fraunces, `--text`) → meta row
+  faint mark motif if no image) → title (Montserrat, `--text`) → meta row
   (jurisdiction · `NICE n` chip) → status pill + price. Padding 20–24px.
 
 **Inputs**
@@ -209,7 +214,7 @@ everywhere = cheap.
 mapping above; 500 weight.
 
 **Top nav** — `--bg` (or `--surface`) with bottom `1px --border`; white mark
-(`spiral-nexus-mark-white.png`, ~28px) + wordmark in Fraunces `--text`; quiet
+(`spiral-nexus-mark-white.png`, ~28px) + wordmark in Montserrat `--text`; quiet
 links in `--text-secondary` (active: `--brand-text`); primary CTA button.
 
 **Table** — `--surface-raised` header row, `--border` row dividers, row hover
@@ -233,7 +238,7 @@ series max (gold or success). Never rainbow palettes.
   the base `:root` values — no `.dark` class gymnastics, no toggle.
 - Set `color-scheme: dark` on `:root` so native controls (scrollbars,
   date pickers, autofill) render dark.
-- Load fonts via `next/font` (Fraunces, Inter); map to `--font-display`,
+- Load fonts via `next/font` (Montserrat, Inter); map to `--font-display`,
   `--font-sans`.
 - shadcn primitives stay the base; restyle via tokens — never default shadcn.
 - Meta: `theme-color #0D0B14`; OG image `public/brand/spiral-nexus-og.jpg`;

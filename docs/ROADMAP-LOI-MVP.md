@@ -1,5 +1,14 @@
 # Spiral Nexus — Roadmap to the LOI MVP ("Level 0")
 
+> **Status (Aug 2026): this phase is COMPLETE.** Every slice below (0–3 plus
+> 4, 5, 6a/b/c, 7, 8a, 8b) has shipped and merged (PRs #1–#13), along with a
+> post-MVP polish wave: real-time messaging, a docked messaging panel, the
+> engagement layer (likes, activity, notifications), the country/sector
+> filters, the authoritative dark theme + brand assets, and a unit-test suite
+> with CI. The sections below are kept as the **historical build plan and the
+> parallel-execution record** — read them for context, not as a to-do list.
+> Live deferred work now lives in the CLAUDE.md "Still deferred" list.
+
 Optimised for **running multiple agents in parallel**. Each slice notes what it
 depends on, what it can run alongside, and which files/tables it *owns* (the unit
 of merge-conflict risk).
@@ -22,14 +31,22 @@ connect with each other** ("the simplest version of LinkedIn").
 
 ---
 
-## Done (Slices 0–3)
-Auth (magic link) · trademark listings CRUD + dashboard · discovery
-(browse/search/filter/detail) · 1:1 messaging. The core loop **list → discover →
-contact** works end to end. Design system is in place.
+## Shipped (all slices) ✅
+- **Slices 0–3:** auth (magic link) · trademark listings CRUD + dashboard ·
+  discovery (browse/search/filter/detail) · 1:1 messaging. The core loop
+  **list → discover → contact** works end to end.
+- **Slice 4:** user profiles + profile-as-home.
+- **Slice 5:** Connect / member directory.
+- **Slice 6:** compliance & legal — 6a pages/docs, 6b data export & delete,
+  6c admin MFA/ops.
+- **Slice 7:** IP-office search redirect.
+- **Slice 8:** light social — 8a save listings, 8b follow users.
+
+The per-slice detail below is retained as the build record.
 
 ---
 
-## Remaining slices
+## Slice detail (as-built reference)
 
 ### Slice 4 — User Profiles + profile-as-home  ⟵ critical path
 **Goal:** the logged-in home becomes the user's **profile** (their public identity);
