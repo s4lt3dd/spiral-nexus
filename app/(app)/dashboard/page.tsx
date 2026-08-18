@@ -74,6 +74,7 @@ export default async function ProfileHomePage() {
               profile={profile}
               stats={
                 <FollowStats
+                  profileId={user.id}
                   followers={followers ?? 0}
                   following={following ?? 0}
                 />
