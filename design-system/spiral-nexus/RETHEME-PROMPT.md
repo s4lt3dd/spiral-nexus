@@ -23,7 +23,7 @@ Scope:
    legal pages — replacing any hardcoded light-mode colors with tokens.
    Delete/replace light-only styles rather than layering dark on top.
 3. Wire the brand assets from `public/brand/`: white mark
-   (`spiral-nexus-mark-white.png`) + Fraunces wordmark in the shared
+   (`spiral-nexus-mark-white.png`) + Montserrat wordmark in the shared
    `components/marketing/site-header.tsx`, favicon from the white mark,
    OG image `spiral-nexus-og.jpg`, footer lockup `spiral-nexus-white.png`.
 4. Apply the signature elements from MASTER.md: plum hero gradient, faint

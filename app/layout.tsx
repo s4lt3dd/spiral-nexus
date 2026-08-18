@@ -1,13 +1,14 @@
 import type { Metadata, Viewport } from "next";
 import "./globals.css";
-import { Fraunces, Inter } from "next/font/google";
+import { Montserrat, Inter } from "next/font/google";
 import { cn } from "@/lib/utils";
 import { Toaster } from "@/components/ui/sonner";
 
-// Serif display (editorial authority) + grotesque body.
-const fraunces = Fraunces({
+// Geometric display (Gotham-like, matches the logo wordmark) + grotesque body.
+const montserrat = Montserrat({
   subsets: ["latin"],
-  variable: "--font-fraunces",
+  weight: ["600", "700"],
+  variable: "--font-montserrat",
   display: "swap",
 });
 const inter = Inter({
@@ -38,7 +39,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={cn("font-sans", inter.variable, fraunces.variable)}
+      className={cn("font-sans", inter.variable, montserrat.variable)}
     >
       <body className="min-h-screen bg-background text-foreground antialiased">
         {children}

@@ -128,9 +128,9 @@
    `inline` so dark-mode/instance overrides of the :root vars flow through. */
 @theme inline {
   /* Fonts (next/font sets the *-family vars on <html>) */
-  --font-display: var(--font-fraunces);
+  --font-display: var(--font-montserrat);
   --font-sans: var(--font-inter);
-  --font-heading: var(--font-fraunces);
+  --font-heading: var(--font-montserrat);
 
   /* Brand colour utilities (bg-brand, text-ink, bg-brand-tint, …) */
   --color-ink: var(--ink);
@@ -222,12 +222,13 @@
   html {
     @apply font-sans;
   }
-  /* Headings adopt the serif display face by default. */
+  /* Headings adopt the geometric display face (Gotham-like) by default. */
   h1,
   h2,
   h3 {
     @apply font-display;
-    letter-spacing: -0.02em;
+    font-weight: 700;
+    letter-spacing: -0.01em;
   }
 }
 

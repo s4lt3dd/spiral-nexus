@@ -1,5 +1,11 @@
 # Spiral Nexus — MVP Spec & Build Plan
 
+> **Historical (June 2026).** This is the original reverse-engineered spec. The
+> founder questions in §9 have been answered and the build has moved well past
+> it — the slice numbering here (Slice 4 = Subscriptions) predates the renumber
+> in `docs/ROADMAP-LOI-MVP.md`, which is the accurate as-built record. Kept for
+> product context and the domain notes; do not treat its build order as current.
+
 *Reverse-engineered from the Softr mockup (previewportal.softr.app), June 2026. This is a working draft to refine with the founders.*
 
 ---
