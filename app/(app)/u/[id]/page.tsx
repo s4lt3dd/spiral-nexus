@@ -100,7 +100,11 @@ export default async function PublicProfilePage({
         <ProfileIdentity
           profile={profile}
           stats={
-            <FollowStats followers={followers ?? 0} following={following ?? 0} />
+            <FollowStats
+              profileId={id}
+              followers={followers ?? 0}
+              following={following ?? 0}
+            />
           }
           actions={
             isSelf ? (
