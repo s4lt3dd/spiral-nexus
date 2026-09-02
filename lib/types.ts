@@ -111,3 +111,67 @@ export interface ConversationRead {
   user_id: string;
   last_read_at: string;
 }
+
+// ---------- IP-office ingestion (register data — intelligence, not supply) ----------
+// Official register records live in ip_office_records, strictly separate from
+// user-submitted ip_assets, and are never rendered as listings. The app's
+// anon/authenticated roles cannot read them at all; access is service-role
+// (ingestion) or the read-only register_reader role (internal matching MCP).
+// See docs/INGESTION.md.
+
+export type Registry = "euipo" | "ukipo" | "uspto" | "wipo";
+
+export type OfficeRecordStatus =
+  | "registered"
+  | "pending"
+  | "expired"
+  | "opposed"
+  | "withdrawn"
+  | "other";
+
+export interface OfficeRecord {
+  id: string;
+  registry: Registry;
+  // The registry's own identifier (e.g. EUTM application number).
+  office_ref: string;
+  mark_text: string | null;
+  mark_kind: string | null;
+  mark_image_url: string | null;
+  nice_classes: number[];
+  status: OfficeRecordStatus;
+  status_raw: string | null;
+  filing_date: string | null;
+  registration_date: string | null;
+  expiry_date: string | null;
+  // Art. 18 EUTMR: registration_date + 5 years (generated in the database).
+  grace_period_ends: string | null;
+  owner_name: string | null;
+  owner_country: string | null;
+  territory: string[];
+  office_url: string | null;
+  source_updated_at: string | null;
+  ingested_at: string;
+}
+
+// vulnerable = grace period already ended; approaching = ends within 180
+// days; watch = registered with >180 days of room.
+export type RadarBucket = "vulnerable" | "approaching" | "watch";
+
+// A row of the trademark_non_use_radar view (registered marks only).
+export interface RadarRow {
+  id: string;
+  registry: Registry;
+  office_ref: string;
+  mark_text: string | null;
+  mark_kind: string | null;
+  nice_classes: number[];
+  filing_date: string | null;
+  registration_date: string | null;
+  expiry_date: string | null;
+  grace_period_ends: string;
+  days_to_grace_end: number;
+  radar_bucket: RadarBucket;
+  owner_name: string | null;
+  owner_country: string | null;
+  office_url: string | null;
+}

@@ -74,9 +74,21 @@ Connect member directory, legal/compliance pages, IP-office search redirect,
 saved listings, the follow graph, and an engagement layer (likes, activity,
 notifications).
 
-Still deferred — do NOT build into the foundation: AI matchmaking, IP-office
-data ingestion, a true social feed, analytics dashboards, verification
-automation.
+Still deferred — do NOT build into the foundation: productized AI matchmaking
+(internal concierge matching runs via the register MCP below), a true social
+feed, analytics dashboards, verification automation.
+
+## Register data & non-use radar (ingestion)
+Official IP-office records are ingested (EUIPO-first) into
+`ip_office_records` — **intelligence, not supply** (founder decision, Aug
+2026): strictly separate from `ip_assets`, NEVER rendered as listings, never
+implying an owner wants to deal. `anon`/`authenticated` are hard-revoked from
+the table and the `trademark_non_use_radar` view (Art. 18 EUTMR 5-year
+genuine-use clock; buckets vulnerable/approaching/watch). Access is exactly:
+service-role (ingestion writes; `lib/ingestion/` + seed script) and the
+read-only `register_reader` role used by the internal concierge-matchmaking
+MCP (`mcp/register-server/`). Live feed is OFF via `INGESTION_LIVE` (fixture
+mode); live pulls must stay bounded. Everything: `docs/INGESTION.md`.
 
 ## Auth
 Passwordless magic-link (Supabase OTP). Login at `/login`, code exchanged at
