@@ -101,14 +101,23 @@ credentials never live in a migration. To activate:
 2. Build the connection string (direct connection):
    `postgresql://register_reader:<password>@db.<project-ref>.supabase.co:5432/postgres?sslmode=require`
    (Via the pooler, the username becomes `register_reader.<project-ref>`.)
-3. `cd mcp/register-server && npm install`, then register with Claude —
+   The direct host is often IPv6-only; from an IPv4-only machine use the
+   session pooler form. Supabase → Project Settings → Database shows both.
+3. Add `REGISTER_READONLY_DATABASE_URL=<that string>` to the gitignored
+   `.env.local`. The MCP and its scripts read it from there when the
+   environment variable is unset, so the credential lives in exactly one
+   place (never in MCP client config).
+4. `cd mcp/register-server && npm install`, then register with Claude —
    command in `mcp/register-server/README.md`.
-4. Prove the scope: `npm run verify` there (asserts it reads the two
-   register objects and is denied everything else, including writes).
+5. Prove the scope: `npm run verify` there (asserts it reads the two
+   register objects and is denied everything else, including writes), then
+   `npm run smoke` (drives all four tools through a real stdio MCP client and
+   checks the answers against the fixture; needs the fixture ingested).
 
-Keep the password out of the repo; `.env.local` may hold
-`REGISTER_READONLY_DATABASE_URL` for local verify runs (`.env*` is
-gitignored).
+Keep the password out of the repo (`.env*` is gitignored) and treat it as
+rotatable: re-run the `alter role` statement to rotate. This shared-password
+setup is for the single-operator phase only — see the register MCP README
+before giving a second person access.
 
 ## What the data powers next (build order)
 

@@ -11,45 +11,30 @@
 //   * Connects as the dedicated `register_reader` Postgres role, whose ONLY
 //     grants are SELECT on the two register objects — it structurally cannot
 //     read user, listing, or message data.
-//   * Every session is forced read-only (default_transaction_read_only).
+//   * Every query runs in an explicit READ ONLY transaction (db.mjs).
 //   * Every query is parameterised; tool inputs are validated with zod and
 //     limits are clamped server-side.
 
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
-import pg from "pg";
 import { z } from "zod";
 
-const connectionString = process.env.REGISTER_READONLY_DATABASE_URL;
+import { createPool, loadConnectionString, readOnlyQuery } from "./db.mjs";
+
+const connectionString = loadConnectionString();
 if (!connectionString) {
   console.error(
-    "REGISTER_READONLY_DATABASE_URL is not set. Point it at Postgres as the " +
-      "register_reader role (see docs/INGESTION.md — 'Enable the register MCP').",
+    "REGISTER_READONLY_DATABASE_URL is not set (env or .env.local). Point it " +
+      "at Postgres as the register_reader role (see docs/INGESTION.md — " +
+      "'Enable the register MCP').",
   );
   process.exit(1);
 }
 
-const pool = new pg.Pool({
-  connectionString,
-  max: 3,
-  // Supabase-hosted connections need TLS; local supabase (127.0.0.1) doesn't.
-  ssl: /supabase\.(co|com)|sslmode=require/.test(connectionString)
-    ? { rejectUnauthorized: false }
-    : undefined,
-});
-// Belt and braces on top of the role's grants: the session itself refuses
-// writes. search_path pins pg_trgm resolution whether the extension lives in
-// public (local CLI) or extensions (hosted) — missing schemas are skipped.
-pool.on("connect", (client) => {
-  client.query("set default_transaction_read_only = on");
-  client.query("set search_path = public, extensions");
-});
+const pool = createPool(connectionString, { max: 3 });
 
-/** Run a parameterised query and return rows. */
-async function query(text, params = []) {
-  const result = await pool.query(text, params);
-  return result.rows;
-}
+/** Run a parameterised query (read-only transaction) and return rows. */
+const query = (text, params = []) => readOnlyQuery(pool, text, params);
 
 /** Standard MCP text result from any JSON-able value. */
 function jsonResult(value) {

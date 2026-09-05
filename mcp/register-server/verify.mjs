@@ -5,25 +5,18 @@
 // Asserts the role CAN read the two register objects and CANNOT touch
 // anything else (user tables, writes). Exits non-zero on any failure.
 
-import pg from "pg";
+import { createPool, loadConnectionString, readOnlyQuery } from "./db.mjs";
 
-const connectionString = process.env.REGISTER_READONLY_DATABASE_URL;
+const connectionString = loadConnectionString();
 if (!connectionString) {
-  console.error("Set REGISTER_READONLY_DATABASE_URL (as register_reader) first.");
+  console.error(
+    "Set REGISTER_READONLY_DATABASE_URL (env or .env.local) as register_reader first.",
+  );
   process.exit(1);
 }
 
-const pool = new pg.Pool({
-  connectionString,
-  max: 1,
-  ssl: /supabase\.(co|com)|sslmode=require/.test(connectionString)
-    ? { rejectUnauthorized: false }
-    : undefined,
-});
-pool.on("connect", (client) => {
-  client.query("set default_transaction_read_only = on");
-  client.query("set search_path = public, extensions");
-});
+const pool = createPool(connectionString, { max: 1 });
+const query = (text) => readOnlyQuery(pool, text);
 
 let failures = 0;
 function check(name, pass, detail = "") {
@@ -33,7 +26,7 @@ function check(name, pass, detail = "") {
 
 async function expectDenied(name, sql) {
   try {
-    await pool.query(sql);
+    await query(sql);
     check(name, false, "query unexpectedly succeeded");
   } catch (e) {
     // 42501 insufficient_privilege / 25006 read_only_sql_transaction — both
@@ -44,15 +37,11 @@ async function expectDenied(name, sql) {
 }
 
 async function main() {
-  const { rows } = await pool.query(
-    "select count(*)::int as n from ip_office_records",
-  );
+  const rows = await query("select count(*)::int as n from ip_office_records");
   check("can read ip_office_records", rows[0].n >= 0, `${rows[0].n} row(s)`);
 
-  const radar = await pool.query(
-    "select count(*)::int as n from trademark_non_use_radar",
-  );
-  check("can read trademark_non_use_radar", radar.rows[0].n >= 0, `${radar.rows[0].n} row(s)`);
+  const radar = await query("select count(*)::int as n from trademark_non_use_radar");
+  check("can read trademark_non_use_radar", radar[0].n >= 0, `${radar[0].n} row(s)`);
 
   await expectDenied("cannot read profiles", "select * from profiles limit 1");
   await expectDenied("cannot read ip_assets", "select * from ip_assets limit 1");
