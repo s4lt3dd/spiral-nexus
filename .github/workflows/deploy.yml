@@ -1,0 +1,107 @@
+name: Deploy
+
+# Staging: every successful CI run on main deploys automatically.
+# Production: manual dispatch, gated by the `production` GitHub environment
+# (required reviewer = you). Both deploy the image CI already pushed for the
+# commit, so what ran in CI is byte-for-byte what runs on the box.
+#
+# Disabled until the infrastructure exists: set the repository variable
+# DEPLOY_ENABLED=true once `tofu apply` has produced a staging host.
+
+on:
+  workflow_run:
+    workflows: [CI]
+    types: [completed]
+    branches: [main]
+  workflow_dispatch:
+    inputs:
+      destination:
+        description: Kamal destination
+        type: choice
+        options: [staging, production]
+        required: true
+      sha:
+        description: Commit SHA to deploy (must have a CI-built image). Defaults to the branch head.
+        required: false
+
+permissions:
+  contents: read
+  packages: read
+
+concurrency:
+  group: deploy-${{ github.event.inputs.destination || 'staging' }}
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    if: >-
+      vars.DEPLOY_ENABLED == 'true' &&
+      (github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success')
+    name: Deploy ${{ github.event.inputs.destination || 'staging' }}
+    runs-on: ubuntu-latest
+    environment:
+      name: ${{ github.event.inputs.destination || 'staging' }}
+      url: https://${{ vars.KAMAL_APP_HOST }}
+    env:
+      DESTINATION: ${{ github.event.inputs.destination || 'staging' }}
+      VERSION: ${{ github.event.inputs.sha || github.event.workflow_run.head_sha || github.sha }}
+      # Per-environment, non-secret: from the GitHub environment's variables
+      # (populated from `tofu output`).
+      KAMAL_WEB_HOST: ${{ vars.KAMAL_WEB_HOST }}
+      KAMAL_APP_HOST: ${{ vars.KAMAL_APP_HOST }}
+      NEXT_PUBLIC_SUPABASE_URL: ${{ vars.NEXT_PUBLIC_SUPABASE_URL }}
+      NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ vars.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
+      KAMAL_REGISTRY_PASSWORD: ${{ secrets.GITHUB_TOKEN }}
+
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: ${{ env.VERSION }}
+
+      - name: Set up Node (for the pre-deploy migration hook)
+        uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+
+      - name: Set up Ruby + Kamal
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: "3.3"
+      - run: gem install kamal -v 2.7.0 --no-document
+
+      - name: Install sops + age
+        run: |
+          set -eu
+          curl -fsSL -o /usr/local/bin/sops https://github.com/getsops/sops/releases/download/v3.9.4/sops-v3.9.4.linux.amd64
+          chmod +x /usr/local/bin/sops
+          sudo apt-get update -qq && sudo apt-get install -y -qq age
+
+      - name: SSH agent (deploy key for the host)
+        uses: webfactory/ssh-agent@v0.9.0
+        with:
+          ssh-private-key: ${{ secrets.DEPLOY_SSH_PRIVATE_KEY }}
+      - name: Trust host key
+        run: |
+          mkdir -p ~/.ssh
+          ssh-keyscan -H "$KAMAL_WEB_HOST" >> ~/.ssh/known_hosts
+
+      # Decrypt only into the environment of the kamal process.
+      - name: Deploy
+        env:
+          SOPS_AGE_KEY: ${{ secrets.SOPS_AGE_KEY }}
+        run: |
+          set -eu
+          sops exec-env "secrets/${DESTINATION}.enc.env" \
+            'kamal deploy -d "$DESTINATION" -P --version "$VERSION"'
+
+      - name: Smoke
+        run: |
+          set -eu
+          for i in $(seq 1 12); do
+            code=$(curl -s -o /dev/null -w '%{http_code}' "https://${KAMAL_APP_HOST}/up" || true)
+            [ "$code" = "200" ] && { echo "up (200)"; exit 0; }
+            sleep 5
+          done
+          echo "smoke failed: /up returned $code"; exit 1

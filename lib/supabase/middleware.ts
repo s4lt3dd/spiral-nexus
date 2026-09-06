@@ -45,8 +45,10 @@ export async function updateSession(request: NextRequest) {
     "/u",
     "/onboarding",
   ];
-  const needsAuth = protectedPrefixes.some((p) =>
-    request.nextUrl.pathname.startsWith(p),
+  // Segment-aware: "/u" guards "/u" and "/u/…", not "/up" or "/unsubscribe".
+  const { pathname } = request.nextUrl;
+  const needsAuth = protectedPrefixes.some(
+    (p) => pathname === p || pathname.startsWith(`${p}/`),
   );
 
   if (!user && needsAuth) {

@@ -1,0 +1,39 @@
+#!/usr/bin/env bash
+# Run Kamal locally without installing Ruby: the official image, with this
+# repo mounted, your SSH agent forwarded, and secrets decrypted from
+# secrets/<destination>.enc.env via sops for the duration of the command.
+#
+#   bin/kamal deploy -d staging -P --version $(git rev-parse HEAD)
+#   bin/kamal app logs -d staging -f
+#
+# Requires: docker, sops, age (SOPS_AGE_KEY_FILE or ~/.config/sops/age/keys.txt).
+set -euo pipefail
+
+KAMAL_VERSION="${KAMAL_VERSION:-2.7.0}"
+REPO_ROOT="$(cd "$(dirname "$0")/.." && pwd)"
+
+# Find -d/--destination so we decrypt the matching secrets file.
+DEST=""
+prev=""
+for arg in "$@"; do
+  case "$prev" in -d|--destination) DEST="$arg";; esac
+  case "$arg" in --destination=*) DEST="${arg#--destination=}";; esac
+  prev="$arg"
+done
+
+run_kamal() {
+  docker run --rm -it \
+    -v "${REPO_ROOT}:/workdir" \
+    -v "${SSH_AUTH_SOCK:-/dev/null}:/ssh-agent" -e SSH_AUTH_SOCK=/ssh-agent \
+    -v "${HOME}/.ssh/known_hosts:/root/.ssh/known_hosts" \
+    --env-file <(env | grep -E '^(KAMAL_|SUPABASE_|DATABASE_URL|POSTGRES_|APP_USER_|MIGRATOR_|REGISTER_READER_|BACKUP_|NEXT_PUBLIC_)' || true) \
+    "ghcr.io/basecamp/kamal:v${KAMAL_VERSION}" "$@"
+}
+
+SECRETS_FILE="${REPO_ROOT}/secrets/${DEST}.enc.env"
+if [ -n "$DEST" ] && [ -f "$SECRETS_FILE" ]; then
+  # sops exec-env decrypts into the environment of the child only.
+  exec sops exec-env "$SECRETS_FILE" "$(declare -f run_kamal); run_kamal $(printf '%q ' "$@")"
+else
+  run_kamal "$@"
+fi

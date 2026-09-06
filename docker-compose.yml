@@ -1,0 +1,64 @@
+# Local stack for the self-hosted target (docs/TARGET-ARCHITECTURE.md).
+#
+#   docker compose up -d postgres          # Postgres 16 with the app roles
+#   docker compose --profile app up --build # + the production image, locally
+#
+# The Postgres image and role bootstrap are the same ones Kamal runs on the
+# VPS (config/deploy.yml -> accessories.postgres), so what works here works
+# there. Passwords below are LOCAL ONLY; production ones come from sops.
+
+name: spiral-nexus
+
+services:
+  postgres:
+    image: postgres:16.6-alpine
+    environment:
+      POSTGRES_DB: spiral_nexus
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      # Consumed by db/init/01-roles.sh on first start.
+      APP_USER_PASSWORD: app_user_local
+      MIGRATOR_PASSWORD: migrator_local
+      REGISTER_READER_PASSWORD: register_reader_local
+      BACKUP_PASSWORD: backup_local
+    command:
+      # Small-box tuning (also applied on the VPS via the same flags).
+      - postgres
+      - -c
+      - shared_buffers=256MB
+      - -c
+      - work_mem=8MB
+      - -c
+      - max_connections=40
+      - -c
+      - log_min_duration_statement=500
+    ports:
+      - "127.0.0.1:54329:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+      - ./db/init:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d spiral_nexus"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  web:
+    profiles: ["app"]
+    build:
+      context: .
+      args:
+        NEXT_PUBLIC_SUPABASE_URL: ${NEXT_PUBLIC_SUPABASE_URL:-http://localhost:54321}
+        NEXT_PUBLIC_SUPABASE_ANON_KEY: ${NEXT_PUBLIC_SUPABASE_ANON_KEY:-local-anon-key}
+    environment:
+      PAYMENTS_ENABLED: "false"
+      INGESTION_LIVE: "false"
+      DATABASE_URL: postgresql://app_user:app_user_local@postgres:5432/spiral_nexus
+    ports:
+      - "127.0.0.1:3000:3000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+volumes:
+  postgres-data:

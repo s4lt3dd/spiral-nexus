@@ -1,0 +1,15 @@
+# Remote state in Cloudflare R2 (S3-compatible). Copy to backend.hcl
+# (gitignored). The state bucket is created ONCE by hand (infra/README.md)
+# because it has to exist before the first `tofu init`.
+bucket                      = "spiral-nexus-tofu-state"
+key                         = "production/terraform.tfstate"
+region                      = "auto"
+endpoints                   = { s3 = "https://<ACCOUNT_ID>.r2.cloudflarestorage.com" }
+access_key                  = "<R2 access key id>"
+secret_key                  = "<R2 secret access key>"
+skip_credentials_validation = true
+skip_region_validation      = true
+skip_requesting_account_id  = true
+skip_metadata_api_check     = true
+skip_s3_checksum            = true
+use_path_style              = true

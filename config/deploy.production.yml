@@ -1,0 +1,7 @@
+# Production overrides. Host IP and domain come from `tofu output` in
+# infra/tofu/envs/production, exported by CI as KAMAL_WEB_HOST /
+# KAMAL_APP_HOST. Production deploys require a manual approval on the
+# GitHub `production` environment (.github/workflows/deploy.yml).
+env:
+  clear:
+    APP_ENV: production

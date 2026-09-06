@@ -58,3 +58,16 @@ __pycache__/
 
 # Claude Code personal settings
 .claude/settings.local.json
+
+# self-hosted infra (docs/TARGET-ARCHITECTURE.md)
+infra/tofu/**/.terraform/
+infra/tofu/**/*.tfstate
+infra/tofu/**/*.tfstate.*
+infra/tofu/**/terraform.tfvars
+infra/tofu/**/backend.hcl
+infra/tofu/**/.terraform.lock.hcl
+# decrypted secrets never touch disk unencrypted; only *.enc.env is committed
+secrets/*
+!secrets/*.enc.env
+!secrets/example.env
+!secrets/README.md
