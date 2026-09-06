@@ -77,13 +77,13 @@ resource "hcloud_firewall" "web" {
 
 # ---- Server -------------------------------------------------------------
 resource "hcloud_server" "web" {
-  name        = "spiral-nexus-${var.name}"
-  server_type = var.server_type
-  image       = var.image
-  location    = var.location
-  ssh_keys    = [hcloud_ssh_key.deploy.id]
+  name         = "spiral-nexus-${var.name}"
+  server_type  = var.server_type
+  image        = var.image
+  location     = var.location
+  ssh_keys     = [hcloud_ssh_key.deploy.id]
   firewall_ids = [hcloud_firewall.web.id]
-  labels      = local.labels
+  labels       = local.labels
 
   public_net {
     ipv4_enabled = true

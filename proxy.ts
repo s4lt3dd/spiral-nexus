@@ -9,7 +9,8 @@ export async function proxy(request: NextRequest) {
 
 export const config = {
   matcher: [
-    // Run on all paths except static assets and images.
-    "/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)",
+    // Run on all paths except static assets, images, and the /up liveness
+    // probe, which must answer without touching auth or the database.
+    "/((?!_next/static|_next/image|favicon.ico|up$|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)",
   ],
 };

@@ -36,9 +36,16 @@ ENV NODE_ENV=production \
     NEXT_TELEMETRY_DISABLED=1 \
     PORT=3000 \
     HOSTNAME=0.0.0.0
+# Patch the base OS layer (the node image lags Alpine security releases) and
+# drop the package managers: the runtime only needs the `node` binary, and
+# npm's bundled deps are a recurring source of CVEs in image scans.
+RUN apk upgrade --no-cache \
+ && rm -rf /usr/local/lib/node_modules /opt/yarn* \
+           /usr/local/bin/npm /usr/local/bin/npx /usr/local/bin/corepack \
+           /usr/local/bin/yarn /usr/local/bin/yarnpkg
 # Dedicated unprivileged user; nothing here needs root.
 RUN addgroup --system --gid 1001 nodejs \
- && adduser --system --uid 1001 nextjs
+ && adduser --system --uid 1001 --ingroup nodejs nextjs
 COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
 COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
 COPY --from=builder --chown=nextjs:nodejs /app/public ./public
