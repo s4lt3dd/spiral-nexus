@@ -1,0 +1,10 @@
+# Copy to terraform.tfvars (gitignored) and fill in.
+domain                = "staging.YOUR-DEV-DOMAIN.dev"
+cloudflare_zone_id    = "<zone id from the Cloudflare dashboard overview>"
+cloudflare_account_id = "<account id from the Cloudflare dashboard>"
+ssh_public_key        = "ssh-ed25519 AAAA... deploy@spiral-nexus"
+# Your current public IP(s). Add the GitHub Actions egress you use, or switch
+# deploys to a self-hosted runner / Tailscale later.
+allowed_ssh_cidrs     = ["203.0.113.4/32"]
+server_type           = "cx22"
+location              = "fsn1"

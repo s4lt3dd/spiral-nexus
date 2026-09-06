@@ -1,0 +1,21 @@
+# Normalise line endings. Anything that executes on Linux (scripts, hooks,
+# Dockerfile, cloud-init) MUST be LF even when checked out on Windows, or the
+# shebang line breaks inside the container/host.
+* text=auto
+
+*.sh            text eol=lf
+bin/*           text eol=lf
+.kamal/hooks/*  text eol=lf
+Dockerfile      text eol=lf
+*.tftpl         text eol=lf
+*.tf            text eol=lf
+*.yml           text eol=lf
+*.yaml          text eol=lf
+*.mjs           text eol=lf
+*.sql           text eol=lf
+
+*.png  binary
+*.jpg  binary
+*.ico  binary
+*.woff binary
+*.woff2 binary

@@ -1,0 +1,17 @@
+#!/bin/sh
+# Runs on the deploying machine (CI) after the image is confirmed in the
+# registry and before the new container receives traffic.
+#
+# Migrations run here, as the `migrator` role, BEFORE the new code goes live.
+# Every migration must therefore be compatible with the currently running
+# image (expand/contract - docs/TARGET-ARCHITECTURE.md §8 and the
+# migrations discussion). The runner lands with the auth-seam PR; until then
+# this hook is a no-op that says so.
+set -eu
+
+if [ -n "${MIGRATOR_DATABASE_URL:-}" ] && [ -d "db/migrations" ]; then
+  echo "[pre-deploy] applying pending migrations as migrator"
+  DATABASE_URL="$MIGRATOR_DATABASE_URL" npm run --silent db:migrate
+else
+  echo "[pre-deploy] no migration runner configured yet; skipping"
+fi

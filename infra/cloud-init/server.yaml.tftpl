@@ -1,0 +1,99 @@
+#cloud-config
+# First-boot configuration for a Spiral Nexus host (${environment}).
+# Everything a Kamal target needs, nothing more. Re-runs never happen:
+# changes here apply to NEW servers only (tofu ignores user_data drift).
+
+hostname: spiral-nexus-${environment}
+timezone: Europe/London
+locale: en_GB.UTF-8
+
+users:
+  - name: deploy
+    groups: [docker, sudo]
+    shell: /bin/bash
+    # Passwordless sudo is required by nothing in Kamal (it talks to docker
+    # via the group). Kept for break-glass ops; SSH key is the only way in.
+    sudo: ["ALL=(ALL) NOPASSWD:ALL"]
+    lock_passwd: true
+    ssh_authorized_keys:
+      - ${ssh_public_key}
+
+package_update: true
+package_upgrade: true
+packages:
+  - ca-certificates
+  - curl
+  - gnupg
+  - ufw
+  - fail2ban
+  - unattended-upgrades
+  - apt-listchanges
+  - htop
+  - jq
+
+write_files:
+  # SSH: keys only, no root.
+  - path: /etc/ssh/sshd_config.d/99-hardening.conf
+    content: |
+      PermitRootLogin no
+      PasswordAuthentication no
+      KbdInteractiveAuthentication no
+      X11Forwarding no
+      MaxAuthTries 3
+      LoginGraceTime 20
+      AllowUsers deploy
+  # Security updates apply themselves; reboots happen in a window we choose.
+  - path: /etc/apt/apt.conf.d/52-unattended-upgrades-local
+    content: |
+      Unattended-Upgrade::Automatic-Reboot "true";
+      Unattended-Upgrade::Automatic-Reboot-Time "04:30";
+      Unattended-Upgrade::Remove-Unused-Dependencies "true";
+  # Docker: json-file logs are capped in Kamal config; keep the daemon lean.
+  - path: /etc/docker/daemon.json
+    content: |
+      {
+        "log-driver": "json-file",
+        "log-opts": { "max-size": "50m", "max-file": "3" },
+        "live-restore": true
+      }
+  # fail2ban on sshd, conservative.
+  - path: /etc/fail2ban/jail.local
+    content: |
+      [sshd]
+      enabled = true
+      maxretry = 4
+      findtime = 10m
+      bantime = 1h
+
+runcmd:
+  # Docker Engine from Docker's repo (pinned major via apt policy later if needed).
+  - install -m 0755 -d /etc/apt/keyrings
+  - curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc
+  - chmod a+r /etc/apt/keyrings/docker.asc
+  - >
+    echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc]
+    https://download.docker.com/linux/ubuntu $(. /etc/os-release && echo "$VERSION_CODENAME") stable"
+    > /etc/apt/sources.list.d/docker.list
+  - apt-get update
+  - apt-get install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+  - systemctl enable --now docker
+  - usermod -aG docker deploy
+  # 2 GB swap: headroom for pg_trgm scans and the occasional spike on a 4 GB box.
+  - fallocate -l 2G /swapfile && chmod 600 /swapfile && mkswap /swapfile && swapon /swapfile
+  - echo '/swapfile none swap sw 0 0' >> /etc/fstab
+  - sysctl -w vm.swappiness=10 && echo 'vm.swappiness=10' >> /etc/sysctl.d/99-swap.conf
+  # Host firewall mirrors the hcloud firewall (defence in depth if a rule is
+  # ever loosened upstream). Docker publishes ports around ufw, which is why
+  # Postgres binds to 127.0.0.1 in Kamal config rather than relying on this.
+  - ufw default deny incoming
+  - ufw default allow outgoing
+  - ufw allow 22/tcp
+  - ufw allow 80/tcp
+  - ufw allow 443/tcp
+  - ufw --force enable
+  - systemctl enable --now fail2ban
+  - systemctl restart ssh
+  # Kamal expects this directory for its proxy state.
+  - mkdir -p /home/deploy/.kamal && chown -R deploy:deploy /home/deploy/.kamal
+
+final_message: "spiral-nexus ${environment} host ready after $UPTIME seconds"

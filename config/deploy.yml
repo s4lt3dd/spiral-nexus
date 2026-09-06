@@ -1,0 +1,101 @@
+# Kamal 2 deployment (docs/TARGET-ARCHITECTURE.md §6).
+#
+# Shared settings; per-environment host + domain live in
+# config/deploy.<destination>.yml. Deploy from CI with the image CI built:
+#
+#   kamal deploy -d staging -P --version <git sha>
+#
+# (-P / --skip-push: the image already exists in GHCR under that sha tag.)
+# Secrets referenced below are resolved from .kamal/secrets, which reads
+# environment variables that CI populates by decrypting secrets/<env>.enc.env
+# with sops + age. Nothing secret is in this file.
+
+service: spiral-nexus
+image: ghcr.io/s4lt3dd/spiral-nexus
+
+registry:
+  server: ghcr.io
+  username: s4lt3dd
+  password:
+    - KAMAL_REGISTRY_PASSWORD
+
+builder:
+  arch: amd64
+  # CI builds; this block only matters for a local `kamal build`.
+  args:
+    NEXT_PUBLIC_SUPABASE_URL: <%= ENV.fetch("NEXT_PUBLIC_SUPABASE_URL", "") %>
+    NEXT_PUBLIC_SUPABASE_ANON_KEY: <%= ENV.fetch("NEXT_PUBLIC_SUPABASE_ANON_KEY", "") %>
+
+ssh:
+  user: deploy
+
+servers:
+  web:
+    hosts:
+      - <%= ENV.fetch("KAMAL_WEB_HOST", "REPLACE_ME_IN_DESTINATION") %>
+    options:
+      memory: 1g
+      cpus: 1.5
+
+proxy:
+  ssl: true
+  host: <%= ENV.fetch("KAMAL_APP_HOST", "REPLACE_ME_IN_DESTINATION") %>
+  app_port: 3000
+  healthcheck:
+    path: /up
+    interval: 5
+    timeout: 5
+  # Server-sent events (live inbox) hold connections open; do not cut them.
+  response_timeout: 300
+
+env:
+  clear:
+    NODE_ENV: production
+    PAYMENTS_ENABLED: "false"
+    INGESTION_LIVE: "false"
+  secret:
+    - SUPABASE_SERVICE_ROLE_KEY
+    - DATABASE_URL
+
+logging:
+  driver: json-file
+  options:
+    max-size: 50m
+    max-file: "3"
+
+# Zero-downtime: new container must pass /up before old one is stopped.
+deploy_timeout: 60
+drain_timeout: 30
+
+accessories:
+  postgres:
+    image: postgres:16.6-alpine
+    host: <%= ENV.fetch("KAMAL_WEB_HOST", "REPLACE_ME_IN_DESTINATION") %>
+    # Loopback only. The app reaches it over the docker network; nothing on
+    # the internet can. The hcloud firewall closes 5432 as well.
+    port: "127.0.0.1:5432:5432"
+    cmd: >-
+      postgres
+      -c shared_buffers=256MB
+      -c work_mem=8MB
+      -c max_connections=40
+      -c log_min_duration_statement=500
+      -c wal_level=replica
+      -c archive_mode=on
+      -c archive_command=/bin/true
+    env:
+      clear:
+        POSTGRES_DB: spiral_nexus
+        POSTGRES_USER: postgres
+      secret:
+        - POSTGRES_PASSWORD
+        - APP_USER_PASSWORD
+        - MIGRATOR_PASSWORD
+        - REGISTER_READER_PASSWORD
+        - BACKUP_PASSWORD
+    files:
+      - db/init/01-roles.sh:/docker-entrypoint-initdb.d/01-roles.sh
+    directories:
+      - postgres-data:/var/lib/postgresql/data
+    options:
+      memory: 768m

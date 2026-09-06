@@ -1,0 +1,8 @@
+# Staging overrides. Host IP and domain come from `tofu output` in
+# infra/tofu/envs/staging and are exported by CI as KAMAL_WEB_HOST /
+# KAMAL_APP_HOST before `kamal deploy -d staging`.
+#
+# Staging gets every merge to main automatically (.github/workflows/deploy.yml).
+env:
+  clear:
+    APP_ENV: staging
